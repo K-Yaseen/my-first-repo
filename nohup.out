@@ -311,3 +311,6 @@ error: failed to push some refs to 'https://github.com/K-Yaseen/my-first-repo.gi
 warning: in the working copy of 'nohup.out', LF will be replaced by CRLF the next time Git touches it
 [master 042e79f] تحديث تلقائي
  1 file changed, 3 insertions(+)
+To https://github.com/K-Yaseen/my-first-repo.git
+ ! [remote rejected] master -> master (cannot lock ref 'refs/heads/master': is at 042e79fbe6738479946f0b508cc3c6554ba616cb but expected 067ca041cba5e89694aae40ee3b6671a8dcd0c14)
+error: failed to push some refs to 'https://github.com/K-Yaseen/my-first-repo.git'
