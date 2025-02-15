@@ -1,3 +1,8 @@
 [master 7b8d46d] تحديث تلقائي
  1 file changed, 0 insertions(+), 0 deletions(-)
  create mode 100644 nohup.out
+To https://github.com/K-Yaseen/my-first-repo.git
+   8ee2397..7b8d46d  master -> master
+warning: in the working copy of 'nohup.out', LF will be replaced by CRLF the next time Git touches it
+[master 8472afe] تحديث تلقائي
+ 1 file changed, 3 insertions(+)
