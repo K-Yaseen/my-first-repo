@@ -51,3 +51,8 @@ To https://github.com/K-Yaseen/my-first-repo.git
 warning: in the working copy of 'nohup.out', LF will be replaced by CRLF the next time Git touches it
 [master 5a90c21] تحديث تلقائي
  1 file changed, 5 insertions(+)
+To https://github.com/K-Yaseen/my-first-repo.git
+   e285781..5a90c21  master -> master
+warning: in the working copy of 'nohup.out', LF will be replaced by CRLF the next time Git touches it
+[master e678034] تحديث تلقائي
+ 1 file changed, 5 insertions(+)
