@@ -404,3 +404,6 @@ warning: in the working copy of 'nohup.out', LF will be replaced by CRLF the nex
 To https://github.com/K-Yaseen/my-first-repo.git
  ! [remote rejected] master -> master (cannot lock ref 'refs/heads/master': is at 289a8e15fc00b9f694c96cced0e1ae0eef432db4 but expected f34581c0464df55a058eaf88889bf2495ff72d33)
 error: failed to push some refs to 'https://github.com/K-Yaseen/my-first-repo.git'
+warning: in the working copy of 'nohup.out', LF will be replaced by CRLF the next time Git touches it
+[master 145fa8b] تحديث تلقائي
+ 1 file changed, 3 insertions(+)
