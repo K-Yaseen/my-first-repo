@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel</title>
+  <!-- تضمين Font Awesome (نسخة 6) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <!-- تضمين Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- ربط ملف CSS الخارجي -->
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <!-- رسالة Toast للتنبيهات -->
+  <div id="toast" class="toast"></div>
+
+  <!-- قسم إعداد رقم الواتساب -->
+  <div class="container-custom">
+    <h2>WhatsApp Nummer konfigurieren</h2>
+    <div class="mb-3">
+      <input
+        type="text"
+        id="whatsappNumber"
+        placeholder="WhatsApp Nummer eingeben (z.B. +49123456789)"
+        required
+        class="form-control"
+      />
+    </div>
+    <button onclick="saveWhatsAppNumber()" class="btn btn-primary w-100">
+      Speichern
+    </button>
+  </div>
+
+  <!-- قائمة الأصناف للإدارة باستخدام أكورديون -->
+  <div class="container-custom">
+    <h1 class="mb-3">Verwaltung der Gerichte</h1>
+    <div class="accordion" id="itemAccordion">
+      <div id="item-list">
+        <!-- سيتم توليد الأصناف ديناميكيًا بواسطة JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- نموذج تعديل الأصناف (بدون خانة للقسم) -->
+  <div class="container-custom">
+    <div class="add-item-form">
+      <h2>Gerichte bearbeiten (nach ID)</h2>
+      <div class="mb-2">
+        <input
+          type="number"
+          id="edit-item-id"
+          placeholder="Gerichtsnummer (z. B. 106)"
+          required
+          class="form-control"
+        />
+      </div>
+      <div class="mb-2">
+        <input
+          type="text"
+          id="edit-item-name"
+          placeholder="Neuer Gerichtsname (z. B. Pizza)"
+          class="form-control"
+        />
+      </div>
+      <div class="mb-2">
+        <input
+          type="number"
+          step="0.01"
+          id="edit-item-price"
+          placeholder="Neuer Preis (z. B. 9.99)"
+          class="form-control"
+        />
+      </div>
+      <div class="mb-2">
+        <textarea
+          id="edit-item-ingredients"
+          placeholder="Neue Zutaten (z. B. Tomaten, Käse, Basilikum)"
+          class="form-control"
+        ></textarea>
+      </div>
+      <button onclick="updateItem()" class="btn btn-secondary w-100">
+        Aktualisieren
+      </button>
+    </div>
+  </div>
+
+  <!-- قسم أوقات الدوام -->
+  <div class="container-custom">
+    <h2 class="mb-3">Liefer-/Abholzeiten verwalten</h2>
+    <table id="workingHoursTable" class="table table-bordered text-center">
+      <thead>
+        <tr>
+          <th>Tag</th>
+          <th>Abholung (Beginn)</th>
+          <th>Abholung (Ende)</th>
+          <th>Lieferung (Beginn)</th>
+          <th>Lieferung (Ende)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-day="Montag">
+          <td>Mo.</td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+        </tr>
+        <tr data-day="Dienstag">
+          <td>Di.</td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+        </tr>
+        <tr data-day="Mittwoch">
+          <td>Mi.</td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+        </tr>
+        <tr data-day="Donnerstag">
+          <td>Do.</td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+        </tr>
+        <tr data-day="Freitag">
+          <td>Fr.</td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+        </tr>
+        <tr data-day="Samstag">
+          <td>Sa.</td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+        </tr>
+        <tr data-day="Sonntag">
+          <td>So.</td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+          <td><input type="time" class="form-control" /></td>
+        </tr>
+      </tbody>
+    </table>
+    <button onclick="saveWorkingHours()" class="btn btn-primary w-100">
+      Speichern
+    </button>
+  </div>
+
+  <!-- سكريبتات Firebase و Bootstrap -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  ></script>
+  <!-- كود الجافاسكريبت الخاص بلوحة تحكم صاحب المطعم -->
+  <script>
+    // تهيئة Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBeAkTPw9n...",
+      authDomain: "restaurant-system-f50cf.firebaseapp.com",
+      databaseURL:
+        "https://restaurant-system-f50cf-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "restaurant-system-f50cf",
+      storageBucket: "restaurant-system-f50cf.firebasestorage.app",
+      messagingSenderId: "220436037433",
+      appId: "1:220436037433:web:9bfc0f85a8806a15ee72e8",
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // لتخزين الأقسام في الذاكرة (إذا احتجت لها لاحقًا)
+    let categoriesData = [];
+
+    // لعرض التنبيهات (Toast)
+    function showToast(message, color = "#4caf50") {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.style.backgroundColor = color;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
+    }
+
+    // حفظ رقم الواتساب
+    function saveWhatsAppNumber() {
+      const number = document.getElementById("whatsappNumber").value.trim();
+      if (!number) {
+        showToast("Bitte geben Sie eine gültige WhatsApp Nummer ein.", "#f44336");
+        return;
+      }
+      database.ref("config/whatsappNumber").set(number, (error) => {
+        if (error) {
+          showToast("Fehler beim Speichern der WhatsApp Nummer.", "#f44336");
+        } else {
+          showToast("WhatsApp Nummer erfolgreich gespeichert!", "#4caf50");
+        }
+      });
+    }
+
+    // تحميل الأقسام (إذا أردت عرضها في الأكورديون)
+    function loadCategories() {
+      database.ref("categories").on("value", (snapshot) => {
+        const data = snapshot.val() || {};
+        categoriesData = data;
+        fetchItems();
+      });
+    }
+
+    // جلب الأصناف من قاعدة البيانات وعرضها
+    function fetchItems() {
+      database.ref("items").on("value", (snapshot) => {
+        let items = snapshot.val() || [];
+        if (!Array.isArray(items)) {
+          items = Object.values(items);
+        }
+        const itemList = document.getElementById("item-list");
+
+        // فرز الأصناف حسب رقم الصنف
+        items.sort((a, b) => (a.id || 0) - (b.id || 0));
+
+        // تجميع الأصناف حسب القسم
+        const grouped = {};
+        items.forEach((item) => {
+          const catKey =
+            item.category && categoriesData[item.category]
+              ? item.category
+              : "uncategorized";
+          if (!grouped[catKey]) grouped[catKey] = [];
+          grouped[catKey].push(item);
+        });
+
+        // بناء الأكورديون
+        let accordionHTML = "";
+        let accordionIndex = 0;
+        Object.keys(grouped).forEach((catKey) => {
+          accordionIndex++;
+          const collapseId = "collapse" + accordionIndex;
+          const headerId = "heading" + accordionIndex;
+          const catName = categoriesData[catKey]?.name || "Uncategorized";
+
+          // الأصناف في كل قسم
+          const itemsHTML = grouped[catKey]
+            .map(
+              (item) => `
+            <div class="item-row">
+              <div class="item-header d-flex justify-content-between align-items-center flex-wrap">
+                <div class="item-info">
+                  <span class="item-id fw-bold">${item.id}</span>
+                  <span class="item-name">${item.name}</span>
+                  <span class="item-price">${item.price ? item.price + " €" : "N/A"}</span>
+                </div>
+                <div class="item-controls d-flex align-items-center gap-2">
+                  <label class="toggle-switch">
+                    <input
+                      type="checkbox"
+                      ${item.available ? "checked" : ""}
+                      onchange="toggleAvailability(${item.id})"
+                    />
+                    <span class="slider"></span>
+                  </label>
+                  <button class="icon-button" onclick="editItem(${item.id})">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <button class="icon-button delete" onclick="deleteItem(${item.id})">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="item-ingredients">
+                ${item.ingredients || "N/A"}
+              </div>
+            </div>
+          `
+            )
+            .join("");
+
+          accordionHTML += `
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="${headerId}">
+                <button
+                  class="accordion-button ${accordionIndex > 1 ? "collapsed" : ""}"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#${collapseId}"
+                  aria-expanded="${accordionIndex === 1 ? "true" : "false"}"
+                  aria-controls="${collapseId}"
+                >
+                  ${catName} (${grouped[catKey].length})
+                </button>
+              </h2>
+              <div
+                id="${collapseId}"
+                class="accordion-collapse collapse ${accordionIndex === 1 ? "show" : ""}"
+                aria-labelledby="${headerId}"
+                data-bs-parent="#itemAccordion"
+              >
+                <div class="accordion-body">
+                  ${itemsHTML}
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        itemList.innerHTML = `<div class="accordion" id="itemAccordion">${accordionHTML}</div>`;
+      });
+    }
+
+    // تحديث صنف موجود (التعرف على الصنف عبر رقمه فقط)
+    function updateItem() {
+      const itemIdRaw = document.getElementById("edit-item-id").value.trim();
+      if (!itemIdRaw) {
+        showToast("Bitte geben Sie eine Artikel-ID ein.", "#f44336");
+        return;
+      }
+      const itemId = parseInt(itemIdRaw, 10);
+
+      const newName = document.getElementById("edit-item-name").value.trim();
+      const newPriceRaw = document.getElementById("edit-item-price").value.trim();
+      const newPrice = newPriceRaw ? parseFloat(newPriceRaw) : null;
+      const newIngredients = document
+        .getElementById("edit-item-ingredients")
+        .value.trim();
+
+      database.ref("items").once("value").then((snapshot) => {
+        let items = snapshot.val() || [];
+        if (!Array.isArray(items)) {
+          items = Object.values(items);
+        }
+
+        const existingIndex = items.findIndex((item) => item.id === itemId);
+        if (existingIndex === -1) {
+          // لا يوجد صنف بهذا الرقم
+          showToast("Artikel-ID nicht gefunden. Kein Update möglich.", "#f44336");
+          return;
+        }
+
+        // تحديث الحقول المدخلة فقط، والإبقاء على القسم كما هو
+        if (newName) {
+          items[existingIndex].name = newName;
+        }
+        if (newPrice !== null && !isNaN(newPrice)) {
+          items[existingIndex].price = newPrice;
+        }
+        if (newIngredients) {
+          items[existingIndex].ingredients = newIngredients;
+        }
+
+        // نضيف مصدر التعديل
+        items[existingIndex].lastUpdateSource = "adminPanel";
+
+        // حفظ التعديلات
+        database.ref("items").set(items, (error) => {
+          if (error) {
+            showToast("Fehler beim Aktualisieren des Artikels.", "#f44336");
+          } else {
+            showToast("Artikel erfolgreich aktualisiert!", "#4caf50");
+            // إعادة تعيين الحقول
+            document.getElementById("edit-item-id").value = "";
+            document.getElementById("edit-item-name").value = "";
+            document.getElementById("edit-item-price").value = "";
+            document.getElementById("edit-item-ingredients").value = "";
+          }
+        });
+      });
+    }
+
+    // حذف صنف
+    function deleteItem(id) {
+      database.ref("items").once("value").then((snapshot) => {
+        let items = snapshot.val() || [];
+        if (!Array.isArray(items)) {
+          items = Object.values(items);
+        }
+        const updatedItems = items.filter((item) => item.id !== id);
+        database.ref("items").set(updatedItems, (error) => {
+          if (error) {
+            showToast("Fehler beim Löschen des Artikels.", "#f44336");
+          } else {
+            showToast("Artikel erfolgreich gelöscht!", "#4caf50");
+          }
+        });
+      });
+    }
+
+    // تبديل توافر الصنف
+    function toggleAvailability(id) {
+      database.ref("items").once("value").then((snapshot) => {
+        let items = snapshot.val() || [];
+        if (!Array.isArray(items)) {
+          items = Object.values(items);
+        }
+        const index = items.findIndex((item) => item.id === id);
+        if (index !== -1) {
+          items[index].available = !items[index].available;
+          // نضيف مصدر التعديل
+          items[index].lastUpdateSource = "adminPanel";
+
+          database.ref("items").set(items);
+          showToast(
+            `Gericht ${items[index].name} ist jetzt ${
+              items[index].available ? "Verfügbar" : "Nicht verfügbar"
+            }`,
+            items[index].available ? "#4caf50" : "#f44336"
+          );
+        }
+      });
+    }
+
+    // تعبئة نموذج التعديل
+    function editItem(id) {
+      database.ref("items").once("value").then((snapshot) => {
+        let items = snapshot.val() || [];
+        if (!Array.isArray(items)) {
+          items = Object.values(items);
+        }
+        const item = items.find((i) => i.id === id);
+        if (item) {
+          document.getElementById("edit-item-id").value = item.id;
+          document.getElementById("edit-item-name").value = item.name;
+          document.getElementById("edit-item-price").value = item.price;
+          document.getElementById("edit-item-ingredients").value =
+            item.ingredients;
+        }
+      });
+    }
+
+    // أوقات الدوام
+    function loadWorkingHours() {
+      database.ref("workingHours").once("value").then((snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          localStorage.setItem("workingHours", JSON.stringify(data));
+          fillWorkingHoursForm(data);
+        }
+      });
+    }
+    function fillWorkingHoursForm(workingHours) {
+      document.querySelectorAll("#workingHoursTable tr[data-day]").forEach((row) => {
+        let day = row.getAttribute("data-day");
+        let inputs = row.querySelectorAll("input");
+        if (workingHours[day]) {
+          inputs[0].value = workingHours[day].pickupStart || "";
+          inputs[1].value = workingHours[day].pickupEnd || "";
+          inputs[2].value = workingHours[day].deliveryStart || "";
+          inputs[3].value = workingHours[day].deliveryEnd || "";
+        }
+      });
+    }
+    function saveWorkingHours() {
+      let workingHours = {};
+      document.querySelectorAll("#workingHoursTable tr[data-day]").forEach((row) => {
+        let day = row.getAttribute("data-day");
+        let inputs = row.querySelectorAll("input");
+        workingHours[day] = {
+          pickupStart: inputs[0].value || null,
+          pickupEnd: inputs[1].value || null,
+          deliveryStart: inputs[2].value || null,
+          deliveryEnd: inputs[3].value || null,
+          closed:
+            !inputs[0].value && !inputs[1].value && !inputs[2].value && !inputs[3].value,
+        };
+      });
+      database.ref("workingHours").set(workingHours, (error) => {
+        if (error) {
+          showToast("Fehler beim Speichern der Öffnungszeiten.", "#f44336");
+        } else {
+          localStorage.setItem("workingHours", JSON.stringify(workingHours));
+          showToast("Öffnungszeiten erfolgreich gespeichert!", "#4caf50");
+          fillWorkingHoursForm(workingHours);
+        }
+      });
+    }
+
+    // عند تحميل الصفحة
+    document.addEventListener("DOMContentLoaded", () => {
+      loadCategories();
+      loadWorkingHours();
+    });
+  </script>
+</body>
+</html>
