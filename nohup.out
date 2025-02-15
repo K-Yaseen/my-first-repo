@@ -460,3 +460,5 @@ no changes added to commit (use "git add" and/or "git commit -a")
 warning: in the working copy of 'nohup.out', LF will be replaced by CRLF the next time Git touches it
 [master b98553f] تحديث تلقائي
  1 file changed, 1 insertion(+)
+To https://github.com/K-Yaseen/my-first-repo.git
+   1865684..b98553f  master -> master
