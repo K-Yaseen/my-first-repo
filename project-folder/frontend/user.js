@@ -394,6 +394,7 @@ async function sendToWhatsApp() {
     const itemId = document.getElementById("whatsappBtn").getAttribute("data-item-id");
     const itemName = document.getElementById("whatsappBtn").getAttribute("data-item-name");
     const customerNotes = document.getElementById("customerNotes").value.trim();
+    const quantity = document.getElementById("quantityValue").innerText; // الحصول على عدد الأصناف المطلوبة
 
     // ✅ جلب بيانات الصنف مثل المكونات والسعر
     const item = items.find(i => i.id == itemId);
@@ -404,8 +405,9 @@ async function sendToWhatsApp() {
     let message =
       welcomeMessage +
       `📜 *Bestellnummer:* ${orderNum}\n\n` +
-      `🍛 *Gericht:* - ${itemId}. ${itemName}\n\n` +
-      `🧂 *Zutaten:* ${ingredients}\n\n`; // ✅ إضافة مكونات الصنف
+      // هنا تم إضافة عدد الأصناف المطلوبة بجانب اسم الصنف
+      `🍛 *Gericht:* - ${itemId}. ${itemName} (Anzahl: ${quantity})\n\n` +
+      `🧂 *Zutaten:* ${ingredients}\n\n`;
 
     if (customerNotes) {
       message += `📝 *Dazu:* ${customerNotes}\n\n`;
@@ -431,17 +433,29 @@ async function sendToWhatsApp() {
       const deliveryTime = document.getElementById("deliveryTime").value.trim();
       if (deliveryDate || deliveryTime) {
         message += `📅 *Lieferdatum:* ${deliveryDate}\n` +
-          `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
+                   `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
       }
     } else if (deliveryOption === "pickup") {
       const pickupDate = document.getElementById("pickupDate").value.trim();
       const pickupTime = document.getElementById("pickupTime").value.trim();
       if (pickupDate || pickupTime) {
         message += `🚶 *Selbstabholung*\n` +
-          `📅 *Abholdatum:* ${pickupDate}\n` +
-          `⏰ *Abholzeit:* ${pickupTime}\n\n`;
+                   `📅 *Abholdatum:* ${pickupDate}\n` +
+                   `⏰ *Abholzeit:* ${pickupTime}\n\n`;
       }
     }
+
+    message += `💰 *Preis:* ${price}`;
+
+    // ✅ إنشاء رابط واتساب وإرساله
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, "_blank");
+  } catch (error) {
+    console.error("Error sending to WhatsApp:", error);
+    showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
+  }
+}
+
 
     // ✅ إضافة السعر في نهاية الرسالة
     message += `💰 *Preis:* ${price}`;
