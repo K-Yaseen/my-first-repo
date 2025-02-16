@@ -540,6 +540,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Neuer Code: Funktionen zur Mengensteuerung und Bestellung für den Warenkorb
 
 // دالة لإضافة الصنف الحالي إلى السلة
+// دالة لإضافة الصنف الحالي إلى السلة
 function addToCart() {
   if (!currentItem) return;
   const cartList = document.getElementById("cartList");
@@ -551,19 +552,21 @@ function addToCart() {
     let qty = parseInt(qtySpan.innerText);
     qtySpan.innerText = qty + 1;
   } else {
-    // إنشاء عنصر جديد للسلة مع تقسيم تخطيطي جديد
+    // إنشاء عنصر جديد للسلة مع تنسيق Flex
     const li = document.createElement("li");
     li.className = "cart-item";
     li.setAttribute("data-item-id", currentItem.id);
     li.innerHTML = `
-      <div class="cart-controls">
-        <button type="button" class="quantity-btn" onclick="decreaseCartQuantity(this)">-</button>
-        <span class="cart-quantity-value">1</span>
-        <button type="button" class="quantity-btn" onclick="increaseCartQuantity(this)">+</button>
-      </div>
-      <div class="cart-item-info">
-        <span class="cart-item-name">${currentItem.name}</span>
-        <button type="button" class="remove-cart-item" onclick="removeCartItem(this)">×</button>
+      <div style="display: flex; align-items: center; width: 100%;">
+        <span class="cart-item-name" style="flex: 1; text-align: left;">${currentItem.name}</span>
+        <div class="cart-quantity" style="display: inline-flex; align-items: center; margin-right: 10px;">
+          <button type="button" onclick="decreaseCartQuantity(this)" style="font-size: small;">-</button>
+          <span class="cart-quantity-value" style="margin: 0 10px;">1</span>
+          <button type="button" onclick="increaseCartQuantity(this)" style="font-size: small;">+</button>
+        </div>
+        <button type="button" class="remove-cart-item" onclick="removeCartItem(this)" style="font-size: 16px; background: none; border: none; cursor: pointer;">
+          🗑️
+        </button>
       </div>
     `;
     cartList.appendChild(li);
@@ -572,9 +575,10 @@ function addToCart() {
   document.getElementById("cartContainer").style.display = "block";
   // إخفاء زر الإضافة بعد الإضافة (يمكن إعادة ظهوره عند بحث صنف جديد)
   document.getElementById("addToCartBtn").style.display = "none";
-  // مسح حقل رقم الصنف لإمكانية بحث صنف جديد
+  // مسح حقل رقم الصنف وإعادة تعيين النتيجة لإمكانية بحث صنف جديد
   document.getElementById("itemNumber").value = "";
   document.getElementById("result").innerText = "";
   currentItem = null;
 }
+
 
