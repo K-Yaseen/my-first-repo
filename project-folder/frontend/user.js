@@ -539,25 +539,42 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Neuer Code: Funktionen zur Mengensteuerung und Bestellung für den Warenkorb
 
-function increaseCartQuantity(button) {
-  const qtySpan = button.parentElement.querySelector(".cart-quantity-value");
-  let qty = parseInt(qtySpan.innerText);
-  qtySpan.innerText = qty + 1;
-}
-
-function decreaseCartQuantity(button) {
-  const qtySpan = button.parentElement.querySelector(".cart-quantity-value");
-  let qty = parseInt(qtySpan.innerText);
-  if (qty > 1) {
-    qtySpan.innerText = qty - 1;
-  }
-}
-
-function removeCartItem(button) {
-  const li = button.parentElement;
-  li.remove();
+// دالة لإضافة الصنف الحالي إلى السلة
+function addToCart() {
+  if (!currentItem) return;
   const cartList = document.getElementById("cartList");
-  if (cartList.children.length === 0) {
-    document.getElementById("cartContainer").style.display = "none";
+  // التأكد من عدم وجود الصنف بالفعل في السلة
+  const existingItem = cartList.querySelector(`li[data-item-id="${currentItem.id}"]`);
+  if (existingItem) {
+    // زيادة الكمية إذا كان الصنف موجودًا
+    const qtySpan = existingItem.querySelector(".cart-quantity-value");
+    let qty = parseInt(qtySpan.innerText);
+    qtySpan.innerText = qty + 1;
+  } else {
+    // إنشاء عنصر جديد للسلة مع تقسيم تخطيطي جديد
+    const li = document.createElement("li");
+    li.className = "cart-item";
+    li.setAttribute("data-item-id", currentItem.id);
+    li.innerHTML = `
+      <div class="cart-controls">
+        <button type="button" class="quantity-btn" onclick="decreaseCartQuantity(this)">-</button>
+        <span class="cart-quantity-value">1</span>
+        <button type="button" class="quantity-btn" onclick="increaseCartQuantity(this)">+</button>
+      </div>
+      <div class="cart-item-info">
+        <span class="cart-item-name">${currentItem.name}</span>
+        <button type="button" class="remove-cart-item" onclick="removeCartItem(this)">×</button>
+      </div>
+    `;
+    cartList.appendChild(li);
   }
+  // إظهار حاوية السلة
+  document.getElementById("cartContainer").style.display = "block";
+  // إخفاء زر الإضافة بعد الإضافة (يمكن إعادة ظهوره عند بحث صنف جديد)
+  document.getElementById("addToCartBtn").style.display = "none";
+  // مسح حقل رقم الصنف لإمكانية بحث صنف جديد
+  document.getElementById("itemNumber").value = "";
+  document.getElementById("result").innerText = "";
+  currentItem = null;
 }
+
