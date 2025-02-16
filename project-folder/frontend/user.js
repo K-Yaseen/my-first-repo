@@ -537,13 +537,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// Neuer Code: Funktionen zur Mengensteuerung und Bestellung für den Warenkorb
-
-// دالة لإضافة الصنف الحالي إلى السلة
-// دالة لإضافة الصنف الحالي إلى السلة
 function addToCart() {
   if (!currentItem) return;
   const cartList = document.getElementById("cartList");
+
   // التأكد من عدم وجود الصنف بالفعل في السلة
   const existingItem = cartList.querySelector(`li[data-item-id="${currentItem.id}"]`);
   if (existingItem) {
@@ -552,30 +549,55 @@ function addToCart() {
     let qty = parseInt(qtySpan.innerText);
     qtySpan.innerText = qty + 1;
   } else {
-    // إنشاء عنصر جديد للسلة مع تنسيق Flex
+    // نستخدم بيانات الصنف الحالي لعرضها في واجهة السلة
+    const { id, name, price, ingredients } = currentItem;
+
+    // إنشاء عنصر جديد للسلة
     const li = document.createElement("li");
     li.className = "cart-item";
-    li.setAttribute("data-item-id", currentItem.id);
+    li.setAttribute("data-item-id", id);
+
+    // يمكن استخدام صورة افتراضية إن لم تكن متوفرة صورة حقيقية
+    const imagePlaceholder = "https://via.placeholder.com/80"; // رابط لصورة افتراضية
+
+    // نبني الـ HTML بحيث يشبه التصميم في الصورة
     li.innerHTML = `
-      <div style="display: flex; align-items: center; width: 100%;">
-        <span class="cart-item-name" style="flex: 1; text-align: left;">${currentItem.name}</span>
-        <div class="cart-quantity" style="display: inline-flex; align-items: center; margin-right: 10px;">
-          <button type="button" onclick="decreaseCartQuantity(this)" style="font-size: small;">-</button>
-          <span class="cart-quantity-value" style="margin: 0 10px;">1</span>
-          <button type="button" onclick="increaseCartQuantity(this)" style="font-size: small;">+</button>
+      <div class="cart-item-image-container">
+        <img src="${imagePlaceholder}" alt="${name}" class="cart-item-image" />
+      </div>
+      <div class="cart-item-details">
+        <!-- السطر العلوي: الاسم + رقم الصنف -->
+        <div class="cart-item-top-row">
+          <span class="cart-item-name">${name}</span>
+          <span class="cart-item-id">ID: ${id}</span>
         </div>
-        <button type="button" class="remove-cart-item" onclick="removeCartItem(this)" style="font-size: 16px; background: none; border: none; cursor: pointer;">
-          🗑️
-        </button>
+
+        <!-- السطر الأوسط: السعر + المكونات -->
+        <div class="cart-item-middle-row">
+          <span class="cart-item-price">Preis: ${price ? price.toFixed(2) + " €" : "N/A"}</span>
+          <span class="cart-item-ingredients">${ingredients ? "Zutaten: " + ingredients : ""}</span>
+        </div>
+
+        <!-- السطر السفلي: أزرار العدد + زر الحذف -->
+        <div class="cart-item-bottom-row">
+          <div class="cart-quantity">
+            <button type="button" onclick="decreaseCartQuantity(this)" class="quantity-btn">-</button>
+            <span class="cart-quantity-value">1</span>
+            <button type="button" onclick="increaseCartQuantity(this)" class="quantity-btn">+</button>
+          </div>
+          <button type="button" class="remove-cart-item" onclick="removeCartItem(this)">🗑️</button>
+        </div>
       </div>
     `;
+
     cartList.appendChild(li);
   }
+
   // إظهار حاوية السلة
   document.getElementById("cartContainer").style.display = "block";
-  // إخفاء زر الإضافة بعد الإضافة (يمكن إعادة ظهوره عند بحث صنف جديد)
+  // إخفاء زر الإضافة بعد الإضافة
   document.getElementById("addToCartBtn").style.display = "none";
-  // مسح حقل رقم الصنف وإعادة تعيين النتيجة لإمكانية بحث صنف جديد
+  // إعادة تعيين الحقل والنتيجة
   document.getElementById("itemNumber").value = "";
   document.getElementById("result").innerText = "";
   currentItem = null;
