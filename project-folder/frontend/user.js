@@ -537,6 +537,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+
+
 function addToCart() {
   if (!currentItem) return;
   const cartList = document.getElementById("cartList");
