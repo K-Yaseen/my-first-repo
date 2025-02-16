@@ -499,80 +499,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// async function sendToWhatsApp() {
-//   if (!validateSchedule()) return;
+// Neuer Code: Funktionen zur Mengensteuerung und Bestellung
 
-//   try {
-//     const snapshot = await database.ref("config/whatsappNumber").once("value");
-//     let rawNumber = snapshot.val() || "4915759100569";
-//     const whatsappNumber = rawNumber.replace(/\D/g, ""); // إزالة الرموز غير الرقمية
+function increaseQuantity() {
+  const quantitySpan = document.getElementById("quantityValue");
+  let quantity = parseInt(quantitySpan.innerText);
+  quantitySpan.innerText = quantity + 1;
+}
 
-//     const orderNum = generateOrderNumber();
-//     const deliveryOption = document.getElementById("deliveryOption").value;
-//     const itemId = document.getElementById("whatsappBtn").getAttribute("data-item-id");
-//     const itemName = document.getElementById("whatsappBtn").getAttribute("data-item-name");
-//     const customerNotes = document.getElementById("customerNotes").value.trim();
+function decreaseQuantity() {
+  const quantitySpan = document.getElementById("quantityValue");
+  let quantity = parseInt(quantitySpan.innerText);
+  if (quantity > 1) {
+    quantitySpan.innerText = quantity - 1;
+  }
+}
 
-//     // جلب بيانات الصنف من القائمة
-//     const item = items.find(i => i.id == itemId);
-//     const ingredients = item ? item.ingredients || "Keine Angaben" : "Unbekannt";
-//     const price = item ? (item.price ? item.price.toFixed(2) + " €" : "Preis nicht verfügbar") : "Preis nicht verfügbar";
-
-//     let message = `🍽 *Bestellung*\n\n` +  // رمز طبق طعام
-//                   `📜 *Nummer:* ${itemId}\n` +  // رمز ورقة مستند
-//                   `🍛 *Gericht:* ${itemName}\n` +  // رمز طبق طعام
-//                   `🧂 *Zutaten:* ${ingredients}\n\n`;  // رمز ملح
-
-//     if (customerNotes) {
-//       message += `📝 *Hinweise:* ${customerNotes}\n\n`;  // رمز ملاحظات
-//     }
-
-//     if (deliveryOption === "delivery") {
-//       const vorname = document.getElementById("vorname").value.trim();
-//       const nachname = document.getElementById("nachname").value.trim();
-//       const strasse = document.getElementById("strasse").value.trim();
-//       const hausnummer = document.getElementById("hausnummer").value.trim();
-//       const plz = document.getElementById("plz").value.trim();
-//       const stadt = document.getElementById("stadt").value.trim();
-
-//       // إنشاء رابط جوجل مابس باستخدام العنوان
-//       const addressQuery = encodeURIComponent(`${strasse} ${hausnummer}, ${plz} ${stadt}`);
-//       const googleMapsURL = `https://www.google.com/maps/search/?api=1&query=${addressQuery}`;
-
-//       message += `🚚 *Lieferung*\n` +  // رمز شاحنة
-//                  `🏠 *Adresse:*\n${strasse} ${hausnummer}, ${plz} ${stadt}\n\n` +  // رمز منزل
-//                  `📍 *Standort auf Google Maps:*\n${googleMapsURL}\n\n`;  // رمز دبوس موقع
-
-//       const deliveryDate = document.getElementById("deliveryDate").value.trim();
-//       const deliveryTime = document.getElementById("deliveryTime").value.trim();
-//       if (deliveryDate || deliveryTime) {
-//         message += `📅 *Lieferdatum:* ${deliveryDate}\n` +  // رمز تقويم
-//                    `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;  // رمز ساعة منبه
-//       }
-//     } else if (deliveryOption === "pickup") {
-//       const pickupDate = document.getElementById("pickupDate").value.trim();
-//       const pickupTime = document.getElementById("pickupTime").value.trim();
-//       if (pickupDate || pickupTime) {
-//         message += `🚶 *Selbstabholung*\n` +  // رمز شخص يمشي
-//                    `📅 *Abholdatum:* ${pickupDate}\n` +  // رمز تقويم
-//                    `⏰ *Abholzeit:* ${pickupTime}\n\n`;  // رمز ساعة منبه
-//       }
-//     }
-
-//     // إضافة السعر في نهاية الرسالة
-//     message += `💰 *Preis:* ${price}`;  // رمز نقود
-
-//     // إنشاء رابط واتساب وإرساله
-//     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-//     window.open(whatsappURL, "_blank");
-//   } catch (error) {
-//     console.error("Error sending to WhatsApp:", error);
-//     showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
-//   }
-// }
-
-
-
-
-
-
+function sendOrder() {
+  const quantity = document.getElementById("quantityValue").innerText;
+  const itemName = document.getElementById("itemName").innerText;
+  const message = "Bestellung: " + itemName + " - Menge: " + quantity;
+  // Stellen Sie sicher, dass Sie 'رقم_المطعم' durch die tatsächliche WhatsApp-Nummer des Restaurants ersetzen.
+  const whatsappURL = "https://wa.me/رقم_المطعم?text=" + encodeURIComponent(message);
+  window.open(whatsappURL, "_blank");
+}
