@@ -39,17 +39,6 @@
 
   <!-- Bestelldetails -->
   <div id="orderDetails" style="display: none;">
-    <!-- قسم عرض الصنف مع إمكانية تحديد الكمية -->
-    <div class="food-item">
-      <h3 id="itemName">اسم الصنف</h3>
-      <div class="quantity-selector" style="display: flex; align-items: center;">
-        <button type="button" onclick="decreaseQuantity()">-</button>
-        <span id="quantityValue" style="margin: 0 10px;">1</span>
-        <button type="button" onclick="increaseQuantity()">+</button>
-      </div>
-      <button onclick="sendOrder()">طلب عبر واتساب</button>
-    </div>
-
     <h2>Bestelldetails (optional)</h2>
     <div class="delivery-container">
       <label for="deliveryOption">Bestelloption:</label>
@@ -82,8 +71,7 @@
       <input type="text" id="stadt" placeholder="Stadt">
     </div>
     <button onclick="showSavePopup()">Daten speichern</button>
-    <!-- تمت إزالة زر الطلب القديم عبر واتساب -->
-    <!-- <button id="whatsappBtn" onclick="sendToWhatsApp()">Bestellung per WhatsApp senden</button> -->
+    <button id="whatsappBtn" onclick="sendToWhatsApp()">Bestellung per WhatsApp senden</button>
   </div>
 
   <!-- Popup für Bestätigung -->
@@ -188,32 +176,6 @@
         document.getElementById("preLoginModal").style.display = "none";
       });
     });
-  </script>
-
-  <!-- وظائف جديدة لتحديد الكمية وإرسال الطلب عبر واتساب -->
-  <script>
-    function increaseQuantity() {
-      const quantitySpan = document.getElementById("quantityValue");
-      let quantity = parseInt(quantitySpan.innerText);
-      quantitySpan.innerText = quantity + 1;
-    }
-
-    function decreaseQuantity() {
-      const quantitySpan = document.getElementById("quantityValue");
-      let quantity = parseInt(quantitySpan.innerText);
-      if (quantity > 1) {
-        quantitySpan.innerText = quantity - 1;
-      }
-    }
-
-    function sendOrder() {
-      const quantity = document.getElementById("quantityValue").innerText;
-      const itemName = document.getElementById("itemName").innerText;
-      const message = "طلب: " + itemName + " - الكمية: " + quantity;
-      // تأكد من استبدال 'رقم_المطعم' برقم واتساب المطعم الفعلي
-      const whatsappURL = "https://wa.me/رقم_المطعم?text=" + encodeURIComponent(message);
-      window.open(whatsappURL, "_blank");
-    }
   </script>
 </body>
 </html>
