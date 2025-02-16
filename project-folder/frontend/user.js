@@ -394,6 +394,7 @@ async function sendToWhatsApp() {
     const itemId = document.getElementById("whatsappBtn").getAttribute("data-item-id");
     const itemName = document.getElementById("whatsappBtn").getAttribute("data-item-name");
     const customerNotes = document.getElementById("customerNotes").value.trim();
+    const quantity = document.getElementById("quantityValue").innerText; // الحصول على كمية الطلب
 
     // ✅ جلب بيانات الصنف مثل المكونات والسعر
     const item = items.find(i => i.id == itemId);
@@ -404,8 +405,9 @@ async function sendToWhatsApp() {
     let message =
       welcomeMessage +
       `📜 *Bestellnummer:* ${orderNum}\n\n` +
-      `🍛 *Gericht:* - ${itemId}. ${itemName}\n\n` +
-      `🧂 *Zutaten:* ${ingredients}\n\n`; // ✅ إضافة مكونات الصنف
+      // تم تعديل السطر لإضافة كمية الطلب بجانب اسم الصنف
+      `🍛 *Gericht:* - ${itemId}. ${itemName} (Anzahl: ${quantity})\n\n` +
+      `🧂 *Zutaten:* ${ingredients}\n\n`;
 
     if (customerNotes) {
       message += `📝 *Dazu:* ${customerNotes}\n\n`;
@@ -454,6 +456,7 @@ async function sendToWhatsApp() {
     showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
   }
 }
+
 
 
 // ✅ عرض رسالة عائمة للمستخدم
