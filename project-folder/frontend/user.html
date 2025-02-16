@@ -19,7 +19,7 @@
     </div>
   </div>
 
-  <!-- مودال خاص بعرض التعديلات من Admin Panel (لا يمكن إغلاقه إلا بالضغط على "Verstanden") -->
+  <!-- مودال خاص بعرض التعديلات von Admin Panel (nicht schließbar außer per "Verstanden") -->
   <div id="changesModal" class="modal" style="display: none;">
     <div class="modal-content">
       <h2>Das Gericht wurde geändert</h2>
@@ -35,6 +35,18 @@
     <textarea id="customerNotes" placeholder="Zusätzliche Hinweise (z. B. bitte ohne Zwiebeln)"></textarea>
     <button onclick="checkItem()">Prüfen</button>
     <p id="result"></p>
+
+    <!-- Hinzugefügter Abschnitt für die Auswahl der Artikelanzahl -->
+    <div class="food-item">
+      <h3 id="itemName">Gerichtname</h3>
+      <p>Wählen Sie die Anzahl der Artikel:</p>
+      <div class="quantity-selector" style="display: flex; align-items: center;">
+        <button type="button" onclick="decreaseQuantity()" style="font-size: small;">-</button>
+        <span id="quantityValue" style="margin: 0 10px;">1</span>
+        <button type="button" onclick="increaseQuantity()" style="font-size: small;">+</button>
+      </div>
+      <button onclick="sendOrder()">Über WhatsApp bestellen</button>
+    </div>
   </div>
 
   <!-- Bestelldetails -->
@@ -97,28 +109,25 @@
     const database = firebase.database();
   </script>
 
-  <!-- ربط ملف user.js المعدل -->
+  <!-- Einbindung von user.js -->
   <script src="user.js"></script>
 
   <script>
     // ==================================================
-    // تعديل دالة updateTimeConstraints لحل مشكلة المنطقة الزمنية
+    // updateTimeConstraints zur Lösung des Zeitzonenproblems
     // ==================================================
     function updateTimeConstraints() {
       const now = new Date();
 
-      // إنشاء تاريخ محلي (بدل toISOString)
       const year = now.getFullYear();
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const day = String(now.getDate()).padStart(2, '0');
       const todayStr = `${year}-${month}-${day}`;
 
-      // تحديد وقت الاستلام
       const pickupDateInput = document.getElementById('pickupDate');
       const pickupTimeInput = document.getElementById('pickupTime');
       if (pickupDateInput && pickupTimeInput) {
         if (pickupDateInput.value === todayStr) {
-          // إذا كان اليوم المختار هو اليوم المحلي، نضع حداً أدنى لساعة من الآن
           let minPickupTime = new Date(now.getTime() + 1 * 60 * 60 * 1000);
           let hours = String(minPickupTime.getHours()).padStart(2, '0');
           let minutes = String(minPickupTime.getMinutes()).padStart(2, '0');
@@ -128,12 +137,10 @@
         }
       }
 
-      // تحديد وقت التوصيل
       const deliveryDateInput = document.getElementById('deliveryDate');
       const deliveryTimeInput = document.getElementById('deliveryTime');
       if (deliveryDateInput && deliveryTimeInput) {
         if (deliveryDateInput.value === todayStr) {
-          // إذا كان اليوم المختار هو اليوم المحلي، نضع حداً أدنى لساعتين من الآن
           let minDeliveryTime = new Date(now.getTime() + 2 * 60 * 60 * 1000);
           let hours = String(minDeliveryTime.getHours()).padStart(2, '0');
           let minutes = String(minDeliveryTime.getMinutes()).padStart(2, '0');
@@ -144,7 +151,6 @@
       }
     }
 
-    // عند تغيير خيار التوصيل (Delivery / Pickup)
     document.getElementById('deliveryOption').addEventListener('change', function () {
       const deliveryFields = document.getElementById('deliveryFields');
       const pickupScheduleField = document.getElementById('pickupScheduleField');
@@ -161,16 +167,12 @@
       updateTimeConstraints();
     });
 
-    // تحديث constraints عند تغيير التاريخ
     document.getElementById('pickupDate').addEventListener('change', updateTimeConstraints);
     document.getElementById('deliveryDate').addEventListener('change', updateTimeConstraints);
 
-    // عند تحميل الصفحة
     window.addEventListener('load', updateTimeConstraints);
 
-    // Modal-Handling für Öffnungszeiten
     document.addEventListener("DOMContentLoaded", () => {
-      // Öffnungszeiten-Modal anzeigen
       document.getElementById("preLoginModal").style.display = "flex";
       document.getElementById("continueBtn").addEventListener("click", function () {
         document.getElementById("preLoginModal").style.display = "none";
