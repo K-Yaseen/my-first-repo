@@ -166,6 +166,23 @@ function checkItem() {
   }
 }
 
+function updateFloatingCart(item) {
+  const cart = document.getElementById("floatingCart");
+  const cartItems = document.getElementById("cartItems");
+  if (!cart || !cartItems) return;
+  // عرض الصنف داخل السلة (يمكنك تعديل التفاصيل كما تشاء)
+  cartItems.innerHTML = `<li>${item.name} - ${item.id}</li>`;
+  cart.style.display = "block";
+}
+
+function hideFloatingCart() {
+  const cart = document.getElementById("floatingCart");
+  if (cart) {
+      cart.style.display = "none";
+  }
+}
+
+
 // ✅ توليد رقم الطلب العشوائي (مرة واحدة فقط)
 function generateOrderNumber() {
   const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
