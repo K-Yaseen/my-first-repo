@@ -1902,3 +1902,8 @@ nothing to commit, working tree clean
 warning: in the working copy of 'nohup.out', LF will be replaced by CRLF the next time Git touches it
 [master 04ee4e9] تحديث تلقائي
  1 file changed, 1398 insertions(+)
+To https://github.com/K-Yaseen/my-first-repo.git
+   e0f583d..04ee4e9  master -> master
+warning: in the working copy of 'nohup.out', LF will be replaced by CRLF the next time Git touches it
+[master 85e8601] تحديث تلقائي
+ 1 file changed, 3 insertions(+)
