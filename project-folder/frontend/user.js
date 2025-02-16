@@ -5,7 +5,6 @@
 
 let items = [];
 const userDataStore = {};
-let currentItem = null; // لتخزين الصنف الحالي بعد البحث
 
 // دالة مساعدة لتحويل سلسلة JSON بشكل آمن
 function safeJSONParse(data) {
@@ -66,11 +65,14 @@ function showDifferencesModal(changes) {
   const confirmBtn = document.getElementById("changesConfirmBtn");
 
   if (!modal || !changesList || !confirmBtn) {
+    // في حال لم يتم تعريف المودال في HTML
     console.error("changesModal elements not found in HTML.");
     return;
   }
 
+  // تفريغ القديم
   changesList.innerHTML = "";
+  // إنشاء نص متعدد الأسطر أو قائمة
   let html = "<ul style='list-style: disc; padding-left: 20px;'>";
   changes.forEach(diff => {
     html += `<li>${diff}</li>`;
@@ -78,7 +80,11 @@ function showDifferencesModal(changes) {
   html += "</ul>";
 
   changesList.innerHTML = html;
+
+  // إظهار المودال
   modal.style.display = "flex";
+
+  // عند الضغط على زر التأكيد، نغلق المودال
   confirmBtn.onclick = () => {
     modal.style.display = "none";
   };
@@ -100,14 +106,16 @@ async function fetchItems() {
 function storeBaselineIfFirstPanel(item) {
   if (!item || item.id == null) return;
   const storageKey = "initialItem_" + item.id;
+  // إذا لا توجد نسخة مخزنة مسبقًا لهذا الصنف
   if (!localStorage.getItem(storageKey)) {
+    // نخزنها فقط إذا كان المصدر "firstPanel"
     if (item.lastUpdateSource === "firstPanel") {
       localStorage.setItem(storageKey, JSON.stringify(item));
     }
   }
 }
 
-// ✅ البحث عن الصنف وعرض الحالة
+// ✅ البحث عن الصنف وعرض الحقول إذا كان متوفرًا
 function checkItem() {
   const itemNumberInput = document.getElementById("itemNumber");
   const itemNumber = itemNumberInput ? itemNumberInput.value.trim() : "";
@@ -118,104 +126,43 @@ function checkItem() {
     result.innerText = "Bitte geben Sie eine Artikelnummer ein.";
     result.style.color = "red";
     orderDetails.style.display = "none";
-    document.getElementById("addToCartBtn").style.display = "none";
     return;
   }
 
   const item = items.find((i) => i.id == itemNumber);
   if (item) {
+    // 1) نحاول تخزين الـ Baseline إذا كان الصنف من firstPanel
     storeBaselineIfFirstPanel(item);
+
+    // 2) نجلب الـ Baseline إن وُجدت
     const storageKey = "initialItem_" + item.id;
     const storedInitial = localStorage.getItem(storageKey);
     const baseline = storedInitial ? safeJSONParse(storedInitial) : null;
 
+    // 3) إذا المصدر adminPanel ونجد فروقات => نظهر تفاصيل التعديلات في مودال
     if (item.lastUpdateSource === "adminPanel" && baseline) {
       const changes = getDifferences(baseline, item);
       if (changes.length > 0) {
-        showDifferencesModal(changes);
+        showDifferencesModal(changes); // ← نعرض التعديلات في مودال
       }
     }
 
+    // 4) عرض حالة الصنف
     result.innerText = `✅ Gericht ${item.id} ist ${item.available ? "Verfügbar" : "Nicht verfügbar"}`;
     result.style.color = item.available ? "green" : "red";
 
     if (item.available) {
       orderDetails.style.display = "block";
-      currentItem = item;
-      // عرض زر "In den Warenkorb" عند إيجاد صنف متوفر
-      document.getElementById("addToCartBtn").style.display = "block";
+      document.getElementById("whatsappBtn").setAttribute("data-item-id", item.id);
+      document.getElementById("whatsappBtn").setAttribute("data-item-name", item.name);
+
     } else {
       orderDetails.style.display = "none";
-      document.getElementById("addToCartBtn").style.display = "none";
     }
   } else {
     result.innerText = "⚠️ Artikelnummer nicht gefunden.";
     result.style.color = "gray";
     orderDetails.style.display = "none";
-    document.getElementById("addToCartBtn").style.display = "none";
-  }
-}
-
-// دالة لإضافة الصنف الحالي إلى السلة
-function addToCart() {
-  if (!currentItem) return;
-  const cartList = document.getElementById("cartList");
-  // التأكد من عدم وجود الصنف بالفعل في السلة
-  const existingItem = cartList.querySelector(`li[data-item-id="${currentItem.id}"]`);
-  if (existingItem) {
-    // زيادة الكمية إذا كان الصنف موجودًا
-    const qtySpan = existingItem.querySelector(".cart-quantity-value");
-    let qty = parseInt(qtySpan.innerText);
-    qtySpan.innerText = qty + 1;
-  } else {
-    // إنشاء عنصر جديد للسلة
-    const li = document.createElement("li");
-    li.className = "cart-item";
-    li.setAttribute("data-item-id", currentItem.id);
-    li.innerHTML = `
-      <span class="cart-item-name">${currentItem.name}</span>
-      <div class="cart-quantity" style="display: inline-flex; align-items: center; margin-left: 10px;">
-        <button type="button" onclick="decreaseCartQuantity(this)" style="font-size: small;">-</button>
-        <span class="cart-quantity-value" style="margin: 0 10px;">1</span>
-        <button type="button" onclick="increaseCartQuantity(this)" style="font-size: small;">+</button>
-      </div>
-      <button type="button" class="remove-cart-item" onclick="removeCartItem(this)" style="margin-left: 10px;">Entfernen</button>
-    `;
-    cartList.appendChild(li);
-  }
-  // إظهار حاوية السلة
-  document.getElementById("cartContainer").style.display = "block";
-  // إخفاء زر الإضافة بعد الإضافة (يمكن إعادة ظهوره عند بحث صنف جديد)
-  document.getElementById("addToCartBtn").style.display = "none";
-  // مسح حقل رقم الصنف لإمكانية بحث صنف جديد
-  document.getElementById("itemNumber").value = "";
-  document.getElementById("result").innerText = "";
-  currentItem = null;
-}
-
-// دوال زيادة/نقصان الكمية داخل السلة
-function increaseCartQuantity(button) {
-  const qtySpan = button.parentElement.querySelector(".cart-quantity-value");
-  let qty = parseInt(qtySpan.innerText);
-  qtySpan.innerText = qty + 1;
-}
-
-function decreaseCartQuantity(button) {
-  const qtySpan = button.parentElement.querySelector(".cart-quantity-value");
-  let qty = parseInt(qtySpan.innerText);
-  if (qty > 1) {
-    qtySpan.innerText = qty - 1;
-  }
-}
-
-// دالة إزالة عنصر من السلة
-function removeCartItem(button) {
-  const li = button.parentElement;
-  li.remove();
-  // إذا أصبحت السلة فارغة، أخفي الحاوية
-  const cartList = document.getElementById("cartList");
-  if (cartList.children.length === 0) {
-    document.getElementById("cartContainer").style.display = "none";
   }
 }
 
@@ -224,6 +171,7 @@ function generateOrderNumber() {
   const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
   const numbers = "123456789";
   let orderId = "";
+
   for (let i = 0; i < 2; i++) {
     orderId += letters.charAt(Math.floor(Math.random() * letters.length));
   }
@@ -310,7 +258,7 @@ async function loadWorkingHours() {
   }
 }
 
-// ✅ عرض أوقات الدوام in the Modal
+// ✅ عرض أوقات الدوام في المودال باستخدام المفاتيح الجديدة
 function updateWorkingHoursDisplay(workingHours) {
   const container = document.getElementById("workingHoursDisplay");
   if (!container) return;
@@ -341,20 +289,27 @@ function updateWorkingHoursDisplay(workingHours) {
   });
 }
 
-// ✅ دالة التحقق من أن الوقت المختار innerhalb der Arbeitszeiten
+// ✅ دالة التحقق من أن الوقت المختار داخل أوقات الدوام
 function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
+  // جلب أوقات الدوام المخزنة
   const workingHours = JSON.parse(localStorage.getItem("workingHours"));
   if (!workingHours) {
     console.warn("Keine gespeicherten Arbeitszeiten gefunden.");
     return false;
   }
+
+  // تحديد اليوم من التاريخ المختار
   const daysOfWeek = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
   const selectedDay = daysOfWeek[selectedDateTime.getDay()];
+
+  // جلب بيانات الدوام لليوم المختار
   const todayHours = workingHours[selectedDay];
   if (!todayHours || todayHours.closed) {
     console.warn(`Der Laden ist am ${selectedDay} geschlossen.`);
     return false;
   }
+
+  // اختيار وقت التوصيل أو الاستلام
   let start, end;
   if (type === "delivery") {
     start = todayHours.deliveryStart;
@@ -363,16 +318,22 @@ function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
     start = todayHours.pickupStart;
     end = todayHours.pickupEnd;
   }
+
+  // التحقق من أن هناك وقت متاح
   if (!start || !end) {
     console.warn(`Keine ${type}-Zeiten für ${selectedDay} definiert.`);
     return false;
   }
+
+  // تحويل النصوص الزمنية إلى كائنات Date
   const [startHours, startMinutes] = start.split(":").map(Number);
   const [endHours, endMinutes] = end.split(":").map(Number);
   const startTime = new Date(selectedDateTime);
   startTime.setHours(startHours, startMinutes, 0);
+
   const endTime = new Date(selectedDateTime);
   endTime.setHours(endHours, endMinutes, 0);
+
   return selectedDateTime >= startTime && selectedDateTime <= endTime;
 }
 
@@ -420,36 +381,32 @@ function validateSchedule() {
 }
 
 // ✅ إرسال الطلب إلى WhatsApp مع معالجة رقم الهاتف (باستخدام async/await)
-// تم تعديل الدالة لتجميع بيانات جميع الأصناف الموجودة في السلة
 async function sendToWhatsApp() {
   if (!validateSchedule()) return;
 
   try {
     const snapshot = await database.ref("config/whatsappNumber").once("value");
     let rawNumber = snapshot.val() || "4915759100569";
+    // إزالة كل الرموز غير الرقمية (مثل +, -, الفراغات)
     const whatsappNumber = rawNumber.replace(/\D/g, "");
+
     const orderNum = generateOrderNumber();
     const deliveryOption = document.getElementById("deliveryOption").value;
+    const itemId = document.getElementById("whatsappBtn").getAttribute("data-item-id");
+    const itemName = document.getElementById("whatsappBtn").getAttribute("data-item-name");
     const customerNotes = document.getElementById("customerNotes").value.trim();
 
-    // تجميع بيانات الأصناف من السلة
-    const cartItems = document.querySelectorAll("#cartList .cart-item");
-    if (cartItems.length === 0) {
-      showFloatingMessage("Bitte fügen Sie mindestens einen Artikel zum Warenkorb hinzu.", "red");
-      return;
-    }
-    let dishesMessage = "";
-    cartItems.forEach(cartItem => {
-      const id = cartItem.getAttribute("data-item-id");
-      const name = cartItem.querySelector(".cart-item-name").innerText;
-      const quantity = cartItem.querySelector(".cart-quantity-value").innerText;
-      dishesMessage += `🍛 *Gericht:* - ${id}. ${name} (Anzahl: ${quantity})\n\n`;
-    });
+    // ✅ جلب بيانات الصنف مثل المكونات والسعر
+    const item = items.find(i => i.id == itemId);
+    const ingredients = item ? item.ingredients || "Keine Angaben" : "Unbekannt";
+    const price = item ? (item.price ? item.price.toFixed(2) + " €" : "Preis nicht verfügbar") : "Preis nicht verfügbar";
 
     const welcomeMessage = "Hallo, ich möchte gerne bestellen:\n\n";
-    let message = welcomeMessage;
-    message += `📜 *Bestellnummer:* ${orderNum}\n\n`;
-    message += dishesMessage;
+    let message =
+      welcomeMessage +
+      `📜 *Bestellnummer:* ${orderNum}\n\n` +
+      `🍛 *Gericht:* - ${itemId}. ${itemName}\n\n` +
+      `🧂 *Zutaten:* ${ingredients}\n\n`; // ✅ إضافة مكونات الصنف
 
     if (customerNotes) {
       message += `📝 *Dazu:* ${customerNotes}\n\n`;
@@ -487,14 +444,18 @@ async function sendToWhatsApp() {
       }
     }
 
+    // ✅ إضافة السعر في نهاية الرسالة
+    message += `💰 *Preis:* ${price}`;
+
     // ✅ إنشاء رابط واتساب وإرساله
-    const whatsappURLFinal = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappURLFinal, "_blank");
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, "_blank");
   } catch (error) {
     console.error("Error sending to WhatsApp:", error);
     showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
   }
 }
+
 
 // ✅ عرض رسالة عائمة للمستخدم
 function showFloatingMessage(text, color = "red") {
@@ -506,7 +467,7 @@ function showFloatingMessage(text, color = "red") {
   setTimeout(() => popup.remove(), 3000);
 }
 
-// ✅ تعبئة الحقول تلقائيًا عند إدخال الاسم الأول
+// ✅ تعبئة الحقول تلقائيًا عند إدخال الاسم الأول (يمكن إضافة تحسين debounce لاحقًا)
 document.getElementById("vorname").addEventListener("input", function () {
   const name = this.value.trim().toLowerCase();
   if (name in userDataStore) {
@@ -525,6 +486,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadUserData();
   await loadWorkingHours();
 
+  // عرض المودال عند تحميل الصفحة (إذا كان موجودًا)
   const preLoginModal = document.getElementById("preLoginModal");
   if (preLoginModal) {
     preLoginModal.style.display = "flex";
@@ -537,72 +499,80 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+// async function sendToWhatsApp() {
+//   if (!validateSchedule()) return;
+
+//   try {
+//     const snapshot = await database.ref("config/whatsappNumber").once("value");
+//     let rawNumber = snapshot.val() || "4915759100569";
+//     const whatsappNumber = rawNumber.replace(/\D/g, ""); // إزالة الرموز غير الرقمية
+
+//     const orderNum = generateOrderNumber();
+//     const deliveryOption = document.getElementById("deliveryOption").value;
+//     const itemId = document.getElementById("whatsappBtn").getAttribute("data-item-id");
+//     const itemName = document.getElementById("whatsappBtn").getAttribute("data-item-name");
+//     const customerNotes = document.getElementById("customerNotes").value.trim();
+
+//     // جلب بيانات الصنف من القائمة
+//     const item = items.find(i => i.id == itemId);
+//     const ingredients = item ? item.ingredients || "Keine Angaben" : "Unbekannt";
+//     const price = item ? (item.price ? item.price.toFixed(2) + " €" : "Preis nicht verfügbar") : "Preis nicht verfügbar";
+
+//     let message = `🍽 *Bestellung*\n\n` +  // رمز طبق طعام
+//                   `📜 *Nummer:* ${itemId}\n` +  // رمز ورقة مستند
+//                   `🍛 *Gericht:* ${itemName}\n` +  // رمز طبق طعام
+//                   `🧂 *Zutaten:* ${ingredients}\n\n`;  // رمز ملح
+
+//     if (customerNotes) {
+//       message += `📝 *Hinweise:* ${customerNotes}\n\n`;  // رمز ملاحظات
+//     }
+
+//     if (deliveryOption === "delivery") {
+//       const vorname = document.getElementById("vorname").value.trim();
+//       const nachname = document.getElementById("nachname").value.trim();
+//       const strasse = document.getElementById("strasse").value.trim();
+//       const hausnummer = document.getElementById("hausnummer").value.trim();
+//       const plz = document.getElementById("plz").value.trim();
+//       const stadt = document.getElementById("stadt").value.trim();
+
+//       // إنشاء رابط جوجل مابس باستخدام العنوان
+//       const addressQuery = encodeURIComponent(`${strasse} ${hausnummer}, ${plz} ${stadt}`);
+//       const googleMapsURL = `https://www.google.com/maps/search/?api=1&query=${addressQuery}`;
+
+//       message += `🚚 *Lieferung*\n` +  // رمز شاحنة
+//                  `🏠 *Adresse:*\n${strasse} ${hausnummer}, ${plz} ${stadt}\n\n` +  // رمز منزل
+//                  `📍 *Standort auf Google Maps:*\n${googleMapsURL}\n\n`;  // رمز دبوس موقع
+
+//       const deliveryDate = document.getElementById("deliveryDate").value.trim();
+//       const deliveryTime = document.getElementById("deliveryTime").value.trim();
+//       if (deliveryDate || deliveryTime) {
+//         message += `📅 *Lieferdatum:* ${deliveryDate}\n` +  // رمز تقويم
+//                    `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;  // رمز ساعة منبه
+//       }
+//     } else if (deliveryOption === "pickup") {
+//       const pickupDate = document.getElementById("pickupDate").value.trim();
+//       const pickupTime = document.getElementById("pickupTime").value.trim();
+//       if (pickupDate || pickupTime) {
+//         message += `🚶 *Selbstabholung*\n` +  // رمز شخص يمشي
+//                    `📅 *Abholdatum:* ${pickupDate}\n` +  // رمز تقويم
+//                    `⏰ *Abholzeit:* ${pickupTime}\n\n`;  // رمز ساعة منبه
+//       }
+//     }
+
+//     // إضافة السعر في نهاية الرسالة
+//     message += `💰 *Preis:* ${price}`;  // رمز نقود
+
+//     // إنشاء رابط واتساب وإرساله
+//     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+//     window.open(whatsappURL, "_blank");
+//   } catch (error) {
+//     console.error("Error sending to WhatsApp:", error);
+//     showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
+//   }
+// }
 
 
-function addToCart() {
-  if (!currentItem) return;
-  const cartList = document.getElementById("cartList");
 
-  // التأكد من عدم وجود الصنف بالفعل في السلة
-  const existingItem = cartList.querySelector(`li[data-item-id="${currentItem.id}"]`);
-  if (existingItem) {
-    // زيادة الكمية إذا كان الصنف موجودًا
-    const qtySpan = existingItem.querySelector(".cart-quantity-value");
-    let qty = parseInt(qtySpan.innerText);
-    qtySpan.innerText = qty + 1;
-  } else {
-    // نستخدم بيانات الصنف الحالي لعرضها في واجهة السلة
-    const { id, name, price, ingredients } = currentItem;
 
-    // إنشاء عنصر جديد للسلة
-    const li = document.createElement("li");
-    li.className = "cart-item";
-    li.setAttribute("data-item-id", id);
-
-    // يمكن استخدام صورة افتراضية إن لم تكن متوفرة صورة حقيقية
-    const imagePlaceholder = "https://via.placeholder.com/80"; // رابط لصورة افتراضية
-
-    // نبني الـ HTML بحيث يشبه التصميم في الصورة
-    li.innerHTML = `
-      <div class="cart-item-image-container">
-        <img src="${imagePlaceholder}" alt="${name}" class="cart-item-image" />
-      </div>
-      <div class="cart-item-details">
-        <!-- السطر العلوي: الاسم + رقم الصنف -->
-        <div class="cart-item-top-row">
-          <span class="cart-item-name">${name}</span>
-          <span class="cart-item-id">ID: ${id}</span>
-        </div>
-
-        <!-- السطر الأوسط: السعر + المكونات -->
-        <div class="cart-item-middle-row">
-          <span class="cart-item-price">Preis: ${price ? price.toFixed(2) + " €" : "N/A"}</span>
-          <span class="cart-item-ingredients">${ingredients ? "Zutaten: " + ingredients : ""}</span>
-        </div>
-
-        <!-- السطر السفلي: أزرار العدد + زر الحذف -->
-        <div class="cart-item-bottom-row">
-          <div class="cart-quantity">
-            <button type="button" onclick="decreaseCartQuantity(this)" class="quantity-btn">-</button>
-            <span class="cart-quantity-value">1</span>
-            <button type="button" onclick="increaseCartQuantity(this)" class="quantity-btn">+</button>
-          </div>
-          <button type="button" class="remove-cart-item" onclick="removeCartItem(this)">🗑️</button>
-        </div>
-      </div>
-    `;
-
-    cartList.appendChild(li);
-  }
-
-  // إظهار حاوية السلة
-  document.getElementById("cartContainer").style.display = "block";
-  // إخفاء زر الإضافة بعد الإضافة
-  document.getElementById("addToCartBtn").style.display = "none";
-  // إعادة تعيين الحقل والنتيجة
-  document.getElementById("itemNumber").value = "";
-  document.getElementById("result").innerText = "";
-  currentItem = null;
-}
 
 
