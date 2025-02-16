@@ -123,46 +123,46 @@ function checkItem() {
   const orderDetails = document.getElementById("orderDetails");
 
   if (!itemNumber) {
-      result.innerText = "Bitte geben Sie eine Artikelnummer ein.";
-      result.style.color = "red";
-      orderDetails.style.display = "none";
-      hideFloatingCart();
-      return;
+    result.innerText = "Bitte geben Sie eine Artikelnummer ein.";
+    result.style.color = "red";
+    orderDetails.style.display = "none";
+    hideFloatingCart();
+    return;
   }
 
   const item = items.find((i) => i.id == itemNumber);
   if (item) {
-      // تخزين الـ Baseline وعرض التعديلات إذا لزم الأمر
-      storeBaselineIfFirstPanel(item);
-      const storageKey = "initialItem_" + item.id;
-      const storedInitial = localStorage.getItem(storageKey);
-      const baseline = storedInitial ? safeJSONParse(storedInitial) : null;
-      if (item.lastUpdateSource === "adminPanel" && baseline) {
-          const changes = getDifferences(baseline, item);
-          if (changes.length > 0) {
-              showDifferencesModal(changes);
-          }
+    // تخزين الـ Baseline وعرض التعديلات إذا لزم الأمر
+    storeBaselineIfFirstPanel(item);
+    const storageKey = "initialItem_" + item.id;
+    const storedInitial = localStorage.getItem(storageKey);
+    const baseline = storedInitial ? safeJSONParse(storedInitial) : null;
+    if (item.lastUpdateSource === "adminPanel" && baseline) {
+      const changes = getDifferences(baseline, item);
+      if (changes.length > 0) {
+        showDifferencesModal(changes);
       }
+    }
 
-      // عرض حالة الصنف
-      result.innerText = `✅ Gericht ${item.id} ist ${item.available ? "Verfügbar" : "Nicht verfügbar"}`;
-      result.style.color = item.available ? "green" : "red";
+    // عرض حالة الصنف
+    result.innerText = `✅ Gericht ${item.id} ist ${item.available ? "Verfügbar" : "Nicht verfügbar"}`;
+    result.style.color = item.available ? "green" : "red";
 
-      if (item.available) {
-          orderDetails.style.display = "block";
-          document.getElementById("whatsappBtn").setAttribute("data-item-id", item.id);
-          document.getElementById("whatsappBtn").setAttribute("data-item-name", item.name);
-          // تحديث وعرض سلة المشتريات العائمة
-          updateFloatingCart(item);
-      } else {
-          orderDetails.style.display = "none";
-          hideFloatingCart();
-      }
-  } else {
-      result.innerText = "⚠️ Artikelnummer nicht gefunden.";
-      result.style.color = "gray";
+    if (item.available) {
+      orderDetails.style.display = "block";
+      document.getElementById("whatsappBtn").setAttribute("data-item-id", item.id);
+      document.getElementById("whatsappBtn").setAttribute("data-item-name", item.name);
+      // تحديث وعرض سلة المشتريات العائمة
+      updateFloatingCart(item);
+    } else {
       orderDetails.style.display = "none";
       hideFloatingCart();
+    }
+  } else {
+    result.innerText = "⚠️ Artikelnummer nicht gefunden.";
+    result.style.color = "gray";
+    orderDetails.style.display = "none";
+    hideFloatingCart();
   }
 }
 
@@ -179,7 +179,7 @@ function updateFloatingCart(item) {
 function hideFloatingCart() {
   const cart = document.getElementById("floatingCart");
   if (cart) {
-      cart.style.display = "none";
+    cart.style.display = "none";
   }
 }
 
@@ -450,15 +450,15 @@ async function sendToWhatsApp() {
       const deliveryTime = document.getElementById("deliveryTime").value.trim();
       if (deliveryDate || deliveryTime) {
         message += `📅 *Lieferdatum:* ${deliveryDate}\n` +
-                   `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
+          `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
       }
     } else if (deliveryOption === "pickup") {
       const pickupDate = document.getElementById("pickupDate").value.trim();
       const pickupTime = document.getElementById("pickupTime").value.trim();
       if (pickupDate || pickupTime) {
         message += `🚶 *Selbstabholung*\n` +
-                   `📅 *Abholdatum:* ${pickupDate}\n` +
-                   `⏰ *Abholzeit:* ${pickupTime}\n\n`;
+          `📅 *Abholdatum:* ${pickupDate}\n` +
+          `⏰ *Abholzeit:* ${pickupTime}\n\n`;
       }
     }
 
@@ -588,6 +588,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 //     showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
 //   }
 // }
+
+function updateFloatingCart(item) {
+  const overlay = document.getElementById("floatingCartOverlay");
+  const cartItems = document.getElementById("cartItems");
+  if (!overlay || !cartItems) return;
+  // عرض الصنف داخل السلة (يمكنك تعديل المعلومات المعروضة حسب الحاجة)
+  cartItems.innerHTML = `<li>${item.name} - ${item.id}</li>`;
+  overlay.style.display = "flex";  // استخدام flex لعرض الحاوية في المنتصف
+}
+
+function hideFloatingCart() {
+  const overlay = document.getElementById("floatingCartOverlay");
+  if (overlay) {
+    overlay.style.display = "none";
+  }
+}
 
 
 
