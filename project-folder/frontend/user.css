@@ -547,4 +547,8 @@ textarea {
   .remove-cart-item:hover {
     color: #b52b27;
   }
+
+  .cart-icon {
+    font-size: 32px;
+  }
   
