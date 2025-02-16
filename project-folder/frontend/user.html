@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerichtverfügbarkeit prüfen</title>
   <link rel="stylesheet" href="user.css">
 </head>
-
 <body>
   <!-- Modal für Öffnungszeiten -->
   <div id="preLoginModal" class="modal">
@@ -15,14 +13,13 @@
       <h2>Öffnungszeiten</h2>
       <div id="workingHoursDisplay" class="working-hours"></div>
       <p class="payment-message">
-        Dieses Programm ermöglicht es Ihnen, Bestellungen ganz einfach über WhatsApp aufzugeben und erst bei Erhalt der
-        Bestellung zu bezahlen.
+        Dieses Programm ermöglicht es Ihnen, Bestellungen ganz einfach über WhatsApp aufzugeben und erst bei Erhalt der Bestellung zu bezahlen.
       </p>
       <button id="continueBtn">Weiter</button>
     </div>
   </div>
 
-  <!-- مودال خاص بعرض التعديلات von Admin Panel (nicht schließbar außer per "Verstanden") -->
+  <!-- مودال خاص بعرض التعديلات من Admin Panel (لا يمكن إغلاقه إلا بالضغط على "Verstanden") -->
   <div id="changesModal" class="modal" style="display: none;">
     <div class="modal-content">
       <h2>Das Gericht wurde geändert</h2>
@@ -38,147 +35,147 @@
     <textarea id="customerNotes" placeholder="Zusätzliche Hinweise (z. B. bitte ohne Zwiebeln)"></textarea>
     <button onclick="checkItem()">Prüfen</button>
     <p id="result"></p>
-    <!-- زر إضافة الصنف إلى السلة، مخفي افتراضيًا -->
-    <button id="addToCartBtn" onclick="addToCart()" style="display: none;">In den Warenkorb</button>
+  </div>
 
-    <!-- حاوية السلة -->
-    <!-- حاوية السلة -->
-    <div id="cartContainer" style="display: none;">
-      <h2><span class="cart-icon">🛒</span></h2>
-      <ul id="cartList"></ul>
+  <!-- Bestelldetails -->
+  <div id="orderDetails" style="display: none;">
+    <h2>Bestelldetails (optional)</h2>
+    <div class="delivery-container">
+      <label for="deliveryOption">Bestelloption:</label>
+      <select id="deliveryOption">
+        <option value="pickup">Selbstabholung</option>
+        <option value="delivery">Lieferung</option>
+      </select>
     </div>
-
-
-    <!-- Bestelldetails -->
-    <div id="orderDetails" style="display: none;">
-      <h2>Bestelldetails (optional)</h2>
-      <div class="delivery-container">
-        <label for="deliveryOption">Bestelloption:</label>
-        <select id="deliveryOption">
-          <option value="pickup">Selbstabholung</option>
-          <option value="delivery">Lieferung</option>
-        </select>
-      </div>
-      <div id="pickupScheduleField" style="display: none;">
-        <label for="pickupDate">Gewünschtes Abholdatum:</label>
-        <input type="date" id="pickupDate">
-        <label for="pickupTime">Gewünschte Abholzeit:</label>
-        <input type="time" id="pickupTime">
-      </div>
-      <div id="deliveryScheduleField" style="display: none;">
-        <label for="deliveryDate">Gewünschtes Lieferdatum:</label>
-        <input type="date" id="deliveryDate">
-        <label for="deliveryTime">Gewünschte Lieferzeit:</label>
-        <input type="time" id="deliveryTime">
-      </div>
-      <div id="deliveryFields" style="display: none;">
-        <p style="font-size: 14px; color: #555; margin-bottom: 10px;">
-          Hinweis: Bitte füllen Sie diese Felder nur aus, wenn Sie eine Lieferung wünschen.
-        </p>
-        <input type="text" id="vorname" placeholder="Vorname">
-        <input type="text" id="nachname" placeholder="Nachname">
-        <input type="text" id="strasse" placeholder="Straße">
-        <input type="text" id="hausnummer" placeholder="Hausnummer">
-        <input type="text" id="plz" placeholder="PLZ">
-        <input type="text" id="stadt" placeholder="Stadt">
-      </div>
-      <button onclick="showSavePopup()">Daten speichern</button>
-      <button id="whatsappBtn" onclick="sendToWhatsApp()">Bestellung per WhatsApp senden</button>
+    <div id="pickupScheduleField" style="display: none;">
+      <label for="pickupDate">Gewünschtes Abholdatum:</label>
+      <input type="date" id="pickupDate">
+      <label for="pickupTime">Gewünschte Abholzeit:</label>
+      <input type="time" id="pickupTime">
     </div>
-
-    <!-- Popup für Bestätigung -->
-    <div id="popupMessage" class="popup">
-      <p>✅ Ihre Daten wurden gespeichert. Sie müssen sie nicht erneut eingeben.</p>
+    <div id="deliveryScheduleField" style="display: none;">
+      <label for="deliveryDate">Gewünschtes Lieferdatum:</label>
+      <input type="date" id="deliveryDate">
+      <label for="deliveryTime">Gewünschte Lieferzeit:</label>
+      <input type="time" id="deliveryTime">
     </div>
+    <div id="deliveryFields" style="display: none;">
+      <p style="font-size: 14px; color: #555; margin-bottom: 10px;">
+        Hinweis: Bitte füllen Sie diese Felder nur aus, wenn Sie eine Lieferung wünschen.
+      </p>
+      <input type="text" id="vorname" placeholder="Vorname">
+      <input type="text" id="nachname" placeholder="Nachname">
+      <input type="text" id="strasse" placeholder="Straße">
+      <input type="text" id="hausnummer" placeholder="Hausnummer">
+      <input type="text" id="plz" placeholder="PLZ">
+      <input type="text" id="stadt" placeholder="Stadt">
+    </div>
+    <button onclick="showSavePopup()">Daten speichern</button>
+    <button id="whatsappBtn" onclick="sendToWhatsApp()">Bestellung per WhatsApp senden</button>
+  </div>
 
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script>
-      // Firebase-Konfiguration
-      const firebaseConfig = {
-        apiKey: "AIzaSyBeAkTPw9nswsCy9NtWEgf6nG4al5Qx83c",
-        authDomain: "restaurant-system-f50cf.firebaseapp.com",
-        databaseURL: "https://restaurant-system-f50cf-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "restaurant-system-f50cf",
-        storageBucket: "restaurant-system-f50cf.firebasestorage.app",
-        messagingSenderId: "220436037433",
-        appId: "1:220436037433:web:9bfc0f85a8806a15ee72e8"
-      };
-      firebase.initializeApp(firebaseConfig);
-      const database = firebase.database();
-    </script>
+  <!-- Popup für Bestätigung -->
+  <div id="popupMessage" class="popup">
+    <p>✅ Ihre Daten wurden gespeichert. Sie müssen sie nicht erneut eingeben.</p>
+  </div>
 
-    <!-- Einbindung von user.js -->
-    <script src="user.js"></script>
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    // Firebase-Konfiguration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBeAkTPw9nswsCy9NtWEgf6nG4al5Qx83c",
+      authDomain: "restaurant-system-f50cf.firebaseapp.com",
+      databaseURL: "https://restaurant-system-f50cf-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "restaurant-system-f50cf",
+      storageBucket: "restaurant-system-f50cf.firebasestorage.app",
+      messagingSenderId: "220436037433",
+      appId: "1:220436037433:web:9bfc0f85a8806a15ee72e8"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+  </script>
 
-    <script>
-      // ==================================================
-      // updateTimeConstraints zur Lösung des Zeitzonenproblems
-      // ==================================================
-      function updateTimeConstraints() {
-        const now = new Date();
+  <!-- ربط ملف user.js المعدل -->
+  <script src="user.js"></script>
 
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const todayStr = `${year}-${month}-${day}`;
+  <script>
+    // ==================================================
+    // تعديل دالة updateTimeConstraints لحل مشكلة المنطقة الزمنية
+    // ==================================================
+    function updateTimeConstraints() {
+      const now = new Date();
 
-        const pickupDateInput = document.getElementById('pickupDate');
-        const pickupTimeInput = document.getElementById('pickupTime');
-        if (pickupDateInput && pickupTimeInput) {
-          if (pickupDateInput.value === todayStr) {
-            let minPickupTime = new Date(now.getTime() + 1 * 60 * 60 * 1000);
-            let hours = String(minPickupTime.getHours()).padStart(2, '0');
-            let minutes = String(minPickupTime.getMinutes()).padStart(2, '0');
-            pickupTimeInput.min = `${hours}:${minutes}`;
-          } else {
-            pickupTimeInput.min = "00:00";
-          }
-        }
+      // إنشاء تاريخ محلي (بدل toISOString)
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const todayStr = `${year}-${month}-${day}`;
 
-        const deliveryDateInput = document.getElementById('deliveryDate');
-        const deliveryTimeInput = document.getElementById('deliveryTime');
-        if (deliveryDateInput && deliveryTimeInput) {
-          if (deliveryDateInput.value === todayStr) {
-            let minDeliveryTime = new Date(now.getTime() + 2 * 60 * 60 * 1000);
-            let hours = String(minDeliveryTime.getHours()).padStart(2, '0');
-            let minutes = String(minDeliveryTime.getMinutes()).padStart(2, '0');
-            deliveryTimeInput.min = `${hours}:${minutes}`;
-          } else {
-            deliveryTimeInput.min = "00:00";
-          }
+      // تحديد وقت الاستلام
+      const pickupDateInput = document.getElementById('pickupDate');
+      const pickupTimeInput = document.getElementById('pickupTime');
+      if (pickupDateInput && pickupTimeInput) {
+        if (pickupDateInput.value === todayStr) {
+          // إذا كان اليوم المختار هو اليوم المحلي، نضع حداً أدنى لساعة من الآن
+          let minPickupTime = new Date(now.getTime() + 1 * 60 * 60 * 1000);
+          let hours = String(minPickupTime.getHours()).padStart(2, '0');
+          let minutes = String(minPickupTime.getMinutes()).padStart(2, '0');
+          pickupTimeInput.min = `${hours}:${minutes}`;
+        } else {
+          pickupTimeInput.min = "00:00";
         }
       }
 
-      document.getElementById('deliveryOption').addEventListener('change', function () {
-        const deliveryFields = document.getElementById('deliveryFields');
-        const pickupScheduleField = document.getElementById('pickupScheduleField');
-        const deliveryScheduleField = document.getElementById('deliveryScheduleField');
-        if (this.value === 'delivery') {
-          deliveryFields.style.display = 'block';
-          deliveryScheduleField.style.display = 'block';
-          pickupScheduleField.style.display = 'none';
+      // تحديد وقت التوصيل
+      const deliveryDateInput = document.getElementById('deliveryDate');
+      const deliveryTimeInput = document.getElementById('deliveryTime');
+      if (deliveryDateInput && deliveryTimeInput) {
+        if (deliveryDateInput.value === todayStr) {
+          // إذا كان اليوم المختار هو اليوم المحلي، نضع حداً أدنى لساعتين من الآن
+          let minDeliveryTime = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+          let hours = String(minDeliveryTime.getHours()).padStart(2, '0');
+          let minutes = String(minDeliveryTime.getMinutes()).padStart(2, '0');
+          deliveryTimeInput.min = `${hours}:${minutes}`;
         } else {
-          deliveryFields.style.display = 'none';
-          deliveryScheduleField.style.display = 'none';
-          pickupScheduleField.style.display = 'block';
+          deliveryTimeInput.min = "00:00";
         }
-        updateTimeConstraints();
+      }
+    }
+
+    // عند تغيير خيار التوصيل (Delivery / Pickup)
+    document.getElementById('deliveryOption').addEventListener('change', function () {
+      const deliveryFields = document.getElementById('deliveryFields');
+      const pickupScheduleField = document.getElementById('pickupScheduleField');
+      const deliveryScheduleField = document.getElementById('deliveryScheduleField');
+      if (this.value === 'delivery') {
+        deliveryFields.style.display = 'block';
+        deliveryScheduleField.style.display = 'block';
+        pickupScheduleField.style.display = 'none';
+      } else {
+        deliveryFields.style.display = 'none';
+        deliveryScheduleField.style.display = 'none';
+        pickupScheduleField.style.display = 'block';
+      }
+      updateTimeConstraints();
+    });
+
+    // تحديث constraints عند تغيير التاريخ
+    document.getElementById('pickupDate').addEventListener('change', updateTimeConstraints);
+    document.getElementById('deliveryDate').addEventListener('change', updateTimeConstraints);
+
+    // عند تحميل الصفحة
+    window.addEventListener('load', updateTimeConstraints);
+
+    // Modal-Handling für Öffnungszeiten
+    document.addEventListener("DOMContentLoaded", () => {
+      // Öffnungszeiten-Modal anzeigen
+      document.getElementById("preLoginModal").style.display = "flex";
+      document.getElementById("continueBtn").addEventListener("click", function () {
+        document.getElementById("preLoginModal").style.display = "none";
       });
-
-      document.getElementById('pickupDate').addEventListener('change', updateTimeConstraints);
-      document.getElementById('deliveryDate').addEventListener('change', updateTimeConstraints);
-
-      window.addEventListener('load', updateTimeConstraints);
-
-      document.addEventListener("DOMContentLoaded", () => {
-        document.getElementById("preLoginModal").style.display = "flex";
-        document.getElementById("continueBtn").addEventListener("click", function () {
-          document.getElementById("preLoginModal").style.display = "none";
-        });
-      });
-    </script>
+    });
+  </script>
 </body>
-
 </html>
