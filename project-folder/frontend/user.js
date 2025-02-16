@@ -155,7 +155,6 @@ function checkItem() {
       orderDetails.style.display = "block";
       document.getElementById("whatsappBtn").setAttribute("data-item-id", item.id);
       document.getElementById("whatsappBtn").setAttribute("data-item-name", item.name);
-
     } else {
       orderDetails.style.display = "none";
     }
@@ -518,7 +517,8 @@ function decreaseQuantity() {
 function sendOrder() {
   const quantity = document.getElementById("quantityValue").innerText;
   const itemName = document.getElementById("itemName").innerText;
-  const message = "Bestellung: " + itemName + " - Menge: " + quantity;
+  // تعديل الرسالة بحيث يظهر عدد الطلبات بجانب اسم الصنف
+  const message = "Bestellung: " + itemName + " (Anzahl: " + quantity + ")";
   // Stellen Sie sicher, dass Sie 'رقم_المطعم' durch die tatsächliche WhatsApp-Nummer des Restaurants ersetzen.
   const whatsappURL = "https://wa.me/رقم_المطعم?text=" + encodeURIComponent(message);
   window.open(whatsappURL, "_blank");
