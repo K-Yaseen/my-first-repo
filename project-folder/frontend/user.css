@@ -489,3 +489,30 @@ textarea {
 #changesConfirmBtn:hover {
     background-color: #0069d9;
 }
+
+
+/* حاوية سلة المشتريات العائمة */
+.floating-cart {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 250px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    padding: 15px;
+    z-index: 1500;
+}
+.floating-cart h3 {
+    margin-top: 0;
+    font-size: 18px;
+}
+.floating-cart ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.floating-cart li {
+    margin-bottom: 10px;
+}
