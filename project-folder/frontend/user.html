@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerichtverfügbarkeit prüfen</title>
   <link rel="stylesheet" href="user.css">
 </head>
+
 <body>
   <!-- Modal für Öffnungszeiten -->
   <div id="preLoginModal" class="modal">
@@ -13,7 +15,8 @@
       <h2>Öffnungszeiten</h2>
       <div id="workingHoursDisplay" class="working-hours"></div>
       <p class="payment-message">
-        Dieses Programm ermöglicht es Ihnen, Bestellungen ganz einfach über WhatsApp aufzugeben und erst bei Erhalt der Bestellung zu bezahlen.
+        Dieses Programm ermöglicht es Ihnen, Bestellungen ganz einfach über WhatsApp aufzugeben und erst bei Erhalt der
+        Bestellung zu bezahlen.
       </p>
       <button id="continueBtn">Weiter</button>
     </div>
@@ -177,5 +180,15 @@
       });
     });
   </script>
+
+  <!-- حاوية سلة المشتريات العائمة -->
+  <div id="floatingCart" class="floating-cart" style="display: none;">
+    <h3>سلة المشتريات</h3>
+    <ul id="cartItems">
+      <!-- سيتم إضافة الصنف هنا -->
+    </ul>
+  </div>
+
 </body>
+
 </html>
