@@ -419,6 +419,14 @@ async function sendToWhatsApp() {
       const plz = document.getElementById("plz").value.trim();
       const stadt = document.getElementById("stadt").value.trim();
 
+      const quantity = document.getElementById("quantityValue").innerText;
+      const itemName = document.getElementById("itemName").innerText;
+      // تعديل الرسالة بحيث يظهر عدد الطلبات بجانب اسم الصنف
+      const message = "Bestellung: " + itemName + " (Anzahl: " + quantity + ")";
+      // Stellen Sie sicher, dass Sie 'رقم_المطعم' durch die tatsächliche WhatsApp-Nummer des Restaurants ersetzen.
+      const whatsappURL = "https://wa.me/رقم_المطعم?text=" + encodeURIComponent(message);
+      window.open(whatsappURL, "_blank");
+
       const addressQuery = encodeURIComponent(`${strasse} ${hausnummer}, ${plz} ${stadt}`);
       const googleMapsURL = `https://www.google.com/maps/search/?api=1&query=${addressQuery}`;
 
@@ -431,15 +439,15 @@ async function sendToWhatsApp() {
       const deliveryTime = document.getElementById("deliveryTime").value.trim();
       if (deliveryDate || deliveryTime) {
         message += `📅 *Lieferdatum:* ${deliveryDate}\n` +
-                   `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
+          `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
       }
     } else if (deliveryOption === "pickup") {
       const pickupDate = document.getElementById("pickupDate").value.trim();
       const pickupTime = document.getElementById("pickupTime").value.trim();
       if (pickupDate || pickupTime) {
         message += `🚶 *Selbstabholung*\n` +
-                   `📅 *Abholdatum:* ${pickupDate}\n` +
-                   `⏰ *Abholzeit:* ${pickupTime}\n\n`;
+          `📅 *Abholdatum:* ${pickupDate}\n` +
+          `⏰ *Abholzeit:* ${pickupTime}\n\n`;
       }
     }
 
