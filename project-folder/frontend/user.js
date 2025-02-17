@@ -486,7 +486,10 @@ function hideFloatingCart() {
 }
 
 function showSavePopup() {
-  // هنا كود للتخزين، ثم عرض رسالة منبثقة
+  // حفظ بيانات المستخدم:
+  saveUserData();
+
+  // ثم عرض رسالة منبثقة:
   const popup = document.getElementById("popupMessage");
   if (popup) {
     popup.classList.add("show");
@@ -495,6 +498,7 @@ function showSavePopup() {
     }, 3000);
   }
 }
+
 
 // هذه الدالة لاستدعائها عند الضغط على زر "Weitere Bestellung hinzufügen"
 function redirectToSearchField() {
