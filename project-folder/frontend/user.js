@@ -507,12 +507,12 @@ function updateFloatingCart(item) {
   const li = document.createElement("li");
   li.className = "cart-item";
   
-  // عنصر عرض معلومات الصنف
+  // إنشاء عنصر عرض معلومات الصنف
   const itemInfo = document.createElement("span");
   itemInfo.className = "item-info";
   itemInfo.textContent = `- ${item.id}. ${item.name}`;
   
-  // إنشاء Dropdown لتحديد الكمية (من 1 إلى 10)
+  // إنشاء Dropdown لتحديد الكمية (من 1 إلى 50)
   const quantitySelect = document.createElement("select");
   quantitySelect.className = "quantity-dropdown";
   for (let i = 1; i <= 50; i++) {
@@ -522,11 +522,11 @@ function updateFloatingCart(item) {
     quantitySelect.appendChild(option);
   }
   
-  // إنشاء زر حذف باستخدام أيقونة صغيرة
+  // إنشاء زر حذف باستخدام أيقونة FontAwesome (نمط solid)
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "delete-btn";
-  deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>'; // أيقونة سلة المهملات (Trash)
-  deleteBtn.title = "Gericht Löchen";
+  deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+  deleteBtn.title = "Gericht Löschen";
   deleteBtn.addEventListener("click", function() {
     li.remove();
   });
@@ -542,6 +542,7 @@ function updateFloatingCart(item) {
   // عرض الحاوية إذا لم تكن ظاهرة
   overlay.style.display = "flex";
 }
+
 
 
 
