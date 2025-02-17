@@ -312,6 +312,23 @@ function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
   return selectedDateTime >= startTime && selectedDateTime <= endTime;
 }
 
+function showFloatingMessage(message, color = "red") {
+  // يمكنك عرض الرسالة كـalert مثلاً:
+  alert(message);
+
+  // أو لو لديك عنصر popupMessage وتريد إظهاره مؤقتًا:
+  /*
+  const popup = document.getElementById("popupMessage");
+  if (!popup) return;
+  popup.style.color = color;
+  popup.textContent = message;
+  popup.classList.add("show");
+  setTimeout(() => {
+    popup.classList.remove("show");
+  }, 3000);
+  */
+}
+
 function validateSchedule() {
   const deliveryOption = document.getElementById("deliveryOption").value;
   const now = new Date();
