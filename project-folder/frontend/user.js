@@ -503,40 +503,60 @@ function updateFloatingCart(item) {
   const cartItems = document.getElementById("cartItems");
   if (!overlay || !cartItems) return;
   
-  // إنشاء عنصر li جديد مع فئة لتسهيل التنسيق
   const li = document.createElement("li");
   li.className = "cart-item";
-  
-  // إنشاء عنصر span لعرض معلومات الصنف مع العدد الافتراضي 1
+
+  // إنشاء عنصر لعرض معلومات الصنف بدون كمية (سيتم تحديث الكمية باستخدام متغير)
   const itemInfo = document.createElement("span");
-  itemInfo.textContent = `- ${item.id}. ${item.name} (Qty: 1)`;
-  
-  // زر الحذف مع أيقونة
-  const removeBtn = document.createElement("button");
-  removeBtn.innerHTML = "🗑️"; // يمكن استبداله بأي أيقونة أخرى
-  removeBtn.title = "حذف الصنف";
-  removeBtn.addEventListener("click", function() {
-    li.remove();
-  });
-  
-  // زر تحديد العدد مع أيقونة
-  const quantityBtn = document.createElement("button");
-  quantityBtn.innerHTML = "🔢"; // أيقونة اختيار العدد
-  quantityBtn.title = "تحديد العدد";
-  quantityBtn.addEventListener("click", function() {
-    const qty = prompt("الرجاء إدخال العدد:", "1");
-    if (qty !== null) {
-      itemInfo.textContent = `- ${item.id}. ${item.name} (Qty: ${qty})`;
+  let quantity = 1;
+  itemInfo.textContent = `- ${item.id}. ${item.name} (Qty: ${quantity})`;
+
+  // زر التقليل (-)
+  const minusBtn = document.createElement("button");
+  minusBtn.innerHTML = "−"; // رمز الناقص
+  minusBtn.title = "تقليل العدد";
+  minusBtn.className = "quantity-btn minus-btn";
+  minusBtn.addEventListener("click", function() {
+    if (quantity > 1) {
+      quantity--;
+      itemInfo.textContent = `- ${item.id}. ${item.name} (Qty: ${quantity})`;
+    } else {
+      if (confirm("هل تريد إزالة هذا الصنف؟")) {
+        li.remove();
+      }
     }
   });
-  
-  // ترتيب العناصر في نفس السطر
+
+  // زر الزيادة (+)
+  const plusBtn = document.createElement("button");
+  plusBtn.innerHTML = "+"; // رمز الزائد
+  plusBtn.title = "زيادة العدد";
+  plusBtn.className = "quantity-btn plus-btn";
+  plusBtn.addEventListener("click", function() {
+    quantity++;
+    itemInfo.textContent = `- ${item.id}. ${item.name} (Qty: ${quantity})`;
+  });
+
+  // زر الحذف مع أيقونة حديثة باستخدام SVG
+  const deleteBtn = document.createElement("button");
+  deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+  <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5H6a.5.5 0 0 1-.5-.5v-6z"/>
+  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6.5l.5-.5h2l.5.5H14a1 1 0 0 1 1 1v1z"/>
+</svg>`;
+  deleteBtn.title = "حذف الصنف";
+  deleteBtn.className = "delete-btn";
+  deleteBtn.addEventListener("click", function() {
+    li.remove();
+  });
+
+  // ترتيب العناصر في السطر نفسه
   li.appendChild(itemInfo);
-  li.appendChild(removeBtn);
-  li.appendChild(quantityBtn);
+  li.appendChild(minusBtn);
+  li.appendChild(plusBtn);
+  li.appendChild(deleteBtn);
   cartItems.appendChild(li);
-  
-  // إظهار السلة إذا لم تكن ظاهرة
+
   overlay.style.display = "flex";
 }
+
 
