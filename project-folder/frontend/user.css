@@ -1,30 +1,31 @@
-/* قاعدة عامة لجميع العناصر */
+/* =======================================
+   Global Styles / الأنماط العامة
+========================================== */
 *, *::before, *::after {
     box-sizing: border-box;
-}
-
-/* =======================================
-   Final Merged CSS - التنسيق النهائي
-========================================== */
-
-/* تحسين عام للصفحة */
-body {
+  }
+  
+  body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
     margin: 0;
     padding: 20px;
     text-align: center;
-}
-
-/* تحسين العناوين */
-h1, h2 {
+  }
+  
+  /* =======================================
+     Typography / الطباعة
+  ========================================== */
+  h1, h2 {
     color: #222;
     margin-bottom: 15px;
-}
-
-/* تحسين الحاوية الرئيسية */
-.container {
-    background: white;
+  }
+  
+  /* =======================================
+     Containers / الحاويات
+  ========================================== */
+  .container, #orderDetails {
+    background: #fff;
     padding: 20px;
     max-width: 500px;
     margin: auto;
@@ -32,34 +33,47 @@ h1, h2 {
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease-in-out;
-}
-
-/* تنسيق الإدخالات وخانات النص */
-input, textarea {
+  }
+  
+  #orderDetails {
+    margin-top: 20px;
+  }
+  
+  /* =======================================
+     Forms / النماذج
+  ========================================== */
+  input, textarea, select {
     width: 100%;
     padding: 12px;
     margin: 10px auto;
     border: 1px solid #ccc;
     border-radius: 5px;
-    display: block;
     font-size: 16px;
     transition: 0.3s;
     background-color: #fff;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-input:focus, textarea:focus {
+  }
+  
+  input:focus, textarea:focus, select:focus {
     border-color: #28a745;
     outline: none;
     background-color: #f1fdf1;
     box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
-}
-
-/* زر الإرسال */
-button {
+  }
+  
+  textarea {
+    height: 120px;
+    resize: none;
+    font-size: 14px;
+  }
+  
+  /* =======================================
+     Buttons / الأزرار
+  ========================================== */
+  button {
     padding: 12px 20px;
     background-color: #28a745;
-    color: white;
+    color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -70,23 +84,64 @@ button {
     margin: 10px auto;
     font-weight: bold;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-button:hover {
+  }
+  
+  button:hover {
     background-color: #218838;
     transform: scale(1.03);
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* رسالة التنبيه المنبثقة */
-.popup {
+  }
+  
+  /* Spezifischer Button für weitere Bestellung / زر خاص لإضافة طلب آخر */
+  #addOrderBtn {
+    background-color: #007BFF;
+    transition: background-color 0.3s ease;
+    width: auto;
+  }
+  
+  #addOrderBtn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* =======================================
+     Animations / الحركات
+  ========================================== */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .container, #orderDetails {
+    animation: fadeIn 0.6s ease-in-out;
+  }
+  
+  /* =======================================
+     Responsive Design / التكيف مع الجوال
+  ========================================== */
+  @media (max-width: 600px) {
+    .container, #orderDetails {
+      max-width: 95%;
+      padding: 15px;
+    }
+  }
+  
+  /* =======================================
+     Popup / الرسائل المنبثقة
+  ========================================== */
+  .popup {
     display: none;
     position: fixed;
     bottom: 60px;
     left: 50%;
     transform: translateX(-50%);
     background-color: rgba(69, 69, 69, 0.9);
-    color: white;
+    color: #fff;
     padding: 10px 20px;
     border-radius: 8px;
     font-size: 16px;
@@ -95,230 +150,31 @@ button:hover {
     opacity: 0;
     transition: opacity 0.5s ease-in-out, bottom 0.5s ease-in-out;
     z-index: 1000;
-}
-
-.popup.show {
+  }
+  
+  .popup.show {
     display: block;
     opacity: 1;
     bottom: 80px;
-}
-
-/* نموذج الطلب */
-#orderDetails {
-    background: white;
-    padding: 20px;
-    max-width: 500px;
-    margin: auto;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
-    margin-top: 20px;
-    transition: all 0.3s ease-in-out;
-}
-
-/* حقل الملاحظات */
-textarea {
-    height: 120px;
-    resize: none;
-    font-size: 14px;
-}
-
-/* تأثير ظهور الصفحة */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.container, #orderDetails {
-    animation: fadeIn 0.6s ease-in-out;
-}
-
-/* تجاوب الجوال */
-@media (max-width: 600px) {
-    .container, #orderDetails {
-        max-width: 95%;
-        padding: 15px;
-    }
-}
-
-/* تنسيق قائمة الأصناف */
-#item-list {
-    list-style-type: none;
-    padding: 0;
-    max-width: 800px;
-    margin: 20px auto;
-}
-
-#item-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 15px 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-}
-
-/* أزرار التحكم داخل القائمة */
-.controls {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 10px;
-    margin-left: auto;
-}
-
-/* زر الأيقونات */
-.icon-button {
-    background: #ffffff;
-    padding: 10px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.icon-button i {
-    color: #28a745;
-    font-size: 20px;
-}
-
-.icon-button:hover {
-    background-color: #ffffff;
-    transform: scale(1.1);
-}
-
-.icon-button.delete {
-    border-color: #d9534f;
-}
-
-.icon-button.delete i {
-    color: #d9534f;
-}
-
-.icon-button.delete:hover {
-    background-color: #f8d7da;
-}
-
-/* زر التبديل */
-.toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-    margin-left: auto;
-    margin-right: 10px;
-}
-
-.toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.toggle-switch .slider {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.toggle-switch input:checked + .slider {
-    background-color: #4caf50;
-}
-
-.toggle-switch .slider::before {
-    content: "";
-    position: absolute;
-    height: 14px;
-    width: 14px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    border-radius: 50%;
-    transition: 0.3s;
-}
-
-.toggle-switch input:checked + .slider::before {
-    transform: translateX(20px);
-}
-
-/* تنسيق الإشعارات (Toast) */
-.toast {
-    visibility: hidden;
-    min-width: 280px;
-    background-color: #4caf50;
-    color: white;
-    text-align: center;
-    border-radius: 8px;
-    padding: 12px;
-    position: fixed;
-    z-index: 1;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: visibility 0s, opacity 0.5s linear;
-    opacity: 0;
-    font-size: 16px;
-}
-
-.toast.show {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* تنسيق قائمة منسدلة وخانات التوصيل */
-.delivery-container {
+  }
+  
+  /* =======================================
+     Delivery & Schedule Fields / حقول التوصيل والجدولة
+  ========================================== */
+  .delivery-container, .schedule-field {
     max-width: 500px;
     margin: 20px auto;
     text-align: left;
-}
-
-.delivery-container label {
+  }
+  
+  .delivery-container label, .schedule-field label {
     display: block;
     font-size: 16px;
     color: #222;
     margin-bottom: 5px;
-}
-
-.delivery-container select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    background: #fff url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5"><path fill="%23999" d="M0 0l5 5 5-5z"/></svg>') no-repeat right 10px center;
-    background-size: 10px 5px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.delivery-container select:focus {
-    border-color: #28a745;
-    outline: none;
-    background-color: #f1fdf1;
-}
-
-/* حقول التوصيل */
-.delivery-fields {
+  }
+  
+  .delivery-fields {
     background: #fff;
     padding: 15px;
     border: 1px solid #ddd;
@@ -326,64 +182,18 @@ textarea {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     margin-top: 10px;
     text-align: left;
-}
-
-.delivery-fields p {
+  }
+  
+  .delivery-fields p {
     font-size: 14px;
     color: #555;
     margin-bottom: 10px;
-}
-
-.delivery-fields input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: #fff;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.delivery-fields input:focus {
-    border-color: #28a745;
-    background-color: #f1fdf1;
-    box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
-}
-
-/* حقول الجدولة */
-.schedule-field {
-    max-width: 500px;
-    margin: 10px auto;
-    text-align: left;
-}
-
-.schedule-field label {
-    display: block;
-    font-size: 16px;
-    color: #222;
-    margin-bottom: 5px;
-}
-
-.schedule-field input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: #fff;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.schedule-field input:focus {
-    border-color: #28a745;
-    background-color: #f1fdf1;
-    box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
-}
-
-/* تنسيق المودال العام */
-.modal {
+  }
+  
+  /* =======================================
+     Modal / المودال
+  ========================================== */
+  .modal {
     position: fixed;
     z-index: 2000;
     left: 0;
@@ -394,20 +204,18 @@ textarea {
     justify-content: center;
     align-items: center;
     background-color: rgba(0,0,0,0.6);
-}
-
-/* تنسيق محتوى المودال */
-.modal-content {
+  }
+  
+  .modal-content {
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
     width: 90%;
     max-width: 500px;
     text-align: center;
-}
-
-/* تنسيق رسالة الترحيب */
-.payment-message {
+  }
+  
+  .payment-message {
     font-weight: 600;
     font-size: 16px;
     color: #2a2a2a;
@@ -418,10 +226,10 @@ textarea {
     border: 1px solid #28a745;
     max-width: 90%;
     display: inline-block;
-}
-
-/* تنسيق أوقات الدوام المختصرة في المودال */
-.working-hours {
+  }
+  
+  /* Arbeitszeiten im Modal / أوقات الدوام في المودال */
+  .working-hours {
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -430,70 +238,58 @@ textarea {
     max-width: 450px;
     text-align: left;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.working-hours p {
+  }
+  
+  .working-hours p {
     display: flex;
     justify-content: space-between;
     font-size: 14px;
     margin: 5px 0;
     color: #333;
-}
-.working-hours p strong {
+  }
+  
+  .working-hours p strong {
     font-weight: 600;
     width: 40px;
-}
-
-/* ============= تعديل خاص بمودال التعديلات (changesModal) ============= */
-
-/* افتراضياً سيكون مخفياً (display: none) في الـ HTML */
-#changesModal {
-    /* نفس تنسيق المودال */
-    position: fixed;
-    z-index: 3000; /* يمكن رفعه فوق 2000 للتأكد من ظهوره فوق أي مودال آخر */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    display: none; 
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0,0,0,0.6);
-}
-
-#changesModal .modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
+  }
+  
+  /* Modal für Admin Änderungen / مودال التعديلات */
+  #changesModal {
+    z-index: 3000;
+    display: none;
+  }
+  
+  #changesModal .modal-content {
     width: 90%;
     max-width: 500px;
     text-align: center;
-}
-
-#changesList {
+  }
+  
+  #changesList {
     text-align: left;
     margin-bottom: 15px;
-}
-
-#changesConfirmBtn {
+  }
+  
+  #changesConfirmBtn {
     background-color: #007bff;
-    border-color: #007bff;
+    border: none;
     color: #fff;
-    width: auto;
     padding: 10px 20px;
     margin-top: 10px;
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
-}
-
-#changesConfirmBtn:hover {
+  }
+  
+  #changesConfirmBtn:hover {
     background-color: #0069d9;
-}
-
-
-/* تصميم الحاوية نفسها بمظهر مودرن */
-.floating-cart {
-    background: #ffffff;
+  }
+  
+  /* =======================================
+     Floating Cart / سلة المشتريات العائمة
+  ========================================== */
+  .floating-cart {
+    background: #fff;
     border: 1px solid #e0e0e0;
     border-radius: 10px;
     padding: 15px;
@@ -503,7 +299,6 @@ textarea {
     align-items: center;
   }
   
-  /* تعديل حجم ومظهر الأيقونة داخل العنوان */
   .floating-cart h3 {
     font-size: 18px;
     display: flex;
@@ -512,20 +307,19 @@ textarea {
   }
   
   .floating-cart h3 svg {
-    width: 30px;    /* تغيير الحجم حسب الحاجة */
+    width: 30px;
     height: 30px;
-    margin-right: 8px;  /* مسافة بين الأيقونة والنص */
-    fill: #333333;      /* لون الأيقونة */
+    margin-right: 8px;
+    fill: #333;
   }
   
-  /* تنسيق قائمة العناصر داخل السلة */
   .floating-cart ul {
     list-style: none;
     padding: 0;
     margin: 10px 0 0;
     width: 100%;
   }
-
+  
   .floating-cart-overlay {
     position: fixed;
     top: 50%;
@@ -533,20 +327,4 @@ textarea {
     transform: translate(-50%, -50%);
     z-index: 1000;
   }
-
-  #addOrderBtn {
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  #addOrderBtn:hover {
-    background-color: #0056b3;
-  }
-  
   
