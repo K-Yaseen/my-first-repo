@@ -486,3 +486,12 @@ function redirectToSearchField() {
     window.scrollTo({ top: searchField.offsetTop, behavior: 'smooth' });
   }
 }
+
+
+function addToCart() {
+  if (currentItem) {
+    updateFloatingCart(currentItem);
+  } else {
+    alert("لا يوجد صنف محدد لإضافته إلى سلة المشتريات");
+  }
+}
