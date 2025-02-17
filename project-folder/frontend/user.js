@@ -317,18 +317,15 @@ function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
 function validateSchedule() {
   const deliveryOption = document.getElementById("deliveryOption").value;
   const now = new Date();
-  console.log("Current time:", now);
   if (deliveryOption === "delivery") {
     const deliveryDate = document.getElementById("deliveryDate").value;
     const deliveryTime = document.getElementById("deliveryTime").value;
-    console.log("Delivery Date:", deliveryDate, "Delivery Time:", deliveryTime);
     if (!deliveryDate || !deliveryTime) {
       showFloatingMessage("Bitte wählen Sie ein gültiges Lieferdatum und -zeit aus.", "red");
       return false;
     }
     const selectedDelivery = new Date(`${deliveryDate}T${deliveryTime}`);
     const minDelivery = new Date(now.getTime() + 2 * 60 * 60 * 1000);
-    console.log("Selected Delivery:", selectedDelivery, "Min Delivery:", minDelivery);
     if (selectedDelivery < minDelivery) {
       showFloatingMessage("Für die Lieferung muss die Bestellung mindestens 2 Stunden im Voraus erfolgen.", "red");
       return false;
@@ -340,14 +337,12 @@ function validateSchedule() {
   } else if (deliveryOption === "pickup") {
     const pickupDate = document.getElementById("pickupDate").value;
     const pickupTime = document.getElementById("pickupTime").value;
-    console.log("Pickup Date:", pickupDate, "Pickup Time:", pickupTime);
     if (!pickupDate || !pickupTime) {
       showFloatingMessage("Bitte wählen Sie ein gültiges Abholdatum und -zeit aus.", "red");
       return false;
     }
     const selectedPickup = new Date(`${pickupDate}T${pickupTime}`);
     const minPickup = new Date(now.getTime() + 1 * 60 * 60 * 1000);
-    console.log("Selected Pickup:", selectedPickup, "Min Pickup:", minPickup);
     if (selectedPickup < minPickup) {
       showFloatingMessage("Für die Selbstabholung muss die Bestellung mindestens 1 Stunde im Voraus erfolgen.", "red");
       return false;
@@ -359,7 +354,6 @@ function validateSchedule() {
   }
   return true;
 }
-
 
 // ================================================
 // VII. WhatsApp Order Functions / Funktionen für WhatsApp-Bestellung
