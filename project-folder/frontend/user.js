@@ -441,19 +441,24 @@ async function sendToWhatsApp() {
 // VIII. Floating Cart Functions / Funktionen für den schwebenden Warenkorb
 // ================================================
 function updateFloatingCart(item) {
+  // الحصول على عناصر ال DOM الخاصة بالحاوية وسلة المشتريات
   const overlay = document.getElementById("floatingCartOverlay");
   const cartItems = document.getElementById("cartItems");
+  
+  // التأكد من وجود العناصر قبل المتابعة
   if (!overlay || !cartItems) return;
-  cartItems.innerHTML = `<li>- ${item.id}. ${item.name} </li>`;
+
+  // إنشاء عنصر قائمة جديد لعرض الصنف المضاف
+  const li = document.createElement("li");
+  li.textContent = `- ${item.id}. ${item.name}`;
+
+  // إضافة العنصر الجديد إلى سلة المشتريات
+  cartItems.appendChild(li);
+
+  // عرض الحاوية إذا لم تكن معروضة
   overlay.style.display = "flex";
 }
 
-function hideFloatingCart() {
-  const overlay = document.getElementById("floatingCartOverlay");
-  if (overlay) {
-    overlay.style.display = "none";
-  }
-}
 
 // ================================================
 // IX. Event Listeners / مستمعي الأحداث
