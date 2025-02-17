@@ -457,4 +457,23 @@
   color: #dc3545;
 }
 
-  
+/* Floating Button für den Warenkorb */
+.floating-cart-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  z-index: 1001;
+}
+
+.floating-cart-button:hover {
+  background-color: #218838;
+}
