@@ -571,7 +571,7 @@ function updateFloatingCart(item) {
     return;
   }
 
-  // إذا لم يكن موجوداً، يتم إنشاء عنصر li جديد للصنف
+  // إذا لم يكن موجوداً، إنشاء عنصر li جديد للصنف
   const li = document.createElement("li");
   li.className = "cart-item";
   li.setAttribute("data-item-id", item.id);
@@ -620,6 +620,7 @@ function updateFloatingCart(item) {
   // تحديث زر العودة وعدد العناصر بالسلة
   updateCartButton();
 }
+
 
 
 
