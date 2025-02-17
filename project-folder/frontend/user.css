@@ -376,7 +376,9 @@
     color: #818181;
   }
 
-  .fa-regular fa-trash-can
+  .fa-regular{
+     
+  }
   
 
   /* زر اضافة العناصر الىسلة */
