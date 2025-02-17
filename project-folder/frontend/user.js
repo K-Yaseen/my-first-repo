@@ -125,16 +125,17 @@ function storeBaselineIfFirstPanel(item) {
 // V. Order and UI Functions / وظائف الطلب وواجهة المستخدم
 // ================================================
 function checkItem() {
-  // استخلاص القيمة المدخلة من الحقل
   const itemNumberInput = document.getElementById("itemNumber");
   const itemNumber = itemNumberInput ? itemNumberInput.value.trim() : "";
-
-  // الوصول إلى عناصر الواجهة
   const result = document.getElementById("result");
   const orderDetails = document.getElementById("orderDetails");
   const addToCartBtn = document.getElementById("addToCartBtn");
-
-  // التحقق من إدخال رقم الصنف
+  
+  // إعادة إظهار قسم النتيجة عند البحث مجددًا
+  result.style.display = "block";
+  // في البداية يتم إخفاء زر الإضافة حتى يتم التأكد من وجود صنف متاح
+  addToCartBtn.style.display = "none";
+  
   if (!itemNumber) {
     result.innerHTML = `
       <div class="item-card not-available">
@@ -146,17 +147,13 @@ function checkItem() {
     return;
   }
 
-  // البحث عن الصنف في مصفوفة الأصناف
   const item = items.find(i => i.id == itemNumber);
-
   if (item) {
-    // إعداد نصوص التوفّر والسعر والمكونات وما إلى ذلك
     const availabilityText = item.available ? "Verfügbar" : "Nicht verfügbar";
     const availabilityClass = item.available ? "available" : "not-available";
     const priceText = item.price ? (item.price.toFixed(2) + " €") : "Preis nicht verfügbar";
     const ingredientsText = item.ingredients || "Keine Zutatenangaben";
 
-    // عرض تفاصيل الصنف في بطاقة أنيقة
     result.innerHTML = `
       <div class="item-card ${availabilityClass}">
         <h2 class="item-title">Gericht ${item.id}: ${item.name}</h2>
@@ -164,22 +161,20 @@ function checkItem() {
         <p class="item-availability">Status: <strong>${availabilityText}</strong></p>
         <p class="item-price">Preis: <strong>${priceText}</strong></p>
       </div>`;
-
-    // في حالة كان الصنف متوفرًا
+      
     if (item.available) {
       orderDetails.style.display = "block";
       document.getElementById("whatsappBtn").setAttribute("data-item-id", item.id);
       document.getElementById("whatsappBtn").setAttribute("data-item-name", item.name);
       currentItem = item;
+      // إعادة إظهار زر الإضافة عند إيجاد صنف متاح
       addToCartBtn.style.display = "block";
     } else {
-      // إخفاء التفاصيل إن لم يكن الصنف متوفرًا
       orderDetails.style.display = "none";
       hideFloatingCart();
       addToCartBtn.style.display = "none";
     }
   } else {
-    // إن لم يُعثَر على الصنف
     result.innerHTML = `
       <div class="item-card not-available">
         <p>⚠️ Gerichtsnummer nicht gefunden.</p>
@@ -189,6 +184,7 @@ function checkItem() {
     addToCartBtn.style.display = "none";
   }
 }
+
 
 
 function loadUserData() {
