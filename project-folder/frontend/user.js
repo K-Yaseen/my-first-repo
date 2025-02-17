@@ -488,7 +488,7 @@ function redirectToSearchField() {
 }
 
 // ================================================
-// IX. Navigation Functions / نقل المستخدم مرة اخرى لخانة البحث
+// IX. Navigation Functions / زر
 // ================================================
 function addToCart() {
   if (currentItem) {
