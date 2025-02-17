@@ -624,3 +624,48 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+function saveUserData() {
+  // 1) اجمع بيانات المستخدم من الحقول
+  const deliveryOption = document.getElementById("deliveryOption").value;
+  const vorname = document.getElementById("vorname").value.trim();
+  const nachname = document.getElementById("nachname").value.trim();
+  const strasse = document.getElementById("strasse").value.trim();
+  const hausnummer = document.getElementById("hausnummer").value.trim();
+  const plz = document.getElementById("plz").value.trim();
+  const stadt = document.getElementById("stadt").value.trim();
+  const notes = document.getElementById("customerNotes").value.trim();
+
+  // إذا كان خيار الاستلام:
+  let pickupDate = "";
+  let pickupTime = "";
+  let deliveryDate = "";
+  let deliveryTime = "";
+
+  if (deliveryOption === "pickup") {
+    pickupDate = document.getElementById("pickupDate").value;
+    pickupTime = document.getElementById("pickupTime").value;
+  } else if (deliveryOption === "delivery") {
+    deliveryDate = document.getElementById("deliveryDate").value;
+    deliveryTime = document.getElementById("deliveryTime").value;
+  }
+
+  // 2) أنشئ كائن يتضمن كل البيانات:
+  const userData = {
+    deliveryOption,
+    vorname,
+    nachname,
+    strasse,
+    hausnummer,
+    plz,
+    stadt,
+    notes,
+    pickupDate,
+    pickupTime,
+    deliveryDate,
+    deliveryTime
+  };
+
+  // 3) خزّن هذا الكائن في localStorage
+  localStorage.setItem("userData", JSON.stringify(userData));
+}
+
