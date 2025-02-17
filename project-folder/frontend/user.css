@@ -458,22 +458,23 @@
 }
 
 /* Floating Button für den Warenkorb */
-.floating-cart-button {
+/* زر العودة إلى السلة */
+.back-to-cart-btn {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #28a745;
-  color: #ffffff;
+  top: 10px;
+  right: 10px; /* يمكنك تعديل الموضع بحسب التصميم */
+  background-color: #FF5722; /* لون مميز مختلف عن باقي أزرار الصفحة */
+  color: #fff;
   border: none;
   border-radius: 50px;
-  padding: 15px 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  padding: 6px 12px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-  z-index: 1001;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1100;
 }
-
-.floating-cart-button:hover {
-  background-color: #218838;
+.back-to-cart-btn i {
+  margin-right: 4px;
 }
