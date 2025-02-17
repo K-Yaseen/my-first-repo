@@ -209,6 +209,11 @@ function updateItem() {
 
 /* ---------- حذف صنف (deleteItem) ---------- */
 function deleteItem(id) {
+  // إظهار نافذة التأكيد للمستخدم
+  if (!confirm("Möchten Sie diesen Artikel wirklich löschen?")) {
+    return; // إيقاف عملية الحذف إذا تم إلغاء التأكيد
+  }
+
   database.ref("items").once("value").then((snapshot) => {
     let items = snapshot.val() || [];
     if (!Array.isArray(items)) {
@@ -225,6 +230,7 @@ function deleteItem(id) {
     });
   });
 }
+
 
 
 /* ---------- تبديل توفر الصنف (toggleAvailability) ---------- */
