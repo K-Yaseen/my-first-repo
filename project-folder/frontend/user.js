@@ -444,7 +444,7 @@ function updateFloatingCart(item) {
   const overlay = document.getElementById("floatingCartOverlay");
   const cartItems = document.getElementById("cartItems");
   if (!overlay || !cartItems) return;
-  cartItems.innerHTML = `<li>${item.id}. ${item.name} </li>`;
+  cartItems.innerHTML = `<li>- ${item.id}. ${item.name} </li>`;
   overlay.style.display = "flex";
 }
 
