@@ -490,3 +490,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Zeitliche Einschränkungen aktualisieren / تحديث قيود الوقت عند تحميل الصفحة
   updateTimeConstraints();
 });
+
+// ================================================
+// IX. Navigation Functions / وظائف التنقل
+// ================================================
+function redirectToSearchField() {
+  const searchField = document.getElementById("itemNumber");
+  if (searchField) {
+    // تركيز على حقل البحث وتمرير سلس للموقع إلى الحقل
+    searchField.focus();
+    window.scrollTo({ top: searchField.offsetTop, behavior: 'smooth' });
+  }
+}
