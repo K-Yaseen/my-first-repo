@@ -333,7 +333,6 @@
   }
 
   /* تنسيق عناصر سلة المشتريات */
-/* تنسيق عناصر سلة المشتريات */
 .floating-cart ul li {
     display: flex;
     align-items: center;
