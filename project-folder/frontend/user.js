@@ -515,7 +515,7 @@ function updateFloatingCart(item) {
   // إنشاء Dropdown لتحديد الكمية (من 1 إلى 10)
   const quantitySelect = document.createElement("select");
   quantitySelect.className = "quantity-dropdown";
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 50; i++) {
     const option = document.createElement("option");
     option.value = i;
     option.textContent = i;
