@@ -359,8 +359,7 @@ function validateSchedule() {
 // VII. WhatsApp Order Functions / Funktionen für WhatsApp-Bestellung
 // ================================================
 async function sendToWhatsApp() {
-  // Temporarily comment out schedule validation for testing:
-  // if (!validateSchedule()) return;
+  if (!validateSchedule()) return; // تأكيد التحقق من التوقيت قبل المتابعة
   try {
     const snapshot = await database.ref("config/whatsappNumber").once("value");
     let rawNumber = snapshot.val() || "4915759100569";
@@ -431,6 +430,7 @@ async function sendToWhatsApp() {
     showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
   }
 }
+
 
 
 
