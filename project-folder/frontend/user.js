@@ -494,6 +494,6 @@ function addToCart() {
   if (currentItem) {
     updateFloatingCart(currentItem);
   } else {
-    alert("دد لإضافته إتريات");
+    alert("افته إتريات");
   }
 }
