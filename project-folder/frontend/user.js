@@ -497,3 +497,46 @@ function addToCart() {
     alert("Es gibt keinen bestimmten Artikel zum Hinzufügen zum Warenkorb.");
   }
 }
+
+function updateFloatingCart(item) {
+  const overlay = document.getElementById("floatingCartOverlay");
+  const cartItems = document.getElementById("cartItems");
+  if (!overlay || !cartItems) return;
+  
+  // إنشاء عنصر li جديد مع فئة لتسهيل التنسيق
+  const li = document.createElement("li");
+  li.className = "cart-item";
+  
+  // إنشاء عنصر span لعرض معلومات الصنف مع العدد الافتراضي 1
+  const itemInfo = document.createElement("span");
+  itemInfo.textContent = `- ${item.id}. ${item.name} (Qty: 1)`;
+  
+  // زر الحذف مع أيقونة
+  const removeBtn = document.createElement("button");
+  removeBtn.innerHTML = "🗑️"; // يمكن استبداله بأي أيقونة أخرى
+  removeBtn.title = "حذف الصنف";
+  removeBtn.addEventListener("click", function() {
+    li.remove();
+  });
+  
+  // زر تحديد العدد مع أيقونة
+  const quantityBtn = document.createElement("button");
+  quantityBtn.innerHTML = "🔢"; // أيقونة اختيار العدد
+  quantityBtn.title = "تحديد العدد";
+  quantityBtn.addEventListener("click", function() {
+    const qty = prompt("الرجاء إدخال العدد:", "1");
+    if (qty !== null) {
+      itemInfo.textContent = `- ${item.id}. ${item.name} (Qty: ${qty})`;
+    }
+  });
+  
+  // ترتيب العناصر في نفس السطر
+  li.appendChild(itemInfo);
+  li.appendChild(removeBtn);
+  li.appendChild(quantityBtn);
+  cartItems.appendChild(li);
+  
+  // إظهار السلة إذا لم تكن ظاهرة
+  overlay.style.display = "flex";
+}
+
