@@ -362,15 +362,11 @@
   }
   
   /* زر الحذف مع أيقونة صغيرة */
-  .delete-btn i{
-    background: ;
-    border: none;
-    color: #007a2d;
-    font-size: 18px;
-    cursor: pointer;
-    padding: 2px;
-    height: 30px;
+  .delete-btn i {
+    color: #dc3545; /* لون أحمر على سبيل المثال */
+    font-size: 18px; /* تعديل الحجم حسب الرغبة */
   }
+  
   
   .delete-btn:hover {
     color: #818181;
