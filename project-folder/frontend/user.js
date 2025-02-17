@@ -746,10 +746,6 @@ function updateCartButton() {
   }
 }
 
-
-// تحديث زر السلة عند إضافة عنصر للسلة
-
-
 // عند النقر على زر العودة إلى السلة، يتم عرض الحاوية العائمة
 document.getElementById("backToCartBtn").addEventListener("click", function() {
   document.getElementById("floatingCartOverlay").style.display = "flex";
