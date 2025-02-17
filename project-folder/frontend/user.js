@@ -400,13 +400,13 @@ async function sendToWhatsApp() {
     // بداية بناء الرسالة
     let message = welcomeMessage + `📜 *Bestellnummer:* ${orderNum}\n\n`;
 
-    // إذا أردت الاستغناء عن إرسال صنف البحث مفصّلًا، احذف الأسطر أدناه
-    if (itemId && itemName) {
-      message += 
-        `🍛 *Gericht:* - ${itemId}. ${itemName}\n` +
-        `🧂 *Zutaten:* ${ingredients}\n` +
-        `💰 *Preis:* ${price}\n\n`;
-    }
+    // // إذا أردت الاستغناء عن إرسال صنف البحث مفصّلًا، احذف الأسطر أدناه
+    // if (itemId && itemName) {
+    //   message += 
+    //     `🍛 *Gericht:* - ${itemId}. ${itemName}\n` +
+    //     `🧂 *Zutaten:* ${ingredients}\n` +
+    //     `💰 *Preis:* ${price}\n\n`;
+    // }
 
     // إن كانت هناك ملاحظات من العميل
     if (customerNotes) {
