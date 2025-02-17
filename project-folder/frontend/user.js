@@ -704,3 +704,4 @@ function saveUserData() {
 document.getElementById('zurWarenkorb').addEventListener('click', function() {
   document.getElementById('floatingCartOverlay').style.display = 'flex';
 });
+
