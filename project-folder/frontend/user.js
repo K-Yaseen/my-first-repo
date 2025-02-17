@@ -541,6 +541,11 @@ function redirectToSearchField() {
 function addToCart() {
   if (currentItem) {
     updateFloatingCart(currentItem);
+    // إخفاء القسم الذي يعرض توافر الصنف بعد الإضافة للسلة
+    const resultSection = document.getElementById("result");
+    if (resultSection) {
+      resultSection.style.display = "none";
+    }
   } else {
     alert("Es gibt keinen bestimmten Artikel zum Hinzufügen zum Warenkorb.");
   }
