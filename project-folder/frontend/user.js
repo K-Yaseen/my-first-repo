@@ -558,7 +558,7 @@ function updateFloatingCart(item) {
   const cartItems = document.getElementById("cartItems");
   if (!overlay || !cartItems) return;
 
-  // التحقق مما إذا كان الصنف موجود مسبقاً في السلة
+  // التحقق مما إذا كان الصنف موجود مسبقاً باستخدام data attribute
   const existingItem = cartItems.querySelector(`li[data-item-id="${item.id}"]`);
   if (existingItem) {
     const quantitySelect = existingItem.querySelector(".quantity-dropdown");
@@ -571,7 +571,7 @@ function updateFloatingCart(item) {
     return;
   }
 
-  // إنشاء عنصر li جديد للصنف إذا لم يكن موجوداً
+  // إذا لم يكن موجوداً، يتم إنشاء عنصر li جديد للصنف
   const li = document.createElement("li");
   li.className = "cart-item";
   li.setAttribute("data-item-id", item.id);
@@ -581,7 +581,7 @@ function updateFloatingCart(item) {
   itemInfo.className = "item-info";
   itemInfo.textContent = `- ${item.id}. ${item.name}`;
 
-  // Dropdown لتحديد الكمية
+  // إنشاء قائمة dropdown لتحديد الكمية
   const quantitySelect = document.createElement("select");
   quantitySelect.className = "quantity-dropdown";
   for (let i = 1; i <= 50; i++) {
@@ -591,7 +591,7 @@ function updateFloatingCart(item) {
     quantitySelect.appendChild(option);
   }
 
-  // زر حذف العنصر من السلة
+  // إنشاء زر حذف الصنف من السلة
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "delete-btn";
   deleteBtn.innerHTML = `
@@ -600,7 +600,7 @@ function updateFloatingCart(item) {
     </svg>`;
   deleteBtn.title = "Gericht Löschen";
   deleteBtn.addEventListener("click", function () {
-    if (confirm("Möchten Sie diesen Artikel wirklich aus dem Warenkorb entfernen?")) {
+    if (confirm("هل تريد حقًا إزالة هذا الصنف من السلة؟")) {
       li.remove();
       updateCartButton();
     }
@@ -614,10 +614,13 @@ function updateFloatingCart(item) {
   // إضافة العنصر إلى قائمة السلة
   cartItems.appendChild(li);
 
-  // إظهار حاوية السلة إذا لم تكن ظاهرة
+  // إظهار حاوية السلة إذا كانت مخفية
   overlay.style.display = "flex";
+
+  // تحديث زر العودة وعدد العناصر بالسلة
   updateCartButton();
 }
+
 
 
 // ================================================
