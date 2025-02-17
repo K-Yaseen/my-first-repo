@@ -487,7 +487,9 @@ function redirectToSearchField() {
   }
 }
 
-
+// ================================================
+// IX. Navigation Functions / نقل المستخدم مرة اخرى لخانة البحث
+// ================================================
 function addToCart() {
   if (currentItem) {
     updateFloatingCart(currentItem);
