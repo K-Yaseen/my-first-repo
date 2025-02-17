@@ -53,11 +53,7 @@ function getDifferences(oldItem, newItem) {
   if (oldItem.name !== newItem.name) {
     diffs.push(`Name: "${oldItem.name}" → "${newItem.name}"`);
   }
-  if (oldItem.price !== newItem.price) {
-    const oldPrice = oldItem.price != null ? oldItem.price : "N/A";
-    const newPrice = newItem.price != null ? newItem.price : "N/A";
-    diffs.push(`Preis: ${oldPrice} € → ${newPrice} €`);
-  }
+  
   if (oldItem.ingredients !== newItem.ingredients) {
     const oldIng = oldItem.ingredients || "N/A";
     const newIng = newItem.ingredients || "N/A";
