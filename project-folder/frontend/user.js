@@ -541,15 +541,21 @@ function redirectToSearchField() {
 function addToCart() {
   if (currentItem) {
     updateFloatingCart(currentItem);
-    // إخفاء القسم الذي يعرض توافر الصنف بعد الإضافة للسلة
+    // إخفاء القسم الذي يظهر توافر الصنف
     const resultSection = document.getElementById("result");
     if (resultSection) {
       resultSection.style.display = "none";
+    }
+    // إخفاء زر إضافة الصنف إلى السلة
+    const addToCartBtn = document.getElementById("addToCartBtn");
+    if (addToCartBtn) {
+      addToCartBtn.style.display = "none";
     }
   } else {
     alert("Es gibt keinen bestimmten Artikel zum Hinzufügen zum Warenkorb.");
   }
 }
+
 
 function updateFloatingCart(item) {
   const overlay = document.getElementById("floatingCartOverlay");
