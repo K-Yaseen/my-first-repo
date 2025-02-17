@@ -408,4 +408,53 @@
     background-color: #0056b3;
   }
   
+
+  /* بطاقة عرض تفاصيل الصنف */
+.item-card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  margin: 20px auto;
+  max-width: 400px;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.6s ease-in-out; /* حركة ظهور */
+}
+
+/* عنوان الصنف */
+.item-title {
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+/* الحالة (متوفر / غير متوفر) */
+.item-availability {
+  margin: 8px 0;
+}
+
+/* عند توفر الصنف */
+.item-card.available {
+  border-left: 6px solid #28a745; /* شريط أخضر يدل على التوفر */
+}
+
+/* عند عدم توفر الصنف */
+.item-card.not-available {
+  border-left: 6px solid #dc3545; /* شريط أحمر يدل على عدم التوفر */
+}
+
+/* السعر والمكوّنات */
+.item-price, .item-ingredients {
+  margin: 8px 0;
+  color: #555;
+}
+
+/* لون الحالة حسب توفر الصنف */
+.item-card.available .item-availability strong {
+  color: #28a745;
+}
+.item-card.not-available .item-availability strong {
+  color: #dc3545;
+}
+
   
