@@ -138,7 +138,7 @@ function checkItem() {
   if (!itemNumber) {
     result.innerHTML = `
       <div class="item-card not-available">
-        <p>Bitte geben Sie eine Artikelnummer ein.</p>
+        <p>Bitte geben Sie eine Gerichtselnummer ein.</p>
       </div>`;
     orderDetails.style.display = "none";
     hideFloatingCart();
