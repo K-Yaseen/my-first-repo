@@ -333,25 +333,59 @@
   }
 
   /* تنسيق عناصر سلة المشتريات */
+/* تنسيق عناصر سلة المشتريات */
 .floating-cart ul li {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0;
   }
   
   .floating-cart ul li span {
-    flex-grow: 1;
+    flex: 1;
+    font-size: 16px;
+    margin-right: 10px;
   }
   
-  /* تنسيق الأزرار داخل السلة */
-  .floating-cart ul li button {
+  /* تنسيق أزرار الكمية */
+  .quantity-btn {
+    font-size: 16px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: #f7f7f7;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin: 0 3px;
+  }
+  
+  .quantity-btn:hover {
+    background: #e0e0e0;
+  }
+  
+  /* تنسيق زر الحذف */
+  .delete-btn {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: none;
     background: transparent;
     cursor: pointer;
-    font-size: 18px;
+    transition: transform 0.3s;
     margin-left: 5px;
   }
+  
+  .delete-btn:hover {
+    transform: scale(1.1);
+  }
+  
   
   #addOrderBtn {
     background-color: #007BFF;
