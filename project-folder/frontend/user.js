@@ -525,7 +525,7 @@ function updateFloatingCart(item) {
   // إنشاء زر حذف باستخدام أيقونة FontAwesome (نمط solid)
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "delete-btn";
-  deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+  deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
   deleteBtn.title = "Gericht Löschen";
   deleteBtn.addEventListener("click", function() {
     li.remove();
