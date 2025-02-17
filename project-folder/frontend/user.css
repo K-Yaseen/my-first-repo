@@ -466,7 +466,6 @@
 
 /* تنسيق زر العودة إلى السلة */
 .back-to-cart-btn {
-  position: absolute;
   top: 10px; /* مسافة من أعلى الحاوية */
   right: 10px; /* مسافة من يمين الحاوية */
   background-color: #FF5722; /* لون مميز */
