@@ -386,13 +386,16 @@ async function sendToWhatsApp() {
     
     // جلب محتوى السلة العائمة وإضافته إلى الرسالة
     const cartItemsElement = document.getElementById("cartItems");
-    if (cartItemsElement && cartItemsElement.children.length > 0) {
-      message += "🛒 *Warenkorb-Inhalt:*\n";
-      Array.from(cartItemsElement.children).forEach(li => {
-        message += `- ${li.textContent}\n`;
-      });
-      message += "\n";
-    }
+if (cartItemsElement && cartItemsElement.children.length > 0) {
+  message += "🛒 *Warenkorb-Inhalt:*\n";
+  // استهداف العناصر التي تحتوي على المعلومات فقط
+  const itemInfoElements = cartItemsElement.querySelectorAll('.item-info');
+  itemInfoElements.forEach(span => {
+    message += `- ${span.textContent}\n`;
+  });
+  message += "\n";
+}
+
     
     if (deliveryOption === "delivery") {
       const vorname = document.getElementById("vorname").value.trim();
