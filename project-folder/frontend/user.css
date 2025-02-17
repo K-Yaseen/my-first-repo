@@ -461,20 +461,31 @@
 /* زر العودة إلى السلة */
 .back-to-cart-btn {
   position: fixed;
-  top: 10px;
-  right: 10px; /* يمكنك تعديل الموضع بحسب التصميم */
-  background-color: #FF5722; /* لون مميز مختلف عن باقي أزرار الصفحة */
+  top: 20px; /* زيادة المسافة من أعلى الصفحة */
+  right: 20px; /* زيادة المسافة من يمين الصفحة */
+  background-color: #FF5722; /* لون مميز */
   color: #fff;
   border: none;
-  border-radius: 50px;
-  padding: 6px 12px;
+  border-radius: 30px; /* حواف دائرية أكثر نعومة */
+  padding: 8px 16px;
   font-size: 14px;
-  
+  font-weight: 500;
+  display: flex;
   align-items: center;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   z-index: 1100;
 }
-.back-to-cart-btn i {
-  margin-right: 4px;
+
+.back-to-cart-btn:hover {
+  background-color: #E64A19; /* لون أغمق عند التحويم */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
+
+.back-to-cart-btn i {
+  margin-right: 6px;
+  font-size: 16px; /* تكبير حجم الأيقونة قليلاً */
+}
+
