@@ -530,10 +530,10 @@ function redirectToSearchField() {
   if (overlay) {
     overlay.style.display = "none"; // إخفاء الحاوية العائمة
   }
-  if (searchField) {
-    searchField.focus();
-    window.scrollTo({ top: searchField.offsetTop, behavior: 'smooth' });
-  }
+  // if (searchField) {
+  //   searchField.focus();
+  //   window.scrollTo({ top: searchField.offsetTop, behavior: 'smooth' });
+  // }
 }
 
 // زر اضافة صنف واحد إلى السلة
