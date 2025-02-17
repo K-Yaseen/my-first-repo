@@ -490,10 +490,45 @@ function redirectToSearchField() {
 // ================================================
 // IX. Navigation Functions / زراضافة الى السلة
 // ================================================
-function addToCart() {
-  if (currentItem) {
-    updateFloatingCart(currentItem);
-  } else {
-    alert("Es gibt keinen bestimmten Artikel zum Hinzufügen zum Warenkorb.");
-  }
+function updateFloatingCart(item) {
+  const overlay = document.getElementById("floatingCartOverlay");
+  const cartItems = document.getElementById("cartItems");
+  if (!overlay || !cartItems) return;
+
+  // Create a new list item element for the cart
+  const li = document.createElement("li");
+
+  // Create a span for item details
+  const itemText = document.createElement("span");
+  itemText.textContent = `- ${item.id}. ${item.name}`;
+  li.appendChild(itemText);
+
+  // Create a quantity button
+  const qtyButton = document.createElement("button");
+  qtyButton.textContent = "Qty: 1";
+  qtyButton.style.marginLeft = "10px";
+  qtyButton.addEventListener("click", function () {
+    const currentQty = parseInt(qtyButton.textContent.replace("Qty: ", ""), 10);
+    const newQty = prompt("Enter quantity:", currentQty);
+    if (newQty !== null && !isNaN(newQty) && Number(newQty) > 0) {
+      qtyButton.textContent = `Qty: ${Number(newQty)}`;
+    }
+  });
+  li.appendChild(qtyButton);
+
+  // Create a delete button with an icon
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "🗑";
+  deleteBtn.style.marginLeft = "10px";
+  deleteBtn.addEventListener("click", function () {
+    cartItems.removeChild(li);
+  });
+  li.appendChild(deleteBtn);
+
+  // Append the new list item to the cart
+  cartItems.appendChild(li);
+
+  // Display the cart overlay
+  overlay.style.display = "flex";
 }
+
