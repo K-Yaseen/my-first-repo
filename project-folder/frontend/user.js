@@ -705,17 +705,22 @@ function saveUserData() {
 function updateCartButton() {
   const cartItems = document.getElementById("cartItems");
   const backToCartBtn = document.getElementById("backToCartBtn");
+  const overlay = document.getElementById("floatingCartOverlay");
   if (!cartItems || !backToCartBtn) return;
   const itemCount = cartItems.getElementsByTagName("li").length;
   
-  // عرض الزر فقط إذا كانت السلة تحتوي على عناصر
   if (itemCount > 0) {
     backToCartBtn.style.display = "flex";
     backToCartBtn.querySelector(".item-count").textContent = itemCount;
   } else {
     backToCartBtn.style.display = "none";
+    // إذا كانت الحاوية العائمة مفتوحة، إخفائها أيضاً
+    if (overlay) {
+      overlay.style.display = "none";
+    }
   }
 }
+
 
 // تحديث زر السلة عند إضافة عنصر للسلة
 function updateFloatingCart(item) {
