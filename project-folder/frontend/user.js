@@ -615,7 +615,7 @@ function updateFloatingCart(item, quantity = 1) {
     </svg>`;
   deleteBtn.title = "Gericht Löschen";
   deleteBtn.addEventListener("click", function () {
-    if (confirm("    من ")) {
+    if (confirm("")) {
       li.remove();
       updateCartButton();
       saveCart();
