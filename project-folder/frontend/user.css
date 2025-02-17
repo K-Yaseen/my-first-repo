@@ -306,38 +306,6 @@
     border: 2px solid #28a745;
     border-radius: 12px;
     padding: 20px;
-    width: 300px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    text-align: left;
-  }
-  
-  .floating-cart h3 {
-    font-size: 20px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    color: #28a745;
-  }
-  
-  .floating-cart h3 svg {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-    fill: #28a745;
-  }
-  
-  .floating-cart ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  /* تنسيق عناصر سلة المشتريات */
-  .floating-cart {
-    background: #fff;
-    border: 2px solid #28a745;
-    border-radius: 12px;
-    padding: 20px;
     width: 320px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     text-align: left;
