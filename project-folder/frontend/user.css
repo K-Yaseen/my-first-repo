@@ -458,22 +458,35 @@
 }
 
 /* Floating Button für den Warenkorb */
-.floating-cart-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #28a745;
-  color: #ffffff;
+/* تحديث زر العودة إلى السلة */
+#addOrderBtn {
+  background-color: #007BFF;
+  color: #fff;
   border: none;
-  border-radius: 50px;
-  padding: 15px 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
+  padding: 12px 25px;
+  border-radius: 25px;
   font-size: 16px;
-  transition: background-color 0.3s ease;
-  z-index: 1001;
+  cursor: pointer;
+  width: auto;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.floating-cart-button:hover {
-  background-color: #218838;
+#addOrderBtn:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* إذا أردنا تأثير اختفاء تدريجي للحاوية */
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+#addOrderBtn i {
+  margin-right: 8px;
 }
