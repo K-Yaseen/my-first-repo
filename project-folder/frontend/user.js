@@ -373,30 +373,30 @@ async function sendToWhatsApp() {
     const ingredients = item ? item.ingredients || "Keine Angaben" : "Unbekannt";
     const price = item ? (item.price ? item.price.toFixed(2) + " €" : "Preis nicht verfügbar") : "Preis nicht verfügbar";
     const welcomeMessage = "Hallo, ich möchte gerne bestellen:\n\n";
-    
+
     let message = welcomeMessage +
       `📜 *Bestellnummer:* ${orderNum}\n\n` +
       `🍛 *Gericht:* - ${itemId}. ${itemName}\n\n` +
       `🧂 *Zutaten:* ${ingredients}\n\n` +
       `💰 *Preis:* ${price}\n\n`;
-      
+
     if (customerNotes) {
       message += `📝 *Dazu:* ${customerNotes}\n\n`;
     }
-    
+
     // جلب محتوى السلة العائمة وإضافته إلى الرسالة
     const cartItemsElement = document.getElementById("cartItems");
-if (cartItemsElement && cartItemsElement.children.length > 0) {
-  message += "🛒 *Warenkorb-Inhalt:*\n";
-  // استهداف العناصر التي تحتوي على المعلومات فقط
-  const itemInfoElements = cartItemsElement.querySelectorAll('.item-info');
-  itemInfoElements.forEach(span => {
-    message += `- ${span.textContent}\n`;
-  });
-  message += "\n";
-}
+    if (cartItemsElement && cartItemsElement.children.length > 0) {
+      message += "🛒 *Warenkorb-Inhalt:*\n";
+      // استهداف العناصر التي تحتوي على المعلومات فقط
+      const itemInfoElements = cartItemsElement.querySelectorAll('.item-info');
+      itemInfoElements.forEach(span => {
+        message += `- ${span.textContent}\n`;
+      });
+      message += "\n";
+    }
 
-    
+
     if (deliveryOption === "delivery") {
       const vorname = document.getElementById("vorname").value.trim();
       const nachname = document.getElementById("nachname").value.trim();
@@ -424,7 +424,7 @@ if (cartItemsElement && cartItemsElement.children.length > 0) {
           `⏰ *Abholzeit:* ${pickupTime}\n\n`;
       }
     }
-    
+
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappURL, "_blank");
   } catch (error) {
