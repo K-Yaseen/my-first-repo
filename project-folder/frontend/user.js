@@ -529,12 +529,7 @@ function redirectToSearchField() {
   const searchField = document.getElementById("itemNumber");
   const overlay = document.getElementById("floatingCartOverlay");
   if (overlay) {
-    // إضافة تأثير fade-out قبل الإخفاء
-    overlay.classList.add("fade-out");
-    setTimeout(() => {
-      overlay.style.display = "none";
-      overlay.classList.remove("fade-out");
-    }, 300); // مدة الانتقال 300 مللي ثانية
+    overlay.style.display = "none"; // إخفاء الحاوية العائمة
   }
   if (searchField) {
     searchField.focus();
