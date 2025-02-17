@@ -163,7 +163,6 @@ function checkItem() {
         <p class="item-ingredients">Zutaten: ${ingredientsText}</p>
         <p class="item-availability">Status: <strong>${availabilityText}</strong></p>
         <p class="item-price">Preis: <strong>${priceText}</strong></p>
-        
       </div>`;
 
     // في حالة كان الصنف متوفرًا
