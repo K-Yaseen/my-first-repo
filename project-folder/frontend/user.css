@@ -362,15 +362,30 @@
   }
   
   /* زر الحذف مع أيقونة صغيرة */
-  .delete-btn{
-    color: #dc3545 !important;
-    font-size: 18px;
+  /* نمط الزر الذي يحتوي على الأيقونة */
+.delete-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
-  
-  .delete-btn:hover i {
-    color: #818181 !important;
+  /* التحكم في حجم ولون الأيقونة (SVG) */
+  .delete-btn svg {
+    fill: #dc3545; /* اللون الأساسي للأيقونة */
+    width: 20px;
+    height: 20px;
+    transition: fill 0.3s ease;
   }
+  
+  /* تغيير لون الأيقونة عند التحويم على الزر */
+  .delete-btn:hover svg {
+    fill: #818181;
+  }
+  
 
 
   /* زر اضافة العناصر الىسلة */
