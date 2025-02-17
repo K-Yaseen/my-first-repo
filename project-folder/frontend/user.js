@@ -488,7 +488,7 @@ function redirectToSearchField() {
 }
 
 // ================================================
-// IX. Navigation Functions / زر
+// IX. Navigation Functions / زراضافة الى السلة
 // ================================================
 function addToCart() {
   if (currentItem) {
