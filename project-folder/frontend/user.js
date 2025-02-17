@@ -492,7 +492,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // ================================================
-// IX. Navigation Functions / وظائف التنقل
+// IX. Navigation Functions / نقل المست
 // ================================================
 function redirectToSearchField() {
   const searchField = document.getElementById("itemNumber");
