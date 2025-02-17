@@ -130,12 +130,12 @@ function checkItem() {
   const result = document.getElementById("result");
   const orderDetails = document.getElementById("orderDetails");
   const addToCartBtn = document.getElementById("addToCartBtn");
-  
+
   // إعادة إظهار قسم النتيجة عند البحث مجددًا
   result.style.display = "block";
   // في البداية يتم إخفاء زر الإضافة حتى يتم التأكد من وجود صنف متاح
   addToCartBtn.style.display = "none";
-  
+
   if (!itemNumber) {
     result.innerHTML = `
       <div class="item-card not-available">
@@ -161,7 +161,7 @@ function checkItem() {
         <p class="item-availability">Status: <strong>${availabilityText}</strong></p>
         <p class="item-price">Preis: <strong>${priceText}</strong></p>
       </div>`;
-      
+
     if (item.available) {
       orderDetails.style.display = "block";
       document.getElementById("whatsappBtn").setAttribute("data-item-id", item.id);
@@ -395,7 +395,7 @@ function validateSchedule() {
 // ================================================
 async function sendToWhatsApp() {
   // التحقق من صلاحية الموعد المختار
-  if (!validateSchedule()) return;  
+  if (!validateSchedule()) return;
 
   try {
     // جلب رقم الواتساب من الفايربيس أو استخدام الافتراضي
@@ -442,7 +442,7 @@ async function sendToWhatsApp() {
       cartItemsElement.querySelectorAll('.cart-item').forEach(cartItem => {
         const itemInfoEl = cartItem.querySelector('.item-info');
         const quantitySelectEl = cartItem.querySelector('.quantity-dropdown');
-        
+
         const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Item";
         const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
 
@@ -463,7 +463,7 @@ async function sendToWhatsApp() {
       const addressQuery = encodeURIComponent(`${strasse} ${hausnummer}, ${plz} ${stadt}`);
       const googleMapsURL = `https://www.google.com/maps/search/?api=1&query=${addressQuery}`;
 
-      message += 
+      message +=
         `🚚 *Lieferung*\n` +
         `🏠 *Adresse:*\n${strasse} ${hausnummer}, ${plz} ${stadt}\n\n` +
         `📍 *Standort auf Google Maps:*\n${googleMapsURL}\n\n`;
@@ -472,13 +472,13 @@ async function sendToWhatsApp() {
       const deliveryTime = document.getElementById("deliveryTime").value.trim();
       if (deliveryDate || deliveryTime) {
         message += `📅 *Lieferdatum:* ${deliveryDate}\n` +
-                   `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
+          `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
       }
     } else if (deliveryOption === "pickup") {
       const pickupDate = document.getElementById("pickupDate").value.trim();
       const pickupTime = document.getElementById("pickupTime").value.trim();
       if (pickupDate || pickupTime) {
-        message += 
+        message +=
           `🚶 *Selbstabholung*\n` +
           `📅 *Abholdatum:* ${pickupDate}\n` +
           `⏰ *Abholzeit:* ${pickupTime}\n\n`;
@@ -488,6 +488,13 @@ async function sendToWhatsApp() {
     // فتح الواتساب في نافذة جديدة
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappURL, "_blank");
+
+    // فتح الواتساب في نافذة جديدة
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, "_blank");
+
+    clearCart(); // مسح بيانات السلة بعد إرسال الطلب
+
 
   } catch (error) {
     console.error("Error sending to WhatsApp:", error);
@@ -739,7 +746,7 @@ function updateCartButton() {
   const backToCartBtn = document.getElementById("backToCartBtn");
   const overlay = document.getElementById("floatingCartOverlay");
   if (!cartItems || !backToCartBtn) return;
-  
+
   // حساب مجموع الكميات لجميع العناصر
   let totalQuantity = 0;
   const items = cartItems.getElementsByTagName("li");
@@ -747,7 +754,7 @@ function updateCartButton() {
     const quantitySelect = items[i].querySelector(".quantity-dropdown");
     totalQuantity += parseInt(quantitySelect.value, 10);
   }
-  
+
   if (totalQuantity > 0) {
     backToCartBtn.style.display = "flex";
     backToCartBtn.querySelector(".item-count").textContent = totalQuantity;
@@ -798,12 +805,12 @@ function clearCart() {
 }
 
 // عند النقر على زر العودة إلى السلة، يتم عرض الحاوية العائمة
-document.getElementById("backToCartBtn").addEventListener("click", function() {
+document.getElementById("backToCartBtn").addEventListener("click", function () {
   document.getElementById("floatingCartOverlay").style.display = "flex";
 });
 
 // يمكنك أيضاً استدعاء updateCartButton() عند تحميل الصفحة للتأكد من تحديثه
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   updateCartButton();
 });
 
