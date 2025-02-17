@@ -1,138 +1,139 @@
 /* تحسين عام للصفحة */
 body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #f0f8ff, #e6e6fa);
-    margin: 0;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .container-custom {
-    background: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    padding: 30px;
-    margin: 20px auto;
-    max-width: 800px;
-  }
-  
-  /* تنسيق Toast للتنبيهات */
-  .toast {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #333;
-    color: #fff;
-    padding: 15px 20px;
-    border-radius: 5px;
-    font-size: 16px;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.5s ease, top 0.5s ease;
-  }
-  .toast.show {
-    opacity: 1;
-    top: 40px;
-  }
-  
-  /* تنسيق صفوف العناصر بشكل عمودي */
-  .item-row {
-    display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    border-bottom: 1px solid #ddd;
-    padding: 15px 20px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  /* السطر الأول الذي يحتوي على بيانات الصنف والأيقونات */
-  .item-header {
-    display: flex;
-    justify-content: space-between; /* لضمان وضع .item-info في اليسار و .item-controls في اليمين */
-    align-items: center;
-    flex-wrap: wrap; /* في حال صغر الشاشة، ستلتف العناصر تلقائياً */
-  }
-  
-  .item-info {
-    display: flex;
-    gap: 10px;
-    font-weight: bold;
-  }
-  
-  .item-id, .item-name, .item-price {
-    white-space: nowrap; /* حتى لا ينكسر النص في سطر آخر */
-  }
-  
-  /* السطر الثاني المخصص للمكونات */
-  .item-ingredients {
-    margin-top: 5px;
-    text-align: left;
-    color: #555;
-    word-break: break-all; /* يسمح بلف النص الطويل */
-    font-style: italic;
-  }
-  
-  /* تنسيقات أزرار التحكم (الأيقونات) */
-  .item-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  /* زر الأيقونات */
-  .icon-button {
-    background: #ffffff;
-    padding: 10px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    border: none;
-    border-radius: 5px;
-  }
-  
-  /* تنسيق زر التبديل (Toggle Switch) */
-  .toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-  }
-  .toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  .toggle-switch .slider {
-    position: absolute;
-    top: 0; 
-    left: 0; 
-    right: 0; 
-    bottom: 0;
-    background-color: #ccc;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  .toggle-switch input:checked + .slider {
-    background-color: #4caf50;
-  }
-  .toggle-switch .slider::before {
-    content: "";
-    position: absolute;
-    height: 14px;
-    width: 14px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    border-radius: 50%;
-    transition: 0.3s;
-  }
-  .toggle-switch input:checked + .slider::before {
-    transform: translateX(20px);
-  }
-  
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #f0f8ff, #e6e6fa);
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+.container-custom {
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  padding: 30px;
+  margin: 20px auto;
+  max-width: 800px;
+}
+
+/* Toast für Benachrichtigungen */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #333;
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.5s ease, top 0.5s ease;
+}
+.toast.show {
+  opacity: 1;
+  top: 40px;
+}
+
+/* Item-Row vertikal anordnen */
+.item-row {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 15px 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Header-Zeile mit Gerichtsdaten und Icons */
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.item-info {
+  display: flex;
+  gap: 10px;
+  font-weight: bold;
+}
+
+.item-id,
+.item-name,
+.item-price {
+  white-space: nowrap;
+}
+
+/* Zeile für Zutaten */
+.item-ingredients {
+  margin-top: 5px;
+  text-align: left;
+  color: #555;
+  word-break: break-all;
+  font-style: italic;
+}
+
+/* Steuerungselemente (Icons) */
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Icon-Button */
+.icon-button {
+  background: #ffffff;
+  padding: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  border: none;
+  border-radius: 5px;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle-switch .slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.toggle-switch input:checked + .slider {
+  background-color: #4caf50;
+}
+.toggle-switch .slider::before {
+  content: "";
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+.toggle-switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
