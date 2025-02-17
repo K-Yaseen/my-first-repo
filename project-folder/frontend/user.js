@@ -492,9 +492,6 @@ async function sendToWhatsApp() {
     // فتح الواتساب في نافذة جديدة
     clearCart(); // مسح بيانات السلة بعد إرسال الطلب
 
-    clearCart(); // مسح بيانات السلة بعد إرسال الطلب
-
-
   } catch (error) {
     console.error("Error sending to WhatsApp:", error);
     showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
