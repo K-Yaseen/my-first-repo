@@ -331,6 +331,13 @@
     padding: 0;
     margin: 0;
   }
+
+  .floating-cart ul li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+  }
   
   #addOrderBtn {
     background-color: #007BFF;
