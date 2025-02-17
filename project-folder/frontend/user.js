@@ -525,7 +525,7 @@ function updateFloatingCart(item) {
   // إنشاء زر حذف باستخدام أيقونة صغيرة
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "delete-btn";
-  deleteBtn.innerHTML = "&#128465;"; // أيقونة سلة المهملات (Trash)
+  deleteBtn.innerHTML = ""; // أيقونة سلة المهملات (Trash)
   deleteBtn.title = "Gericht Löchen";
   deleteBtn.addEventListener("click", function() {
     li.remove();
