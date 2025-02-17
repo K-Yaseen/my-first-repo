@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerichtverfügbarkeit prüfen</title>
   <link rel="stylesheet" href="user.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-pJW3/6z4GL0GRlVhT1Dx5d+R+XD+qYmUXkZZN7n4WykqJX1f4RoCMd6qLbb4kZd5Dl7jvWlF3mP8wHrcZ6w5Bw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-pJW3/6z4GL0GRlVhT1Dx5d+R+XD+qYmUXkZZN7n4WykqJX1f4RoCMd6qLbb4kZd5Dl7jvWlF3mP8wHrcZ6w5Bw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 </head>
 
@@ -44,7 +46,7 @@
     <!-- زر نقل الصنف إلى سلة المشتريات يظهر فقط عند العثور على صنف متاح -->
     <button id="addToCartBtn" onclick="addToCart()" style="display: none;">Artikel in den Warenkorb verschieben</button>
   </div>
-  
+
 
   <!-- Bestelldetails / تفاصيل الطلب -->
   <div id="orderDetails" style="display: none;">
@@ -96,22 +98,23 @@
   <script src="user.js"></script>
 
   <!-- Schwebende Warenkorb Overlay / حاوية سلة المشتريات العائمة -->
-<div id="floatingCartOverlay" class="floating-cart-overlay" style="display: none;">
-  <div class="floating-cart">
-    <h3>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-        <path d="M24 0C10.7 0 0 10.7 0 24S10.7 48 24 48l45.5 0c3.8 0 7.1 2.7 7.9 6.5l51.6 271c6.5 34 36.2 58.5 70.7 58.5L488 384c13.3 0 24-10.7 24-24s-10.7-24-24-24l-288.3 0c-11.5 0-21.4-8.2-23.6-19.5L170.7 288l288.5 0c32.6 0 61.1-21.8 69.5-53.3l41-152.3C576.6 57 557.4 32 531.1 32L360 32l0 102.1 23-23c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-64 64c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l23 23L312 32 120.1 32C111 12.8 91.6 0 69.5 0L24 0zM176 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm336-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z" />
-      </svg>
-      Einkaufswagen
-    </h3>
-    <ul id="cartItems">
-      <!-- سيتم إضافة عناصر السلة هنا -->
-    </ul>
-    <button id="addOrderBtn" title="Weitere Bestellung hinzufügen" onclick="redirectToSearchField()">
-      Weitere Bestellung hinzufügen
-    </button>
+  <div id="floatingCartOverlay" class="floating-cart-overlay" style="display: none;">
+    <div class="floating-cart">
+      <h3>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+          <path
+            d="M24 0C10.7 0 0 10.7 0 24S10.7 48 24 48l45.5 0c3.8 0 7.1 2.7 7.9 6.5l51.6 271c6.5 34 36.2 58.5 70.7 58.5L488 384c13.3 0 24-10.7 24-24s-10.7-24-24-24l-288.3 0c-11.5 0-21.4-8.2-23.6-19.5L170.7 288l288.5 0c32.6 0 61.1-21.8 69.5-53.3l41-152.3C576.6 57 557.4 32 531.1 32L360 32l0 102.1 23-23c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-64 64c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l23 23L312 32 120.1 32C111 12.8 91.6 0 69.5 0L24 0zM176 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm336-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z" />
+        </svg>
+        Einkaufswagen
+      </h3>
+      <ul id="cartItems">
+        <!-- سيتم إضافة عناصر السلة هنا -->
+      </ul>
+      <button id="addOrderBtn" title="Weitere Bestellung hinzufügen" onclick="redirectToSearchField()">
+        Weitere Bestellung hinzufügen
+      </button>
+    </div>
   </div>
-</div>
 
 
 </body>
