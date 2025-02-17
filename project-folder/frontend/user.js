@@ -567,6 +567,8 @@ function updateFloatingCart(item) {
       currentQuantity++;
       quantitySelect.value = currentQuantity;
     }
+    // فتح حاوية السلة مع كل إضافة
+    overlay.style.display = "flex";
     updateCartButton();
     return;
   }
@@ -614,7 +616,7 @@ function updateFloatingCart(item) {
   // إضافة العنصر إلى قائمة السلة
   cartItems.appendChild(li);
 
-  // إظهار حاوية السلة إذا كانت مخفية
+  // فتح حاوية السلة إذا كانت مخفية
   overlay.style.display = "flex";
 
   // تحديث زر العودة وعدد العناصر بالسلة
