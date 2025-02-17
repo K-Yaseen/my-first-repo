@@ -496,8 +496,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ================================================
 function redirectToSearchField() {
   const searchField = document.getElementById("itemNumber");
+  const overlay = document.getElementById("floatingCartOverlay");
+  if (overlay) {
+    overlay.style.display = "none"; // إخفاء الحاوية عند النقر
+  }
   if (searchField) {
-    // تركيز على حقل البحث وتمرير سلس للموقع إلى الحقل
     searchField.focus();
     window.scrollTo({ top: searchField.offsetTop, behavior: 'smooth' });
   }
