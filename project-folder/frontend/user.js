@@ -182,7 +182,7 @@ function checkItem() {
     // إن لم يُعثَر على الصنف
     result.innerHTML = `
       <div class="item-card not-available">
-        <p>⚠️ Gernummer nicht gefunden.</p>
+        <p>⚠️ Gerichtnummer nicht gefunden.</p>
       </div>`;
     orderDetails.style.display = "none";
     hideFloatingCart();
