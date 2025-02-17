@@ -129,12 +129,14 @@ function checkItem() {
   const itemNumber = itemNumberInput ? itemNumberInput.value.trim() : "";
   const result = document.getElementById("result");
   const orderDetails = document.getElementById("orderDetails");
+  const addToCartBtn = document.getElementById("addToCartBtn");
 
   if (!itemNumber) {
     result.innerText = "Bitte geben Sie eine Artikelnummer ein.";
     result.style.color = "red";
     orderDetails.style.display = "none";
     hideFloatingCart();
+    addToCartBtn.style.display = "none";
     return;
   }
 
@@ -147,50 +149,22 @@ function checkItem() {
       orderDetails.style.display = "block";
       document.getElementById("whatsappBtn").setAttribute("data-item-id", item.id);
       document.getElementById("whatsappBtn").setAttribute("data-item-name", item.name);
-      updateFloatingCart(item);
+      currentItem = item;  // تخزين الصنف الحالي
+      addToCartBtn.style.display = "block";  // إظهار زر النقل إلى السلة
     } else {
       orderDetails.style.display = "none";
       hideFloatingCart();
+      addToCartBtn.style.display = "none";
     }
   } else {
     result.innerText = "⚠️ Artikelnummer nicht gefunden.";
     result.style.color = "gray";
     orderDetails.style.display = "none";
     hideFloatingCart();
+    addToCartBtn.style.display = "none";
   }
 }
 
-function showSavePopup() {
-  const popup = document.getElementById("popupMessage");
-  popup.classList.add("show");
-  setTimeout(() => {
-    popup.classList.remove("show");
-  }, 3000);
-  saveUserData();
-}
-
-function saveUserData() {
-  const deliveryOption = document.getElementById("deliveryOption").value;
-  const userData = {
-    deliveryOption: deliveryOption,
-    vorname: document.getElementById("vorname").value.trim(),
-    nachname: document.getElementById("nachname").value.trim(),
-    strasse: document.getElementById("strasse").value.trim(),
-    hausnummer: document.getElementById("hausnummer").value.trim(),
-    plz: document.getElementById("plz").value.trim(),
-    stadt: document.getElementById("stadt").value.trim(),
-    notes: document.getElementById("customerNotes").value.trim()
-  };
-
-  if (deliveryOption === "delivery") {
-    userData.deliveryDate = document.getElementById("deliveryDate").value.trim();
-    userData.deliveryTime = document.getElementById("deliveryTime").value.trim();
-  } else if (deliveryOption === "pickup") {
-    userData.pickupDate = document.getElementById("pickupDate").value.trim();
-    userData.pickupTime = document.getElementById("pickupTime").value.trim();
-  }
-  localStorage.setItem("userData", JSON.stringify(userData));
-}
 
 function loadUserData() {
   const storedData = safeJSONParse(localStorage.getItem("userData"));
