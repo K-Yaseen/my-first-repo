@@ -648,6 +648,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await fetchItems();
   loadUserData();
   await loadWorkingHours();
+  loadCart(); // استرجاع بيانات السلة من localStorage
 
   // إظهار مودال أوقات الدوام عند الفتح
   const preLoginModal = document.getElementById("preLoginModal");
