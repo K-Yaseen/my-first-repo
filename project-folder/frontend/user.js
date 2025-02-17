@@ -1,6 +1,6 @@
 // ================================================
-// I. Firebase-Initialisierung
-// (Stellen Sie sicher, dass die Firebase-Bibliotheken vor dieser Datei geladen sind)
+// I. Firebase Initialisierung / تهيئة فايربيس
+// (تأكد من تحميل مكتبات Firebase في HTML قبل هذا الملف)
 // ================================================
 let currentItem = null;
 
@@ -17,7 +17,7 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 // ================================================
-// II. Hilfsfunktionen
+// II. Utility Functions / وظائف مساعدة
 // ================================================
 let items = [];
 const userDataStore = {};
@@ -26,7 +26,7 @@ function safeJSONParse(data) {
   try {
     return JSON.parse(data);
   } catch (error) {
-    console.error("JSON-Parsing-Fehler:", error);
+    console.error("JSON Parse Error:", error);
     return null;
   }
 }
@@ -45,7 +45,7 @@ function generateOrderNumber() {
 }
 
 // ================================================
-// III. Funktionen für Unterschiede und Modal-Fenster
+// III. Differences and Modal Functions / اختلافات ومودال التعديلات
 // ================================================
 function getDifferences(oldItem, newItem) {
   if (!oldItem || !newItem) return [];
@@ -81,7 +81,7 @@ function showDifferencesModal(changes) {
   const changesList = document.getElementById("changesList");
   const confirmBtn = document.getElementById("changesConfirmBtn");
   if (!modal || !changesList || !confirmBtn) {
-    console.error("Modal-Elemente nicht gefunden.");
+    console.error("changesModal elements not found in HTML.");
     return;
   }
   changesList.innerHTML = "";
@@ -98,7 +98,7 @@ function showDifferencesModal(changes) {
 }
 
 // ================================================
-// IV. Firebase- und Datenfunktionen
+// IV. Firebase and Data Functions / وظائف فايربيس والبيانات
 // ================================================
 async function fetchItems() {
   try {
@@ -106,7 +106,7 @@ async function fetchItems() {
     const data = snapshot.val();
     items = data ? (Array.isArray(data) ? data : Object.values(data)) : [];
   } catch (error) {
-    console.error("Fehler beim Abrufen der Artikel:", error);
+    console.error("Error fetching items:", error);
     showFloatingMessage("Fehler beim Abrufen der Artikel.", "red");
   }
 }
@@ -122,137 +122,7 @@ function storeBaselineIfFirstPanel(item) {
 }
 
 // ================================================
-// Warenkorb-Funktionen
-// ================================================
-
-// Speichert die Warenkorbdaten im localStorage
-function saveCart() {
-  const cartItems = document.getElementById("cartItems");
-  const itemsArray = [];
-  for (let li of cartItems.children) {
-    const id = li.getAttribute("data-item-id");
-    const quantitySelect = li.querySelector(".quantity-dropdown");
-    const quantity = quantitySelect ? parseInt(quantitySelect.value, 10) : 1;
-    itemsArray.push({ id, quantity });
-  }
-  localStorage.setItem("cartData", JSON.stringify(itemsArray));
-}
-
-// Erstellt ein neues Warenkorbelement
-function createCartItem(item, quantity) {
-  const overlay = document.getElementById("floatingCartOverlay");
-  const cartItems = document.getElementById("cartItems");
-  if (!overlay || !cartItems) return;
-
-  const li = document.createElement("li");
-  li.className = "cart-item";
-  li.setAttribute("data-item-id", item.id);
-
-  const itemInfo = document.createElement("span");
-  itemInfo.className = "item-info";
-  itemInfo.textContent = `- ${item.id}. ${item.name}`;
-
-  const quantitySelect = document.createElement("select");
-  quantitySelect.className = "quantity-dropdown";
-  for (let i = 1; i <= 50; i++) {
-    const option = document.createElement("option");
-    option.value = i;
-    option.textContent = i;
-    quantitySelect.appendChild(option);
-  }
-  quantitySelect.value = quantity;
-
-  const deleteBtn = document.createElement("button");
-  deleteBtn.className = "delete-btn";
-  deleteBtn.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-      <path d="M170.5 51.6L151.5 80l145 0-19-28.4c-1.5-2.2-4-3.6-6.7-3.6l-93.7 0c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80 368 80l48 0 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-8 0 0 304c0 44.2-35.8 80-80 80l-224 0c-44.2 0-80-35.8-80-80l0-304-8 0c-13.3 0-24-10.7-24-24S10.7 80 24 80l8 0 48 0 13.8 0 36.7-55.1C140.9 9.4 158.4 0 177.1 0l93.7 0c18.7 0 36.2 9.4 46.6 24.9zM80 128l0 304c0 17.7 14.3 32 32 32l224 0c17.7 0 32-14.3 32-32l0-304L80 128zm80 64l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16z"/>
-    </svg>`;
-  deleteBtn.title = "Artikel aus dem Warenkorb entfernen";
-  deleteBtn.addEventListener("click", function () {
-    if (confirm("Möchten Sie diesen Artikel wirklich aus dem Warenkorb entfernen?")) {
-      li.remove();
-      updateCartButton();
-      saveCart();
-    }
-  });
-
-  li.appendChild(itemInfo);
-  li.appendChild(quantitySelect);
-  li.appendChild(deleteBtn);
-
-  cartItems.appendChild(li);
-  overlay.style.display = "flex";
-  updateCartButton();
-  saveCart();
-}
-
-// Lädt den Warenkorb aus dem localStorage beim Seitenladen
-function loadCart() {
-  const cartData = localStorage.getItem("cartData");
-  if (!cartData) return;
-  try {
-    const itemsArray = JSON.parse(cartData);
-    itemsArray.forEach(cartItem => {
-      const fullItem = items.find(i => i.id == cartItem.id);
-      if (fullItem) {
-        createCartItem(fullItem, cartItem.quantity);
-      }
-    });
-  } catch (e) {
-    console.error("Fehler beim Laden der Warenkorbdaten", e);
-  }
-}
-
-// Aktualisiert den Warenkorb: Erhöht die Menge oder erstellt ein neues Element und speichert den Warenkorb
-function updateFloatingCart(item) {
-  const overlay = document.getElementById("floatingCartOverlay");
-  const cartItems = document.getElementById("cartItems");
-  if (!overlay || !cartItems) return;
-
-  const existingItem = cartItems.querySelector(`li[data-item-id="${item.id}"]`);
-  if (existingItem) {
-    const quantitySelect = existingItem.querySelector(".quantity-dropdown");
-    let currentQuantity = parseInt(quantitySelect.value, 10);
-    if (currentQuantity < 50) {
-      currentQuantity++;
-      quantitySelect.value = currentQuantity;
-    }
-    overlay.style.display = "flex";
-    updateCartButton();
-    saveCart();
-    return;
-  }
-
-  // Falls nicht vorhanden, neues Element erstellen
-  createCartItem(item, 1);
-  saveCart();
-}
-
-// Aktualisiert den Rückkehr-Button, berechnet die Gesamtmenge aller Artikel
-function updateCartButton() {
-  const cartItems = document.getElementById("cartItems");
-  const backToCartBtn = document.getElementById("backToCartBtn");
-  const overlay = document.getElementById("floatingCartOverlay");
-  if (!cartItems || !backToCartBtn) return;
-  
-  let totalQuantity = 0;
-  for (let li of cartItems.children) {
-    const quantitySelect = li.querySelector(".quantity-dropdown");
-    totalQuantity += parseInt(quantitySelect.value, 10);
-  }
-  
-  if (totalQuantity > 0) {
-    backToCartBtn.style.display = "flex";
-    backToCartBtn.querySelector(".item-count").textContent = totalQuantity;
-  } else {
-    backToCartBtn.style.display = "none";
-    if (overlay) overlay.style.display = "none";
-  }
-}
-
-// ================================================
-// V. Bestell- und UI-Funktionen
+// V. Order and UI Functions / وظائف الطلب وواجهة المستخدم
 // ================================================
 function checkItem() {
   const itemNumberInput = document.getElementById("itemNumber");
@@ -261,7 +131,9 @@ function checkItem() {
   const orderDetails = document.getElementById("orderDetails");
   const addToCartBtn = document.getElementById("addToCartBtn");
   
+  // إعادة إظهار قسم النتيجة عند البحث مجددًا
   result.style.display = "block";
+  // في البداية يتم إخفاء زر الإضافة حتى يتم التأكد من وجود صنف متاح
   addToCartBtn.style.display = "none";
   
   if (!itemNumber) {
@@ -295,6 +167,7 @@ function checkItem() {
       document.getElementById("whatsappBtn").setAttribute("data-item-id", item.id);
       document.getElementById("whatsappBtn").setAttribute("data-item-name", item.name);
       currentItem = item;
+      // إعادة إظهار زر الإضافة عند إيجاد صنف متاح
       addToCartBtn.style.display = "block";
     } else {
       orderDetails.style.display = "none";
@@ -312,21 +185,37 @@ function checkItem() {
   }
 }
 
-function addToCart() {
-  if (currentItem) {
-    updateFloatingCart(currentItem);
-    // Nach dem Hinzufügen den Ergebnisbereich und den Hinzufügen-Button ausblenden
-    const resultSection = document.getElementById("result");
-    if (resultSection) resultSection.style.display = "none";
-    const addToCartBtn = document.getElementById("addToCartBtn");
-    if (addToCartBtn) addToCartBtn.style.display = "none";
-  } else {
-    alert("Es gibt keinen bestimmten Artikel zum Hinzufügen zum Warenkorb.");
+
+
+function loadUserData() {
+  const storedData = safeJSONParse(localStorage.getItem("userData"));
+  if (storedData) {
+    if (storedData.deliveryOption) {
+      document.getElementById("deliveryOption").value = storedData.deliveryOption;
+      if (storedData.deliveryOption === "delivery") {
+        document.getElementById("deliveryFields").style.display = "block";
+        document.getElementById("deliveryScheduleField").style.display = "block";
+        document.getElementById("deliveryDate").value = storedData.deliveryDate || "";
+        document.getElementById("deliveryTime").value = storedData.deliveryTime || "";
+      } else if (storedData.deliveryOption === "pickup") {
+        document.getElementById("pickupScheduleField").style.display = "block";
+        document.getElementById("pickupDate").value = storedData.pickupDate || "";
+        document.getElementById("pickupTime").value = storedData.pickupTime || "";
+      }
+    }
+    document.getElementById("vorname").value = storedData.vorname || "";
+    document.getElementById("nachname").value = storedData.nachname || "";
+    document.getElementById("strasse").value = storedData.strasse || "";
+    document.getElementById("hausnummer").value = storedData.hausnummer || "";
+    document.getElementById("plz").value = storedData.plz || "";
+    document.getElementById("stadt").value = storedData.stadt || "";
+    document.getElementById("customerNotes").value = storedData.notes || "";
+    document.getElementById("orderDetails").style.display = "block";
   }
 }
 
 // ================================================
-// VI. Öffnungszeitenfunktionen
+// VI. Working Hours Functions / وظائف أوقات الدوام
 // ================================================
 function updateTimeConstraints() {
   const now = new Date();
@@ -373,7 +262,7 @@ function loadWorkingHours() {
       }
       resolve();
     } catch (error) {
-      console.error("Fehler beim Laden der Öffnungszeiten:", error);
+      console.error("Error loading working hours:", error);
       showFloatingMessage("Fehler beim Laden der Öffnungszeiten.", "red");
       resolve();
     }
@@ -412,7 +301,7 @@ function updateWorkingHoursDisplay(workingHours) {
 function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
   const workingHours = JSON.parse(localStorage.getItem("workingHours"));
   if (!workingHours) {
-    console.warn("Keine gespeicherten Öffnungszeiten gefunden.");
+    console.warn("Keine gespeicherten Arbeitszeiten gefunden.");
     return false;
   }
   const daysOfWeek = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
@@ -444,7 +333,10 @@ function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
 }
 
 function showFloatingMessage(message, color = "red") {
+  // يمكنك عرض الرسالة كـalert مثلاً:
   alert(message);
+
+  // أو لو لديك عنصر popupMessage وتريد إظهاره مؤقتًا:
   /*
   const popup = document.getElementById("popupMessage");
   if (!popup) return;
@@ -455,89 +347,6 @@ function showFloatingMessage(message, color = "red") {
     popup.classList.remove("show");
   }, 3000);
   */
-}
-
-// ================================================
-// VII. WhatsApp-Bestellfunktionen
-// ================================================
-async function sendToWhatsApp() {
-  if (!validateSchedule()) return;  
-
-  try {
-    const snapshot = await database.ref("config/whatsappNumber").once("value");
-    let rawNumber = snapshot.val() || "4915759100569";
-    const whatsappNumber = rawNumber.replace(/\D/g, "");
-
-    const orderNum = generateOrderNumber();
-    const deliveryOption = document.getElementById("deliveryOption").value;
-
-    const itemId = document.getElementById("whatsappBtn").getAttribute("data-item-id");
-    const itemName = document.getElementById("whatsappBtn").getAttribute("data-item-name");
-    const item = items.find(i => i.id == itemId);
-    const ingredients = item ? item.ingredients || "Keine Angaben" : "Unbekannt";
-    const price = item ? (item.price ? item.price.toFixed(2) + " €" : "Preis nicht verfügbar") : "Preis nicht verfügbar";
-
-    const customerNotes = document.getElementById("customerNotes").value.trim();
-    const welcomeMessage = "Hallo, ich möchte gerne bestellen:\n\n";
-
-    let message = welcomeMessage + `📜 *Bestellnummer:* ${orderNum}\n\n`;
-
-    if (customerNotes) {
-      message += `📝 *Dazu:* ${customerNotes}\n\n`;
-    }
-
-    const cartItemsElement = document.getElementById("cartItems");
-    if (cartItemsElement && cartItemsElement.children.length > 0) {
-      message += "🛒 *Warenkorb-Inhalt:*\n";
-      cartItemsElement.querySelectorAll('.cart-item').forEach(cartItem => {
-        const itemInfoEl = cartItem.querySelector('.item-info');
-        const quantitySelectEl = cartItem.querySelector('.quantity-dropdown');
-        const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Item";
-        const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
-        message += `${itemText} Menge: ${quantity}\n`;
-      });
-      message += "\n";
-    }
-
-    if (deliveryOption === "delivery") {
-      const vorname = document.getElementById("vorname").value.trim();
-      const nachname = document.getElementById("nachname").value.trim();
-      const strasse = document.getElementById("strasse").value.trim();
-      const hausnummer = document.getElementById("hausnummer").value.trim();
-      const plz = document.getElementById("plz").value.trim();
-      const stadt = document.getElementById("stadt").value.trim();
-      const addressQuery = encodeURIComponent(`${strasse} ${hausnummer}, ${plz} ${stadt}`);
-      const googleMapsURL = `https://www.google.com/maps/search/?api=1&query=${addressQuery}`;
-
-      message += 
-        `🚚 *Lieferung*\n` +
-        `🏠 *Adresse:*\n${strasse} ${hausnummer}, ${plz} ${stadt}\n\n` +
-        `📍 *Standort auf Google Maps:*\n${googleMapsURL}\n\n`;
-
-      const deliveryDate = document.getElementById("deliveryDate").value.trim();
-      const deliveryTime = document.getElementById("deliveryTime").value.trim();
-      if (deliveryDate || deliveryTime) {
-        message += `📅 *Lieferdatum:* ${deliveryDate}\n` +
-                   `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
-      }
-    } else if (deliveryOption === "pickup") {
-      const pickupDate = document.getElementById("pickupDate").value.trim();
-      const pickupTime = document.getElementById("pickupTime").value.trim();
-      if (pickupDate || pickupTime) {
-        message += 
-          `🚶 *Selbstabholung*\n` +
-          `📅 *Abholdatum:* ${pickupDate}\n` +
-          `⏰ *Abholzeit:* ${pickupTime}\n\n`;
-      }
-    }
-
-    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappURL, "_blank");
-
-  } catch (error) {
-    console.error("Fehler beim Senden an WhatsApp:", error);
-    showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
-  }
 }
 
 function validateSchedule() {
@@ -582,7 +391,112 @@ function validateSchedule() {
 }
 
 // ================================================
-// VIII. Schwebende Warenkorb-Funktionen
+// VII. WhatsApp Order Functions / Funktionen für WhatsApp-Bestellung
+// ================================================
+async function sendToWhatsApp() {
+  // التحقق من صلاحية الموعد المختار
+  if (!validateSchedule()) return;  
+
+  try {
+    // جلب رقم الواتساب من الفايربيس أو استخدام الافتراضي
+    const snapshot = await database.ref("config/whatsappNumber").once("value");
+    let rawNumber = snapshot.val() || "4915759100569";
+    const whatsappNumber = rawNumber.replace(/\D/g, "");
+
+    // إعداد المعلومات العامة للرسالة
+    const orderNum = generateOrderNumber();
+    const deliveryOption = document.getElementById("deliveryOption").value;
+
+    // هذه الأسطر لا تزال تدعم صنفًا واحدًا إذا تم البحث عنه عبر حقل البحث:
+    const itemId = document.getElementById("whatsappBtn").getAttribute("data-item-id");
+    const itemName = document.getElementById("whatsappBtn").getAttribute("data-item-name");
+    const item = items.find(i => i.id == itemId);
+    const ingredients = item ? item.ingredients || "Keine Angaben" : "Unbekannt";
+    const price = item ? (item.price ? item.price.toFixed(2) + " €" : "Preis nicht verfügbar") : "Preis nicht verfügbar";
+
+    const customerNotes = document.getElementById("customerNotes").value.trim();
+    const welcomeMessage = "Hallo, ich möchte gerne bestellen:\n\n";
+
+    // بداية بناء الرسالة
+    let message = welcomeMessage + `📜 *Bestellnummer:* ${orderNum}\n\n`;
+
+    // // إذا أردت الاستغناء عن إرسال صنف البحث مفصّلًا، احذف الأسطر أدناه
+    // if (itemId && itemName) {
+    //   message += 
+    //     `🍛 *Gericht:* - ${itemId}. ${itemName}\n` +
+    //     `🧂 *Zutaten:* ${ingredients}\n` +
+    //     `💰 *Preis:* ${price}\n\n`;
+    // }
+
+    // إن كانت هناك ملاحظات من العميل
+    if (customerNotes) {
+      message += `📝 *Dazu:* ${customerNotes}\n\n`;
+    }
+
+    // (1) **تعديلات لإدراج أصناف السلة**:
+    const cartItemsElement = document.getElementById("cartItems");
+    if (cartItemsElement && cartItemsElement.children.length > 0) {
+      message += "🛒 *Warenkorb-Inhalt:*\n";
+
+      // نجمع كل عناصر <li> التي تحمل class="cart-item"
+      cartItemsElement.querySelectorAll('.cart-item').forEach(cartItem => {
+        const itemInfoEl = cartItem.querySelector('.item-info');
+        const quantitySelectEl = cartItem.querySelector('.quantity-dropdown');
+        
+        const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Item";
+        const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
+
+        // عرض كل عنصر مع كميته
+        message += `${itemText} Menge: ${quantity}\n`;
+      });
+      message += "\n";
+    }
+
+    // (2) إعداد معلومات التوصيل أو الاستلام
+    if (deliveryOption === "delivery") {
+      const vorname = document.getElementById("vorname").value.trim();
+      const nachname = document.getElementById("nachname").value.trim();
+      const strasse = document.getElementById("strasse").value.trim();
+      const hausnummer = document.getElementById("hausnummer").value.trim();
+      const plz = document.getElementById("plz").value.trim();
+      const stadt = document.getElementById("stadt").value.trim();
+      const addressQuery = encodeURIComponent(`${strasse} ${hausnummer}, ${plz} ${stadt}`);
+      const googleMapsURL = `https://www.google.com/maps/search/?api=1&query=${addressQuery}`;
+
+      message += 
+        `🚚 *Lieferung*\n` +
+        `🏠 *Adresse:*\n${strasse} ${hausnummer}, ${plz} ${stadt}\n\n` +
+        `📍 *Standort auf Google Maps:*\n${googleMapsURL}\n\n`;
+
+      const deliveryDate = document.getElementById("deliveryDate").value.trim();
+      const deliveryTime = document.getElementById("deliveryTime").value.trim();
+      if (deliveryDate || deliveryTime) {
+        message += `📅 *Lieferdatum:* ${deliveryDate}\n` +
+                   `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
+      }
+    } else if (deliveryOption === "pickup") {
+      const pickupDate = document.getElementById("pickupDate").value.trim();
+      const pickupTime = document.getElementById("pickupTime").value.trim();
+      if (pickupDate || pickupTime) {
+        message += 
+          `🚶 *Selbstabholung*\n` +
+          `📅 *Abholdatum:* ${pickupDate}\n` +
+          `⏰ *Abholzeit:* ${pickupTime}\n\n`;
+      }
+    }
+
+    // فتح الواتساب في نافذة جديدة
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, "_blank");
+
+  } catch (error) {
+    console.error("Error sending to WhatsApp:", error);
+    showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
+  }
+}
+
+// ================================================
+// VIII. Floating Cart Functions / وظائف للسلة العائمة
 // ================================================
 function hideFloatingCart() {
   const overlay = document.getElementById("floatingCartOverlay");
@@ -592,7 +506,10 @@ function hideFloatingCart() {
 }
 
 function showSavePopup() {
+  // حفظ بيانات المستخدم:
   saveUserData();
+
+  // ثم عرض رسالة منبثقة:
   const popup = document.getElementById("popupMessage");
   if (popup) {
     popup.classList.add("show");
@@ -602,19 +519,134 @@ function showSavePopup() {
   }
 }
 
+
+// هذه الدالة لاستدعائها عند الضغط على زر "Weitere Bestellung hinzufügen"
+function redirectToSearchField() {
+  const searchField = document.getElementById("itemNumber");
+  const overlay = document.getElementById("floatingCartOverlay");
+  if (overlay) {
+    overlay.style.display = "none"; // إخفاء الحاوية العائمة
+  }
+  if (searchField) {
+    searchField.focus();
+    window.scrollTo({ top: searchField.offsetTop, behavior: 'smooth' });
+  }
+}
+
+// زر اضافة صنف واحد إلى السلة
+function addToCart() {
+  if (currentItem) {
+    updateFloatingCart(currentItem);
+    // إخفاء القسم الذي يظهر توافر الصنف
+    const resultSection = document.getElementById("result");
+    if (resultSection) {
+      resultSection.style.display = "none";
+    }
+    // إخفاء زر إضافة الصنف إلى السلة
+    const addToCartBtn = document.getElementById("addToCartBtn");
+    if (addToCartBtn) {
+      addToCartBtn.style.display = "none";
+    }
+  } else {
+    alert("Es gibt keinen bestimmten Artikel zum Hinzufügen zum Warenkorb.");
+  }
+}
+
+
+function updateFloatingCart(item) {
+  const overlay = document.getElementById("floatingCartOverlay");
+  const cartItems = document.getElementById("cartItems");
+  if (!overlay || !cartItems) return;
+
+  // التحقق مما إذا كان الصنف موجود مسبقاً باستخدام data attribute
+  const existingItem = cartItems.querySelector(`li[data-item-id="${item.id}"]`);
+  if (existingItem) {
+    const quantitySelect = existingItem.querySelector(".quantity-dropdown");
+    let currentQuantity = parseInt(quantitySelect.value, 10);
+    if (currentQuantity < 50) { // الحد الأقصى للكمية
+      currentQuantity++;
+      quantitySelect.value = currentQuantity;
+    }
+    // فتح حاوية السلة مع كل إضافة
+    overlay.style.display = "flex";
+    updateCartButton();
+    return;
+  }
+
+  // إذا لم يكن موجوداً، إنشاء عنصر li جديد للصنف
+  const li = document.createElement("li");
+  li.className = "cart-item";
+  li.setAttribute("data-item-id", item.id);
+
+  // عرض معلومات الصنف
+  const itemInfo = document.createElement("span");
+  itemInfo.className = "item-info";
+  itemInfo.textContent = `- ${item.id}. ${item.name}`;
+
+  // إنشاء قائمة dropdown لتحديد الكمية
+  const quantitySelect = document.createElement("select");
+  quantitySelect.className = "quantity-dropdown";
+  for (let i = 1; i <= 50; i++) {
+    const option = document.createElement("option");
+    option.value = i;
+    option.textContent = i;
+    quantitySelect.appendChild(option);
+  }
+
+  // إنشاء زر حذف الصنف من السلة
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "delete-btn";
+  deleteBtn.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+      <path d="M170.5 51.6L151.5 80l145 0-19-28.4c-1.5-2.2-4-3.6-6.7-3.6l-93.7 0c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80 368 80l48 0 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-8 0 0 304c0 44.2-35.8 80-80 80l-224 0c-44.2 0-80-35.8-80-80l0-304-8 0c-13.3 0-24-10.7-24-24S10.7 80 24 80l8 0 48 0 13.8 0 36.7-55.1C140.9 9.4 158.4 0 177.1 0l93.7 0c18.7 0 36.2 9.4 46.6 24.9zM80 128l0 304c0 17.7 14.3 32 32 32l224 0c17.7 0 32-14.3 32-32l0-304L80 128zm80 64l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16z"/>
+    </svg>`;
+  deleteBtn.title = "Gericht Löschen";
+  deleteBtn.addEventListener("click", function () {
+    if (confirm("هل تريد حقًا إزالة هذا الصنف من السلة؟")) {
+      li.remove();
+      updateCartButton();
+    }
+  });
+
+  // ترتيب العناصر داخل li
+  li.appendChild(itemInfo);
+  li.appendChild(quantitySelect);
+  li.appendChild(deleteBtn);
+
+  // إضافة العنصر إلى قائمة السلة
+  cartItems.appendChild(li);
+
+  // فتح حاوية السلة إذا كانت مخفية
+  overlay.style.display = "flex";
+
+  // تحديث زر العودة وعدد العناصر بالسلة
+  updateCartButton();
+}
+
+
+
+
 // ================================================
-// IX. Ereignis-Listener
+// X. Event Listeners / مستمعي الأحداث
 // ================================================
-document.getElementById("backToCartBtn").addEventListener("click", function() {
-  document.getElementById("floatingCartOverlay").style.display = "flex";
+document.getElementById("vorname").addEventListener("input", function () {
+  const name = this.value.trim().toLowerCase();
+  if (name in userDataStore) {
+    const data = userDataStore[name];
+    document.getElementById("nachname").value = data.nachname;
+    document.getElementById("strasse").value = data.strasse;
+    document.getElementById("hausnummer").value = data.hausnummer;
+    document.getElementById("plz").value = data.plz;
+    document.getElementById("stadt").value = data.stadt;
+  }
 });
 
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchItems();
   loadUserData();
   await loadWorkingHours();
-  loadCart();
 
+  // إظهار مودال أوقات الدوام عند الفتح
   const preLoginModal = document.getElementById("preLoginModal");
   if (preLoginModal) {
     preLoginModal.style.display = "flex";
@@ -626,23 +658,111 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // تحديث قيود التوقيت
   updateTimeConstraints();
 
+  // 1) الحصول على العنصر <select> الخاص بالـ "deliveryOption"
   const deliverySelect = document.getElementById("deliveryOption");
   if (deliverySelect) {
+    // 2) إضافة مستمع لتغيير القيمة
     deliverySelect.addEventListener("change", function () {
       const selected = this.value;
       if (selected === "pickup") {
+        // إظهار حقول الاستلام
         document.getElementById("pickupScheduleField").style.display = "block";
+        // إخفاء حقول التوصيل
         document.getElementById("deliveryScheduleField").style.display = "none";
         document.getElementById("deliveryFields").style.display = "none";
       } else if (selected === "delivery") {
+        // إظهار حقول التوصيل
         document.getElementById("deliveryScheduleField").style.display = "block";
         document.getElementById("deliveryFields").style.display = "block";
+        // إخفاء حقول الاستلام
         document.getElementById("pickupScheduleField").style.display = "none";
       }
     });
   }
+});
 
+function saveUserData() {
+  // 1) اجمع بيانات المستخدم من الحقول
+  const deliveryOption = document.getElementById("deliveryOption").value;
+  const vorname = document.getElementById("vorname").value.trim();
+  const nachname = document.getElementById("nachname").value.trim();
+  const strasse = document.getElementById("strasse").value.trim();
+  const hausnummer = document.getElementById("hausnummer").value.trim();
+  const plz = document.getElementById("plz").value.trim();
+  const stadt = document.getElementById("stadt").value.trim();
+  const notes = document.getElementById("customerNotes").value.trim();
+
+  // إذا كان خيار الاستلام:
+  let pickupDate = "";
+  let pickupTime = "";
+  let deliveryDate = "";
+  let deliveryTime = "";
+
+  if (deliveryOption === "pickup") {
+    pickupDate = document.getElementById("pickupDate").value;
+    pickupTime = document.getElementById("pickupTime").value;
+  } else if (deliveryOption === "delivery") {
+    deliveryDate = document.getElementById("deliveryDate").value;
+    deliveryTime = document.getElementById("deliveryTime").value;
+  }
+
+  // 2) أنشئ كائن يتضمن كل البيانات:
+  const userData = {
+    deliveryOption,
+    vorname,
+    nachname,
+    strasse,
+    hausnummer,
+    plz,
+    stadt,
+    notes,
+    pickupDate,
+    pickupTime,
+    deliveryDate,
+    deliveryTime
+  };
+
+  // 3) خزّن هذا الكائن في localStorage
+  localStorage.setItem("userData", JSON.stringify(userData));
+}
+
+// دالة لتحديث عرض الزر وعدد العناصر بالسلة
+function updateCartButton() {
+  const cartItems = document.getElementById("cartItems");
+  const backToCartBtn = document.getElementById("backToCartBtn");
+  const overlay = document.getElementById("floatingCartOverlay");
+  if (!cartItems || !backToCartBtn) return;
+  
+  // حساب مجموع الكميات لجميع العناصر
+  let totalQuantity = 0;
+  const items = cartItems.getElementsByTagName("li");
+  for (let i = 0; i < items.length; i++) {
+    const quantitySelect = items[i].querySelector(".quantity-dropdown");
+    totalQuantity += parseInt(quantitySelect.value, 10);
+  }
+  
+  if (totalQuantity > 0) {
+    backToCartBtn.style.display = "flex";
+    backToCartBtn.querySelector(".item-count").textContent = totalQuantity;
+  } else {
+    backToCartBtn.style.display = "none";
+    if (overlay) {
+      overlay.style.display = "none";
+    }
+  }
+}
+
+// عند النقر على زر العودة إلى السلة، يتم عرض الحاوية العائمة
+document.getElementById("backToCartBtn").addEventListener("click", function() {
+  document.getElementById("floatingCartOverlay").style.display = "flex";
+});
+
+// يمكنك أيضاً استدعاء updateCartButton() عند تحميل الصفحة للتأكد من تحديثه
+document.addEventListener("DOMContentLoaded", function() {
   updateCartButton();
 });
+
+
