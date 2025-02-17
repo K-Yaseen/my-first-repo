@@ -375,7 +375,7 @@
   
   /* التحكم في حجم ولون الأيقونة (SVG) */
   .delete-btn svg {
-    fill: #dc3545; /* اللون الأساسي للأيقونة */
+    fill: #000000; /* اللون الأساسي للأيقونة */
     width: 20px;
     height: 20px;
     transition: fill 0.3s ease;
