@@ -553,27 +553,31 @@ function addToCart() {
 }
 
 
-function updateFloatingCart(item) {
+function updateFloatingCart(item, quantity = 1) {
   const overlay = document.getElementById("floatingCartOverlay");
   const cartItems = document.getElementById("cartItems");
   if (!overlay || !cartItems) return;
 
-  // التحقق مما إذا كان الصنف موجود مسبقاً باستخدام data attribute
   const existingItem = cartItems.querySelector(`li[data-item-id="${item.id}"]`);
   if (existingItem) {
     const quantitySelect = existingItem.querySelector(".quantity-dropdown");
-    let currentQuantity = parseInt(quantitySelect.value, 10);
-    if (currentQuantity < 50) { // الحد الأقصى للكمية
-      currentQuantity++;
-      quantitySelect.value = currentQuantity;
+    // إذا كانت الكمية المحملة أكبر من 1 (أي عند استرجاع السلة) يتم تعيينها مباشرة
+    if (quantity > 1) {
+      quantitySelect.value = quantity;
+    } else {
+      let currentQuantity = parseInt(quantitySelect.value, 10);
+      if (currentQuantity < 50) {
+        currentQuantity++;
+        quantitySelect.value = currentQuantity;
+      }
     }
-    // فتح حاوية السلة مع كل إضافة
     overlay.style.display = "flex";
     updateCartButton();
+    saveCart();
     return;
   }
 
-  // إذا لم يكن موجوداً، إنشاء عنصر li جديد للصنف
+  // إنشاء عنصر li جديد إذا لم يكن الصنف موجوداً
   const li = document.createElement("li");
   li.className = "cart-item";
   li.setAttribute("data-item-id", item.id);
@@ -592,6 +596,8 @@ function updateFloatingCart(item) {
     option.textContent = i;
     quantitySelect.appendChild(option);
   }
+  // تعيين الكمية المحددة (عند الإضافة أو الاسترجاع)
+  quantitySelect.value = quantity;
 
   // إنشاء زر حذف الصنف من السلة
   const deleteBtn = document.createElement("button");
@@ -605,23 +611,20 @@ function updateFloatingCart(item) {
     if (confirm("هل تريد حقًا إزالة هذا الصنف من السلة؟")) {
       li.remove();
       updateCartButton();
+      saveCart();
     }
   });
 
-  // ترتيب العناصر داخل li
   li.appendChild(itemInfo);
   li.appendChild(quantitySelect);
   li.appendChild(deleteBtn);
 
-  // إضافة العنصر إلى قائمة السلة
   cartItems.appendChild(li);
-
-  // فتح حاوية السلة إذا كانت مخفية
   overlay.style.display = "flex";
-
-  // تحديث زر العودة وعدد العناصر بالسلة
   updateCartButton();
+  saveCart();
 }
+
 
 
 
