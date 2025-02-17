@@ -427,7 +427,7 @@ async function sendToWhatsApp() {
         const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
 
         // عرض كل عنصر مع كميته
-        message += `- ${itemText}\n (${quantity})`;
+        message += `- ${itemText}\n  Menge: ${quantity})`;
       });
       message += "\n";
     }
