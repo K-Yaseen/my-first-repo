@@ -363,8 +363,8 @@
   
   /* زر الحذف مع أيقونة صغيرة */
   .delete-btn i {
-    color: #dc3545; /* لون أحمر على سبيل المثال */
-    font-size: 18px; /* تعديل الحجم حسب الرغبة */
+    color: #dc3545 !important;
+    font-size: 18px;
   }
   
   
