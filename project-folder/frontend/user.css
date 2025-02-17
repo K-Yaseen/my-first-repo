@@ -353,7 +353,7 @@
   /* تنسيق Dropdown الخاص بالكمية */
   .quantity-dropdown {
     margin: 0 10px;
-    padding: 5px;
+    padding: 10px;
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 4px;
