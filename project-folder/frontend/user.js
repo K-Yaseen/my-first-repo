@@ -733,14 +733,20 @@ function updateCartButton() {
   const backToCartBtn = document.getElementById("backToCartBtn");
   const overlay = document.getElementById("floatingCartOverlay");
   if (!cartItems || !backToCartBtn) return;
-  const itemCount = cartItems.getElementsByTagName("li").length;
   
-  if (itemCount > 0) {
+  // حساب مجموع الكميات لجميع العناصر
+  let totalQuantity = 0;
+  const items = cartItems.getElementsByTagName("li");
+  for (let i = 0; i < items.length; i++) {
+    const quantitySelect = items[i].querySelector(".quantity-dropdown");
+    totalQuantity += parseInt(quantitySelect.value, 10);
+  }
+  
+  if (totalQuantity > 0) {
     backToCartBtn.style.display = "flex";
-    backToCartBtn.querySelector(".item-count").textContent = itemCount;
+    backToCartBtn.querySelector(".item-count").textContent = totalQuantity;
   } else {
     backToCartBtn.style.display = "none";
-    // إذا كانت الحاوية العائمة مفتوحة، إخفائها أيضاً
     if (overlay) {
       overlay.style.display = "none";
     }
