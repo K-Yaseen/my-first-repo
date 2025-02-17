@@ -125,47 +125,71 @@ function storeBaselineIfFirstPanel(item) {
 // V. Order and UI Functions / وظائف الطلب وواجهة المستخدم
 // ================================================
 function checkItem() {
+  // استخلاص القيمة المدخلة من الحقل
   const itemNumberInput = document.getElementById("itemNumber");
   const itemNumber = itemNumberInput ? itemNumberInput.value.trim() : "";
+
+  // الوصول إلى عناصر الواجهة
   const result = document.getElementById("result");
   const orderDetails = document.getElementById("orderDetails");
   const addToCartBtn = document.getElementById("addToCartBtn");
 
+  // التحقق من إدخال رقم الصنف
   if (!itemNumber) {
-    result.innerText = "Bitte geben Sie eine Artikelnummer ein.";
-    result.style.color = "red";
+    result.innerHTML = `
+      <div class="item-card not-available">
+        <p>Bitte geben Sie eine Artikelnummer ein.</p>
+      </div>`;
     orderDetails.style.display = "none";
     hideFloatingCart();
     addToCartBtn.style.display = "none";
     return;
   }
 
+  // البحث عن الصنف في مصفوفة الأصناف
   const item = items.find(i => i.id == itemNumber);
-  if (item) {
-    result.innerText = `✅ Gericht ${item.id} (${item.name}) ist ${item.available ? "Verfügbar" : "Nicht verfügbar"}.
-Preis: ${item.price ? item.price.toFixed(2) + " €" : "Preis nicht verfügbar"}.
-Zutaten: ${item.ingredients || "Keine Angaben"}.`;
-    result.style.color = item.available ? "green" : "red";
 
+  if (item) {
+    // إعداد نصوص التوفّر والسعر والمكونات وما إلى ذلك
+    const availabilityText = item.available ? "Verfügbar" : "Nicht verfügbar";
+    const availabilityClass = item.available ? "available" : "not-available";
+    const priceText = item.price ? (item.price.toFixed(2) + " €") : "Preis nicht verfügbar";
+    const ingredientsText = item.ingredients || "Keine Zutatenangaben";
+
+    // عرض تفاصيل الصنف في بطاقة أنيقة
+    result.innerHTML = `
+      <div class="item-card ${availabilityClass}">
+        <h2 class="item-title">Artikel ${item.id}: ${item.name}</h2>
+        <p class="item-availability">Status: <strong>${availabilityText}</strong></p>
+        <p class="item-price">Preis: <strong>${priceText}</strong></p>
+        <p class="item-ingredients">Zutaten: ${ingredientsText}</p>
+      </div>`;
+
+    // في حالة كان الصنف متوفرًا
     if (item.available) {
       orderDetails.style.display = "block";
       document.getElementById("whatsappBtn").setAttribute("data-item-id", item.id);
       document.getElementById("whatsappBtn").setAttribute("data-item-name", item.name);
-      currentItem = item;  // تخزين الصنف الحالي
-      addToCartBtn.style.display = "block";  // إظهار زر النقل إلى السلة
+      currentItem = item;
+      addToCartBtn.style.display = "block";
     } else {
+      // إخفاء التفاصيل إن لم يكن الصنف متوفرًا
       orderDetails.style.display = "none";
       hideFloatingCart();
       addToCartBtn.style.display = "none";
     }
   } else {
-    result.innerText = "⚠️ Artikelnummer nicht gefunden.";
-    result.style.color = "gray";
+    // إن لم يُعثَر على الصنف
+    result.innerHTML = `
+      <div class="item-card not-available">
+        <p>⚠️ Artikelnummer nicht gefunden.</p>
+      </div>`;
     orderDetails.style.display = "none";
     hideFloatingCart();
     addToCartBtn.style.display = "none";
   }
 }
+
 
 function loadUserData() {
   const storedData = safeJSONParse(localStorage.getItem("userData"));
