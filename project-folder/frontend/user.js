@@ -494,6 +494,6 @@ function addToCart() {
   if (currentItem) {
     updateFloatingCart(currentItem);
   } else {
-    alert("لا يوجد صنف محدد لإضافته إلى سلة المشتريات");
+    alert("ا يوجد صنف محدد لإضافته إلى سلة المشتريات");
   }
 }
