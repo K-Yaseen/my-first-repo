@@ -490,8 +490,7 @@ async function sendToWhatsApp() {
     window.open(whatsappURL, "_blank");
 
     // فتح الواتساب في نافذة جديدة
-    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappURL, "_blank");
+    clearCart(); // مسح بيانات السلة بعد إرسال الطلب
 
     clearCart(); // مسح بيانات السلة بعد إرسال الطلب
 
