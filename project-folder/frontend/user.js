@@ -2,6 +2,8 @@
 // I. Firebase Initialisierung / تهيئة فايربيس
 // (تأكد من تحميل مكتبات Firebase في HTML قبل هذا الملف)
 // ================================================
+let currentItem = null;
+
 const firebaseConfig = {
   apiKey: "AIzaSyBeAkTPw9nswsCy9NtWEgf6nG4al5Qx83c",
   authDomain: "restaurant-system-f50cf.firebaseapp.com",
