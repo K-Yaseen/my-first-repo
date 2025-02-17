@@ -488,7 +488,7 @@ function redirectToSearchField() {
 }
 
 // ================================================
-// IX. Navigation Functions / زراضافة الى السلة
+// IX. Navigation Functions / ادراة السلة
 // ================================================
 function updateFloatingCart(item) {
   const overlay = document.getElementById("floatingCartOverlay");
