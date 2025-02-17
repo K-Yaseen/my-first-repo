@@ -755,6 +755,44 @@ function updateCartButton() {
   }
 }
 
+function saveCart() {
+  const cartItemsContainer = document.getElementById("cartItems");
+  const cartItemsArray = [];
+  cartItemsContainer.querySelectorAll(".cart-item").forEach(item => {
+    const itemId = item.getAttribute("data-item-id");
+    const quantity = item.querySelector(".quantity-dropdown").value;
+    cartItemsArray.push({ id: itemId, quantity: quantity });
+  });
+  localStorage.setItem("cart", JSON.stringify(cartItemsArray));
+}
+
+function loadCart() {
+  const cartData = localStorage.getItem("cart");
+  if (!cartData) return;
+  try {
+    const cartItemsArray = JSON.parse(cartData);
+    const cartItemsContainer = document.getElementById("cartItems");
+    cartItemsContainer.innerHTML = "";
+    cartItemsArray.forEach(cartItem => {
+      // البحث عن تفاصيل الصنف من المصفوفة العالمية items
+      const item = items.find(i => i.id == cartItem.id);
+      if (item) {
+        // استدعاء الدالة مع تحديد الكمية المخزنة
+        updateFloatingCart(item, cartItem.quantity);
+      }
+    });
+  } catch (error) {
+    console.error("Error loading cart:", error);
+  }
+}
+
+function clearCart() {
+  localStorage.removeItem("cart");
+  const cartItemsContainer = document.getElementById("cartItems");
+  if (cartItemsContainer) cartItemsContainer.innerHTML = "";
+  updateCartButton();
+}
+
 // عند النقر على زر العودة إلى السلة، يتم عرض الحاوية العائمة
 document.getElementById("backToCartBtn").addEventListener("click", function() {
   document.getElementById("floatingCartOverlay").style.display = "flex";
