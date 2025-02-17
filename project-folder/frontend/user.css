@@ -368,8 +368,8 @@
   }
   
   
-  .delete-btn:hover {
-    color: #818181;
+  .delete-btn:hover i {
+    color: #818181 !important;
   }
 
 
