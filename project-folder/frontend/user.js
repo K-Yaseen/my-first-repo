@@ -160,9 +160,10 @@ function checkItem() {
     result.innerHTML = `
       <div class="item-card ${availabilityClass}">
         <h2 class="item-title">Gericht ${item.id}: ${item.name}</h2>
+        <p class="item-ingredients">Zutaten: ${ingredientsText}</p>
         <p class="item-availability">Status: <strong>${availabilityText}</strong></p>
         <p class="item-price">Preis: <strong>${priceText}</strong></p>
-        <p class="item-ingredients">Zutaten: ${ingredientsText}</p>
+        
       </div>`;
 
     // في حالة كان الصنف متوفرًا
