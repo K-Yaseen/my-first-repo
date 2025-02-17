@@ -226,6 +226,7 @@ function deleteItem(id) {
   });
 }
 
+
 /* ---------- تبديل توفر الصنف (toggleAvailability) ---------- */
 function toggleAvailability(id) {
   database.ref("items").once("value").then((snapshot) => {
