@@ -1,12 +1,25 @@
 // ================================================
-// ملف user.js (منطق Baseline + الكشف عن تعديلات adminPanel)
-// مع عرض تفاصيل التعديلات في مودال يجب تأكيده من المستخدم
+// I. Firebase Initialisierung / تهيئة فايربيس
+// (تأكد من تحميل مكتبات Firebase في HTML قبل هذا الملف)
 // ================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyBeAkTPw9nswsCy9NtWEgf6nG4al5Qx83c",
+  authDomain: "restaurant-system-f50cf.firebaseapp.com",
+  databaseURL: "https://restaurant-system-f50cf-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "restaurant-system-f50cf",
+  storageBucket: "restaurant-system-f50cf.firebasestorage.app",
+  messagingSenderId: "220436037433",
+  appId: "1:220436037433:web:9bfc0f85a8806a15ee72e8"
+};
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
+// ================================================
+// II. Utility Functions / وظائف مساعدة
+// ================================================
 let items = [];
 const userDataStore = {};
 
-// دالة مساعدة لتحويل سلسلة JSON بشكل آمن
 function safeJSONParse(data) {
   try {
     return JSON.parse(data);
@@ -16,81 +29,75 @@ function safeJSONParse(data) {
   }
 }
 
-// ✅ دالة تعيد قائمة بالاختلافات بين صنفين (Baseline vs. Current)
+function generateOrderNumber() {
+  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const numbers = "123456789";
+  let orderId = "";
+  for (let i = 0; i < 2; i++) {
+    orderId += letters.charAt(Math.floor(Math.random() * letters.length));
+  }
+  for (let i = 0; i < 3; i++) {
+    orderId += numbers.charAt(Math.floor(Math.random() * numbers.length));
+  }
+  return orderId;
+}
+
+// ================================================
+// III. Differences and Modal Functions / اختلافات ومودال التعديلات
+// ================================================
 function getDifferences(oldItem, newItem) {
   if (!oldItem || !newItem) return [];
-
   const diffs = [];
-
-  // الاسم
   if (oldItem.name !== newItem.name) {
     diffs.push(`Name: "${oldItem.name}" → "${newItem.name}"`);
   }
-
-  // السعر
   if (oldItem.price !== newItem.price) {
-    const oldPrice = (oldItem.price != null) ? oldItem.price : "N/A";
-    const newPrice = (newItem.price != null) ? newItem.price : "N/A";
+    const oldPrice = oldItem.price != null ? oldItem.price : "N/A";
+    const newPrice = newItem.price != null ? newItem.price : "N/A";
     diffs.push(`Preis: ${oldPrice} € → ${newPrice} €`);
   }
-
-  // المكونات
   if (oldItem.ingredients !== newItem.ingredients) {
     const oldIng = oldItem.ingredients || "N/A";
     const newIng = newItem.ingredients || "N/A";
     diffs.push(`Zutaten: "${oldIng}" → "${newIng}"`);
   }
-
-  // التوفّر
   if (oldItem.available !== newItem.available) {
     const oldAvail = oldItem.available ? "Verfügbar" : "Nicht verfügbar";
     const newAvail = newItem.available ? "Verfügbar" : "Nicht verfügbar";
     diffs.push(`Verfügbarkeit: ${oldAvail} → ${newAvail}`);
   }
-
-  // القسم
   if (oldItem.category !== newItem.category) {
     const oldCat = oldItem.category || "N/A";
     const newCat = newItem.category || "N/A";
     diffs.push(`Kategorie: "${oldCat}" → "${newCat}"`);
   }
-
   return diffs;
 }
 
-// ✅ دالة تعرض المودال وتدرج التعديلات فيه، ولا تسمح بتخطيه إلا عند ضغط زر "Verstanden"
 function showDifferencesModal(changes) {
   const modal = document.getElementById("changesModal");
   const changesList = document.getElementById("changesList");
   const confirmBtn = document.getElementById("changesConfirmBtn");
-
   if (!modal || !changesList || !confirmBtn) {
-    // في حال لم يتم تعريف المودال في HTML
     console.error("changesModal elements not found in HTML.");
     return;
   }
-
-  // تفريغ القديم
   changesList.innerHTML = "";
-  // إنشاء نص متعدد الأسطر أو قائمة
   let html = "<ul style='list-style: disc; padding-left: 20px;'>";
   changes.forEach(diff => {
     html += `<li>${diff}</li>`;
   });
   html += "</ul>";
-
   changesList.innerHTML = html;
-
-  // إظهار المودال
   modal.style.display = "flex";
-
-  // عند الضغط على زر التأكيد، نغلق المودال
   confirmBtn.onclick = () => {
     modal.style.display = "none";
   };
 }
 
-// ✅ جلب الأصناف من Firebase باستخدام async/await ومعالجة الأخطاء
+// ================================================
+// IV. Firebase and Data Functions / وظائف فايربيس والبيانات
+// ================================================
 async function fetchItems() {
   try {
     const snapshot = await database.ref("items").once("value");
@@ -102,20 +109,19 @@ async function fetchItems() {
   }
 }
 
-// ✅ حفظ الـ Baseline للصنف فقط إذا كان من لوحة "firstPanel"
 function storeBaselineIfFirstPanel(item) {
   if (!item || item.id == null) return;
   const storageKey = "initialItem_" + item.id;
-  // إذا لا توجد نسخة مخزنة مسبقًا لهذا الصنف
   if (!localStorage.getItem(storageKey)) {
-    // نخزنها فقط إذا كان المصدر "firstPanel"
     if (item.lastUpdateSource === "firstPanel") {
       localStorage.setItem(storageKey, JSON.stringify(item));
     }
   }
 }
 
-// ✅ البحث عن الصنف وعرض الحقول إذا كان متوفرًا
+// ================================================
+// V. Order and UI Functions / وظائف الطلب وواجهة المستخدم
+// ================================================
 function checkItem() {
   const itemNumberInput = document.getElementById("itemNumber");
   const itemNumber = itemNumberInput ? itemNumberInput.value.trim() : "";
@@ -123,73 +129,35 @@ function checkItem() {
   const orderDetails = document.getElementById("orderDetails");
 
   if (!itemNumber) {
-      result.innerText = "Bitte geben Sie eine Artikelnummer ein.";
-      result.style.color = "red";
-      orderDetails.style.display = "none";
-      hideFloatingCart();
-      return;
+    result.innerText = "Bitte geben Sie eine Artikelnummer ein.";
+    result.style.color = "red";
+    orderDetails.style.display = "none";
+    hideFloatingCart();
+    return;
   }
 
-  const item = items.find((i) => i.id == itemNumber);
+  const item = items.find(i => i.id == itemNumber);
   if (item) {
-      // تنفيذ باقي منطق البحث والتعديل (مثلاً تخزين Baseline ... إلخ)
+    result.innerText = `✅ Gericht ${item.id} ist ${item.available ? "Verfügbar" : "Nicht verfügbar"}`;
+    result.style.color = item.available ? "green" : "red";
 
-      result.innerText = `✅ Gericht ${item.id} ist ${item.available ? "Verfügbar" : "Nicht verfügbar"}`;
-      result.style.color = item.available ? "green" : "red";
-
-      if (item.available) {
-          orderDetails.style.display = "block";
-          document.getElementById("whatsappBtn").setAttribute("data-item-id", item.id);
-          document.getElementById("whatsappBtn").setAttribute("data-item-name", item.name);
-          // تحديث وعرض overlay سلة المشتريات
-          updateFloatingCart(item);
-      } else {
-          orderDetails.style.display = "none";
-          hideFloatingCart();
-      }
-  } else {
-      result.innerText = "⚠️ Artikelnummer nicht gefunden.";
-      result.style.color = "gray";
+    if (item.available) {
+      orderDetails.style.display = "block";
+      document.getElementById("whatsappBtn").setAttribute("data-item-id", item.id);
+      document.getElementById("whatsappBtn").setAttribute("data-item-name", item.name);
+      updateFloatingCart(item);
+    } else {
       orderDetails.style.display = "none";
       hideFloatingCart();
+    }
+  } else {
+    result.innerText = "⚠️ Artikelnummer nicht gefunden.";
+    result.style.color = "gray";
+    orderDetails.style.display = "none";
+    hideFloatingCart();
   }
 }
 
-
-
-function updateFloatingCart(item) {
-  const cart = document.getElementById("floatingCart");
-  const cartItems = document.getElementById("cartItems");
-  if (!cart || !cartItems) return;
-  // عرض الصنف داخل السلة (يمكنك تعديل التفاصيل كما تشاء)
-  cartItems.innerHTML = `<li>${item.name} - ${item.id}</li>`;
-  cart.style.display = "block";
-}
-
-function hideFloatingCart() {
-  const cart = document.getElementById("floatingCart");
-  if (cart) {
-    cart.style.display = "none";
-  }
-}
-
-
-// ✅ توليد رقم الطلب العشوائي (مرة واحدة فقط)
-function generateOrderNumber() {
-  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-  const numbers = "123456789";
-  let orderId = "";
-
-  for (let i = 0; i < 2; i++) {
-    orderId += letters.charAt(Math.floor(Math.random() * letters.length));
-  }
-  for (let i = 0; i < 3; i++) {
-    orderId += numbers.charAt(Math.floor(Math.random() * numbers.length));
-  }
-  return orderId;
-}
-
-// ✅ عرض رسالة منبثقة للحفظ مع حفظ بيانات المستخدم
 function showSavePopup() {
   const popup = document.getElementById("popupMessage");
   popup.classList.add("show");
@@ -199,7 +167,6 @@ function showSavePopup() {
   saveUserData();
 }
 
-// ✅ حفظ بيانات المستخدم في LocalStorage (مع التحقق الإضافي)
 function saveUserData() {
   const deliveryOption = document.getElementById("deliveryOption").value;
   const userData = {
@@ -210,7 +177,7 @@ function saveUserData() {
     hausnummer: document.getElementById("hausnummer").value.trim(),
     plz: document.getElementById("plz").value.trim(),
     stadt: document.getElementById("stadt").value.trim(),
-    notes: document.getElementById("customerNotes").value.trim(),
+    notes: document.getElementById("customerNotes").value.trim()
   };
 
   if (deliveryOption === "delivery") {
@@ -223,7 +190,6 @@ function saveUserData() {
   localStorage.setItem("userData", JSON.stringify(userData));
 }
 
-// ✅ تحميل بيانات المستخدم عند فتح الصفحة
 function loadUserData() {
   const storedData = safeJSONParse(localStorage.getItem("userData"));
   if (storedData) {
@@ -251,30 +217,68 @@ function loadUserData() {
   }
 }
 
-// ✅ جلب أوقات الدوام من Firebase باستخدام async/await
-async function loadWorkingHours() {
-  try {
-    const snapshot = await database.ref("workingHours").once("value");
-    const data = snapshot.val();
-    if (data) {
-      localStorage.setItem("workingHours", JSON.stringify(data));
-      updateWorkingHoursDisplay(data);
+// ================================================
+// VI. Working Hours Functions / وظائف أوقات الدوام
+// ================================================
+function updateTimeConstraints() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const todayStr = `${year}-${month}-${day}`;
+
+  const pickupDateInput = document.getElementById('pickupDate');
+  const pickupTimeInput = document.getElementById('pickupTime');
+  if (pickupDateInput && pickupTimeInput) {
+    if (pickupDateInput.value === todayStr) {
+      let minPickupTime = new Date(now.getTime() + 1 * 60 * 60 * 1000);
+      let hours = String(minPickupTime.getHours()).padStart(2, '0');
+      let minutes = String(minPickupTime.getMinutes()).padStart(2, '0');
+      pickupTimeInput.min = `${hours}:${minutes}`;
+    } else {
+      pickupTimeInput.min = "00:00";
     }
-  } catch (error) {
-    console.error("Error loading working hours:", error);
-    showFloatingMessage("Fehler beim Laden der Öffnungszeiten.", "red");
+  }
+
+  const deliveryDateInput = document.getElementById('deliveryDate');
+  const deliveryTimeInput = document.getElementById('deliveryTime');
+  if (deliveryDateInput && deliveryTimeInput) {
+    if (deliveryDateInput.value === todayStr) {
+      let minDeliveryTime = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+      let hours = String(minDeliveryTime.getHours()).padStart(2, '0');
+      let minutes = String(minDeliveryTime.getMinutes()).padStart(2, '0');
+      deliveryTimeInput.min = `${hours}:${minutes}`;
+    } else {
+      deliveryTimeInput.min = "00:00";
+    }
   }
 }
 
-// ✅ عرض أوقات الدوام في المودال باستخدام المفاتيح الجديدة
+function loadWorkingHours() {
+  return new Promise(async (resolve) => {
+    try {
+      const snapshot = await database.ref("workingHours").once("value");
+      const data = snapshot.val();
+      if (data) {
+        localStorage.setItem("workingHours", JSON.stringify(data));
+        updateWorkingHoursDisplay(data);
+      }
+      resolve();
+    } catch (error) {
+      console.error("Error loading working hours:", error);
+      showFloatingMessage("Fehler beim Laden der Öffnungszeiten.", "red");
+      resolve();
+    }
+  });
+}
+
 function updateWorkingHoursDisplay(workingHours) {
   const container = document.getElementById("workingHoursDisplay");
   if (!container) return;
   container.innerHTML = "";
   const dayNames = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
   const dayAbbr = { Montag: "Mo", Dienstag: "Di", Mittwoch: "Mi", Donnerstag: "Do", Freitag: "Fr", Samstag: "Sa", Sonntag: "So" };
-
-  dayNames.forEach((day) => {
+  dayNames.forEach(day => {
     if (workingHours[day]) {
       const hours = workingHours[day];
       const segments = [];
@@ -297,27 +301,19 @@ function updateWorkingHoursDisplay(workingHours) {
   });
 }
 
-// ✅ دالة التحقق من أن الوقت المختار داخل أوقات الدوام
 function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
-  // جلب أوقات الدوام المخزنة
   const workingHours = JSON.parse(localStorage.getItem("workingHours"));
   if (!workingHours) {
     console.warn("Keine gespeicherten Arbeitszeiten gefunden.");
     return false;
   }
-
-  // تحديد اليوم من التاريخ المختار
   const daysOfWeek = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
   const selectedDay = daysOfWeek[selectedDateTime.getDay()];
-
-  // جلب بيانات الدوام لليوم المختار
   const todayHours = workingHours[selectedDay];
   if (!todayHours || todayHours.closed) {
     console.warn(`Der Laden ist am ${selectedDay} geschlossen.`);
     return false;
   }
-
-  // اختيار وقت التوصيل أو الاستلام
   let start, end;
   if (type === "delivery") {
     start = todayHours.deliveryStart;
@@ -326,30 +322,22 @@ function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
     start = todayHours.pickupStart;
     end = todayHours.pickupEnd;
   }
-
-  // التحقق من أن هناك وقت متاح
   if (!start || !end) {
     console.warn(`Keine ${type}-Zeiten für ${selectedDay} definiert.`);
     return false;
   }
-
-  // تحويل النصوص الزمنية إلى كائنات Date
   const [startHours, startMinutes] = start.split(":").map(Number);
   const [endHours, endMinutes] = end.split(":").map(Number);
   const startTime = new Date(selectedDateTime);
   startTime.setHours(startHours, startMinutes, 0);
-
   const endTime = new Date(selectedDateTime);
   endTime.setHours(endHours, endMinutes, 0);
-
   return selectedDateTime >= startTime && selectedDateTime <= endTime;
 }
 
-// ✅ دالة التحقق من صحة موعد الطلب
 function validateSchedule() {
   const deliveryOption = document.getElementById("deliveryOption").value;
   const now = new Date();
-
   if (deliveryOption === "delivery") {
     const deliveryDate = document.getElementById("deliveryDate").value;
     const deliveryTime = document.getElementById("deliveryTime").value;
@@ -388,38 +376,31 @@ function validateSchedule() {
   return true;
 }
 
-// ✅ إرسال الطلب إلى WhatsApp مع معالجة رقم الهاتف (باستخدام async/await)
+// ================================================
+// VII. WhatsApp Order Functions / Funktionen für WhatsApp-Bestellung
+// ================================================
 async function sendToWhatsApp() {
   if (!validateSchedule()) return;
-
   try {
     const snapshot = await database.ref("config/whatsappNumber").once("value");
     let rawNumber = snapshot.val() || "4915759100569";
-    // إزالة كل الرموز غير الرقمية (مثل +, -, الفراغات)
     const whatsappNumber = rawNumber.replace(/\D/g, "");
-
     const orderNum = generateOrderNumber();
     const deliveryOption = document.getElementById("deliveryOption").value;
     const itemId = document.getElementById("whatsappBtn").getAttribute("data-item-id");
     const itemName = document.getElementById("whatsappBtn").getAttribute("data-item-name");
     const customerNotes = document.getElementById("customerNotes").value.trim();
-
-    // ✅ جلب بيانات الصنف مثل المكونات والسعر
     const item = items.find(i => i.id == itemId);
     const ingredients = item ? item.ingredients || "Keine Angaben" : "Unbekannt";
     const price = item ? (item.price ? item.price.toFixed(2) + " €" : "Preis nicht verfügbar") : "Preis nicht verfügbar";
-
     const welcomeMessage = "Hallo, ich möchte gerne bestellen:\n\n";
-    let message =
-      welcomeMessage +
+    let message = welcomeMessage +
       `📜 *Bestellnummer:* ${orderNum}\n\n` +
       `🍛 *Gericht:* - ${itemId}. ${itemName}\n\n` +
-      `🧂 *Zutaten:* ${ingredients}\n\n`; // ✅ إضافة مكونات الصنف
-
+      `🧂 *Zutaten:* ${ingredients}\n\n`;
     if (customerNotes) {
       message += `📝 *Dazu:* ${customerNotes}\n\n`;
     }
-
     if (deliveryOption === "delivery") {
       const vorname = document.getElementById("vorname").value.trim();
       const nachname = document.getElementById("nachname").value.trim();
@@ -427,35 +408,27 @@ async function sendToWhatsApp() {
       const hausnummer = document.getElementById("hausnummer").value.trim();
       const plz = document.getElementById("plz").value.trim();
       const stadt = document.getElementById("stadt").value.trim();
-
       const addressQuery = encodeURIComponent(`${strasse} ${hausnummer}, ${plz} ${stadt}`);
       const googleMapsURL = `https://www.google.com/maps/search/?api=1&query=${addressQuery}`;
-
-      message +=
-        `🚚 *Lieferung*\n` +
-        `🏠 *Adresse:*\n${strasse} ${hausnummer}, ${plz} ${stadt}\n\n` +
-        `📍 *Standort auf Google Maps:*\n${googleMapsURL}\n\n`;
-
+      message += `🚚 *Lieferung*\n` +
+                 `🏠 *Adresse:*\n${strasse} ${hausnummer}, ${plz} ${stadt}\n\n` +
+                 `📍 *Standort auf Google Maps:*\n${googleMapsURL}\n\n`;
       const deliveryDate = document.getElementById("deliveryDate").value.trim();
       const deliveryTime = document.getElementById("deliveryTime").value.trim();
       if (deliveryDate || deliveryTime) {
         message += `📅 *Lieferdatum:* ${deliveryDate}\n` +
-          `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
+                   `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
       }
     } else if (deliveryOption === "pickup") {
       const pickupDate = document.getElementById("pickupDate").value.trim();
       const pickupTime = document.getElementById("pickupTime").value.trim();
       if (pickupDate || pickupTime) {
         message += `🚶 *Selbstabholung*\n` +
-          `📅 *Abholdatum:* ${pickupDate}\n` +
-          `⏰ *Abholzeit:* ${pickupTime}\n\n`;
+                   `📅 *Abholdatum:* ${pickupDate}\n` +
+                   `⏰ *Abholzeit:* ${pickupTime}\n\n`;
       }
     }
-
-    // ✅ إضافة السعر في نهاية الرسالة
     message += `💰 *Preis:* ${price}`;
-
-    // ✅ إنشاء رابط واتساب وإرساله
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappURL, "_blank");
   } catch (error) {
@@ -464,18 +437,27 @@ async function sendToWhatsApp() {
   }
 }
 
-
-// ✅ عرض رسالة عائمة للمستخدم
-function showFloatingMessage(text, color = "red") {
-  const popup = document.createElement("div");
-  popup.classList.add("popup", "show");
-  popup.style.backgroundColor = color;
-  popup.innerText = text;
-  document.body.appendChild(popup);
-  setTimeout(() => popup.remove(), 3000);
+// ================================================
+// VIII. Floating Cart Functions / Funktionen für den schwebenden Warenkorb
+// ================================================
+function updateFloatingCart(item) {
+  const overlay = document.getElementById("floatingCartOverlay");
+  const cartItems = document.getElementById("cartItems");
+  if (!overlay || !cartItems) return;
+  cartItems.innerHTML = `<li>${item.name} - ${item.id}</li>`;
+  overlay.style.display = "flex";
 }
 
-// ✅ تعبئة الحقول تلقائيًا عند إدخال الاسم الأول (يمكن إضافة تحسين debounce لاحقًا)
+function hideFloatingCart() {
+  const overlay = document.getElementById("floatingCartOverlay");
+  if (overlay) {
+    overlay.style.display = "none";
+  }
+}
+
+// ================================================
+// IX. Event Listeners / مستمعي الأحداث
+// ================================================
 document.getElementById("vorname").addEventListener("input", function () {
   const name = this.value.trim().toLowerCase();
   if (name in userDataStore) {
@@ -488,13 +470,12 @@ document.getElementById("vorname").addEventListener("input", function () {
   }
 });
 
-// ✅ عند تحميل الصفحة
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchItems();
   loadUserData();
   await loadWorkingHours();
 
-  // عرض المودال عند تحميل الصفحة (إذا كان موجودًا)
+  // Modal für Öffnungszeiten anzeigen / عرض مودال أوقات الدوام
   const preLoginModal = document.getElementById("preLoginModal");
   if (preLoginModal) {
     preLoginModal.style.display = "flex";
@@ -505,98 +486,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
   }
+
+  // Zeitliche Einschränkungen aktualisieren / تحديث قيود الوقت عند تحميل الصفحة
+  updateTimeConstraints();
 });
-
-// async function sendToWhatsApp() {
-//   if (!validateSchedule()) return;
-
-//   try {
-//     const snapshot = await database.ref("config/whatsappNumber").once("value");
-//     let rawNumber = snapshot.val() || "4915759100569";
-//     const whatsappNumber = rawNumber.replace(/\D/g, ""); // إزالة الرموز غير الرقمية
-
-//     const orderNum = generateOrderNumber();
-//     const deliveryOption = document.getElementById("deliveryOption").value;
-//     const itemId = document.getElementById("whatsappBtn").getAttribute("data-item-id");
-//     const itemName = document.getElementById("whatsappBtn").getAttribute("data-item-name");
-//     const customerNotes = document.getElementById("customerNotes").value.trim();
-
-//     // جلب بيانات الصنف من القائمة
-//     const item = items.find(i => i.id == itemId);
-//     const ingredients = item ? item.ingredients || "Keine Angaben" : "Unbekannt";
-//     const price = item ? (item.price ? item.price.toFixed(2) + " €" : "Preis nicht verfügbar") : "Preis nicht verfügbar";
-
-//     let message = `🍽 *Bestellung*\n\n` +  // رمز طبق طعام
-//                   `📜 *Nummer:* ${itemId}\n` +  // رمز ورقة مستند
-//                   `🍛 *Gericht:* ${itemName}\n` +  // رمز طبق طعام
-//                   `🧂 *Zutaten:* ${ingredients}\n\n`;  // رمز ملح
-
-//     if (customerNotes) {
-//       message += `📝 *Hinweise:* ${customerNotes}\n\n`;  // رمز ملاحظات
-//     }
-
-//     if (deliveryOption === "delivery") {
-//       const vorname = document.getElementById("vorname").value.trim();
-//       const nachname = document.getElementById("nachname").value.trim();
-//       const strasse = document.getElementById("strasse").value.trim();
-//       const hausnummer = document.getElementById("hausnummer").value.trim();
-//       const plz = document.getElementById("plz").value.trim();
-//       const stadt = document.getElementById("stadt").value.trim();
-
-//       // إنشاء رابط جوجل مابس باستخدام العنوان
-//       const addressQuery = encodeURIComponent(`${strasse} ${hausnummer}, ${plz} ${stadt}`);
-//       const googleMapsURL = `https://www.google.com/maps/search/?api=1&query=${addressQuery}`;
-
-//       message += `🚚 *Lieferung*\n` +  // رمز شاحنة
-//                  `🏠 *Adresse:*\n${strasse} ${hausnummer}, ${plz} ${stadt}\n\n` +  // رمز منزل
-//                  `📍 *Standort auf Google Maps:*\n${googleMapsURL}\n\n`;  // رمز دبوس موقع
-
-//       const deliveryDate = document.getElementById("deliveryDate").value.trim();
-//       const deliveryTime = document.getElementById("deliveryTime").value.trim();
-//       if (deliveryDate || deliveryTime) {
-//         message += `📅 *Lieferdatum:* ${deliveryDate}\n` +  // رمز تقويم
-//                    `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;  // رمز ساعة منبه
-//       }
-//     } else if (deliveryOption === "pickup") {
-//       const pickupDate = document.getElementById("pickupDate").value.trim();
-//       const pickupTime = document.getElementById("pickupTime").value.trim();
-//       if (pickupDate || pickupTime) {
-//         message += `🚶 *Selbstabholung*\n` +  // رمز شخص يمشي
-//                    `📅 *Abholdatum:* ${pickupDate}\n` +  // رمز تقويم
-//                    `⏰ *Abholzeit:* ${pickupTime}\n\n`;  // رمز ساعة منبه
-//       }
-//     }
-
-//     // إضافة السعر في نهاية الرسالة
-//     message += `💰 *Preis:* ${price}`;  // رمز نقود
-
-//     // إنشاء رابط واتساب وإرساله
-//     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-//     window.open(whatsappURL, "_blank");
-//   } catch (error) {
-//     console.error("Error sending to WhatsApp:", error);
-//     showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
-//   }
-// }
-
-function updateFloatingCart(item) {
-  const overlay = document.getElementById("floatingCartOverlay");
-  const cartItems = document.getElementById("cartItems");
-  if (!overlay || !cartItems) return;
-  // عرض الصنف داخل السلة (يمكنك تعديل المعلومات المعروضة حسب الحاجة)
-  cartItems.innerHTML = `<li>${item.name} - ${item.id}</li>`;
-  overlay.style.display = "flex";  // استخدام flex لعرض الحاوية في المنتصف
-}
-
-function hideFloatingCart() {
-  const overlay = document.getElementById("floatingCartOverlay");
-  if (overlay) {
-    overlay.style.display = "none";
-  }
-}
-
-
-
-
-
-
