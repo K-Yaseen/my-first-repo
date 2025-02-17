@@ -494,6 +494,6 @@ function addToCart() {
   if (currentItem) {
     updateFloatingCart(currentItem);
   } else {
-    alert("افته إتريات");
+    alert("Es gibt keinen bestimmten Artikel zum Hinzufügen zum Warenkorb.");
   }
 }
