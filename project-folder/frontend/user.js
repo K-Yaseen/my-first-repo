@@ -701,3 +701,6 @@ function saveUserData() {
   localStorage.setItem("userData", JSON.stringify(userData));
 }
 
+document.getElementById('zurWarenkorb').addEventListener('click', function() {
+  document.getElementById('floatingCartOverlay').style.display = 'flex';
+});
