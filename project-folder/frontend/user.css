@@ -362,7 +362,7 @@
   }
   
   /* زر الحذف مع أيقونة صغيرة */
-  .delete-btn i {
+  .delete-btn {
     color: #dc3545 !important;
     font-size: 18px;
   }
