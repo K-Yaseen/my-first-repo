@@ -159,7 +159,7 @@ function checkItem() {
     // عرض تفاصيل الصنف في بطاقة أنيقة
     result.innerHTML = `
       <div class="item-card ${availabilityClass}">
-        <h2 class="item-title">Artikel ${item.id}: ${item.name}</h2>
+        <h2 class="item-title">Gericht ${item.id}: ${item.name}</h2>
         <p class="item-availability">Status: <strong>${availabilityText}</strong></p>
         <p class="item-price">Preis: <strong>${priceText}</strong></p>
         <p class="item-ingredients">Zutaten: ${ingredientsText}</p>
