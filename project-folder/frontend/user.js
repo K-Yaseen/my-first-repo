@@ -600,4 +600,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // تحديث قيود التوقيت
   updateTimeConstraints();
+
+  // 1) الحصول على العنصر <select> الخاص بالـ "deliveryOption"
+  const deliverySelect = document.getElementById("deliveryOption");
+  if (deliverySelect) {
+    // 2) إضافة مستمع لتغيير القيمة
+    deliverySelect.addEventListener("change", function () {
+      const selected = this.value;
+      if (selected === "pickup") {
+        // إظهار حقول الاستلام
+        document.getElementById("pickupScheduleField").style.display = "block";
+        // إخفاء حقول التوصيل
+        document.getElementById("deliveryScheduleField").style.display = "none";
+        document.getElementById("deliveryFields").style.display = "none";
+      } else if (selected === "delivery") {
+        // إظهار حقول التوصيل
+        document.getElementById("deliveryScheduleField").style.display = "block";
+        document.getElementById("deliveryFields").style.display = "block";
+        // إخفاء حقول الاستلام
+        document.getElementById("pickupScheduleField").style.display = "none";
+      }
+    });
+  }
 });
+
