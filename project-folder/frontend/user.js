@@ -358,64 +358,76 @@ function validateSchedule() {
 // ================================================
 // VII. WhatsApp Order Functions / Funktionen für WhatsApp-Bestellung
 // ================================================
-// VII. WhatsApp Order Functions - الإصلاحات
 async function sendToWhatsApp() {
-  if (!currentItem) { // تحقق من وجود عنصر محدد
-    showFloatingMessage("Bitte wählen Sie zuerst ein Gericht aus.", "red");
-    return;
-  }
-  
-  if (!validateSchedule()) return;
-
+  if (!validateSchedule()) return; // تأكيد التحقق من التوقيت قبل المتابعة
   try {
     const snapshot = await database.ref("config/whatsappNumber").once("value");
     let rawNumber = snapshot.val() || "4915759100569";
     const whatsappNumber = rawNumber.replace(/\D/g, "");
     const orderNum = generateOrderNumber();
     const deliveryOption = document.getElementById("deliveryOption").value;
+    const itemId = document.getElementById("whatsappBtn").getAttribute("data-item-id");
+    const itemName = document.getElementById("whatsappBtn").getAttribute("data-item-name");
     const customerNotes = document.getElementById("customerNotes").value.trim();
-    
-    // استخدام currentItem مباشرةً
-    const itemName = currentItem.name;
-    const ingredients = currentItem.ingredients || "Keine Angaben";
-    const price = currentItem.price ? currentItem.price.toFixed(2) + " €" : "Preis nicht verfügbar";
+    const item = items.find(i => i.id == itemId);
+    const ingredients = item ? item.ingredients || "Keine Angaben" : "Unbekannt";
+    const price = item ? (item.price ? item.price.toFixed(2) + " €" : "Preis nicht verfügbar") : "Preis nicht verfügbar";
+    const welcomeMessage = "Hallo, ich möchte gerne bestellen:\n\n";
 
-    let message = `Hallo, ich möchte gerne bestellen:\n\n` +
+    let message = welcomeMessage +
       `📜 *Bestellnummer:* ${orderNum}\n\n` +
-      `🍛 *Gericht:* - ${currentItem.id}. ${itemName}\n\n` +
+      `🍛 *Gericht:* - ${itemId}. ${itemName}\n\n` +
       `🧂 *Zutaten:* ${ingredients}\n\n` +
       `💰 *Preis:* ${price}\n\n`;
 
-    if (customerNotes) message += `📝 *Dazu:* ${customerNotes}\n\n`;
+    if (customerNotes) {
+      message += `📝 *Dazu:* ${customerNotes}\n\n`;
+    }
 
-    // إضافة محتوى السلة
-    const cartItems = document.querySelectorAll("#cartItems .item-info");
-    if (cartItems.length > 0) {
+    // استخراج محتوى السلة باستخدام العناصر ذات الصنف "item-info"
+    const cartItemsElement = document.getElementById("cartItems");
+    if (cartItemsElement && cartItemsElement.children.length > 0) {
       message += "🛒 *Warenkorb-Inhalt:*\n";
-      cartItems.forEach(item => {
-        message += `- ${item.textContent}\n`;
+      const itemInfoElements = cartItemsElement.querySelectorAll('.item-info');
+      itemInfoElements.forEach(span => {
+        message += `- ${span.textContent}\n`;
       });
       message += "\n";
     }
 
-    // التحقق من تفاصيل التسليم/الاستلام
-    let hasSchedule = false;
     if (deliveryOption === "delivery") {
-      const deliveryDate = document.getElementById("deliveryDate").value;
-      const deliveryTime = document.getElementById("deliveryTime").value;
-      if (!deliveryDate || !deliveryTime) {
-        showFloatingMessage("Bitte Lieferzeit auswählen.", "red");
-        return;
+      const vorname = document.getElementById("vorname").value.trim();
+      const nachname = document.getElementById("nachname").value.trim();
+      const strasse = document.getElementById("strasse").value.trim();
+      const hausnummer = document.getElementById("hausnummer").value.trim();
+      const plz = document.getElementById("plz").value.trim();
+      const stadt = document.getElementById("stadt").value.trim();
+      const addressQuery = encodeURIComponent(`${strasse} ${hausnummer}, ${plz} ${stadt}`);
+      const googleMapsURL = `https://www.google.com/maps/search/?api=1&query=${addressQuery}`;
+      message += `🚚 *Lieferung*\n` +
+        `🏠 *Adresse:*\n${strasse} ${hausnummer}, ${plz} ${stadt}\n\n` +
+        `📍 *Standort auf Google Maps:*\n${googleMapsURL}\n\n`;
+      const deliveryDate = document.getElementById("deliveryDate").value.trim();
+      const deliveryTime = document.getElementById("deliveryTime").value.trim();
+      if (deliveryDate || deliveryTime) {
+        message += `📅 *Lieferdatum:* ${deliveryDate}\n` +
+          `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
       }
-      // ... (بقية التفاصيل)
+    } else if (deliveryOption === "pickup") {
+      const pickupDate = document.getElementById("pickupDate").value.trim();
+      const pickupTime = document.getElementById("pickupTime").value.trim();
+      if (pickupDate || pickupTime) {
+        message += `🚶 *Selbstabholung*\n` +
+          `📅 *Abholdatum:* ${pickupDate}\n` +
+          `⏰ *Abholzeit:* ${pickupTime}\n\n`;
+      }
     }
 
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappURL, "_blank");
-    
   } catch (error) {
-    console.error("Fehler:", error);
-    showFloatingMessage("Fehler beim Senden.", "red");
+    console.error("Error sending to WhatsApp:", error);
+    showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
   }
 }
 
