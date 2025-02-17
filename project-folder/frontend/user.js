@@ -503,60 +503,45 @@ function updateFloatingCart(item) {
   const cartItems = document.getElementById("cartItems");
   if (!overlay || !cartItems) return;
   
+  // إنشاء عنصر li جديد
   const li = document.createElement("li");
   li.className = "cart-item";
-
-  // إنشاء عنصر لعرض معلومات الصنف بدون كمية (سيتم تحديث الكمية باستخدام متغير)
+  
+  // عنصر عرض معلومات الصنف
   const itemInfo = document.createElement("span");
-  let quantity = 1;
-  itemInfo.textContent = `- ${item.id}. ${item.name} (Qty: ${quantity})`;
-
-  // زر التقليل (-)
-  const minusBtn = document.createElement("button");
-  minusBtn.innerHTML = "−"; // رمز الناقص
-  minusBtn.title = "تقليل العدد";
-  minusBtn.className = "quantity-btn minus-btn";
-  minusBtn.addEventListener("click", function() {
-    if (quantity > 1) {
-      quantity--;
-      itemInfo.textContent = `- ${item.id}. ${item.name} (Qty: ${quantity})`;
-    } else {
-      if (confirm("هل تريد إزالة هذا الصنف؟")) {
-        li.remove();
-      }
-    }
-  });
-
-  // زر الزيادة (+)
-  const plusBtn = document.createElement("button");
-  plusBtn.innerHTML = "+"; // رمز الزائد
-  plusBtn.title = "زيادة العدد";
-  plusBtn.className = "quantity-btn plus-btn";
-  plusBtn.addEventListener("click", function() {
-    quantity++;
-    itemInfo.textContent = `- ${item.id}. ${item.name} (Qty: ${quantity})`;
-  });
-
-  // زر الحذف مع أيقونة حديثة باستخدام SVG
+  itemInfo.className = "item-info";
+  itemInfo.textContent = `- ${item.id}. ${item.name}`;
+  
+  // إنشاء Dropdown لتحديد الكمية (من 1 إلى 10)
+  const quantitySelect = document.createElement("select");
+  quantitySelect.className = "quantity-dropdown";
+  for (let i = 1; i <= 10; i++) {
+    const option = document.createElement("option");
+    option.value = i;
+    option.textContent = i;
+    quantitySelect.appendChild(option);
+  }
+  
+  // إنشاء زر حذف باستخدام أيقونة صغيرة
   const deleteBtn = document.createElement("button");
-  deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-  <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5H6a.5.5 0 0 1-.5-.5v-6z"/>
-  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6.5l.5-.5h2l.5.5H14a1 1 0 0 1 1 1v1z"/>
-</svg>`;
-  deleteBtn.title = "حذف الصنف";
   deleteBtn.className = "delete-btn";
+  deleteBtn.innerHTML = "&#128465;"; // أيقونة سلة المهملات (Trash)
+  deleteBtn.title = "حذف الصنف";
   deleteBtn.addEventListener("click", function() {
     li.remove();
   });
-
-  // ترتيب العناصر في السطر نفسه
+  
+  // ترتيب العناصر داخل li
   li.appendChild(itemInfo);
-  li.appendChild(minusBtn);
-  li.appendChild(plusBtn);
+  li.appendChild(quantitySelect);
   li.appendChild(deleteBtn);
+  
+  // إضافة العنصر إلى قائمة السلة
   cartItems.appendChild(li);
-
+  
+  // عرض الحاوية إذا لم تكن ظاهرة
   overlay.style.display = "flex";
 }
+
 
 
