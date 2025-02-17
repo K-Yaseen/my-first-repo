@@ -142,7 +142,9 @@ function checkItem() {
 
   const item = items.find(i => i.id == itemNumber);
   if (item) {
-    result.innerText = `✅ Gericht ${item.id} ist ${item.available ? "Verfügbar" : "Nicht verfügbar"}`;
+    result.innerText = `✅ Gericht ${item.id} (${item.name}) ist ${item.available ? "Verfügbar" : "Nicht verfügbar"}.
+Preis: ${item.price ? item.price.toFixed(2) + " €" : "Preis nicht verfügbar"}.
+Zutaten: ${item.ingredients || "Keine Angaben"}.`;
     result.style.color = item.available ? "green" : "red";
 
     if (item.available) {
@@ -164,6 +166,7 @@ function checkItem() {
     addToCartBtn.style.display = "none";
   }
 }
+
 
 
 function loadUserData() {
