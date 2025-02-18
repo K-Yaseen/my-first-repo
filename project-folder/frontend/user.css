@@ -515,5 +515,23 @@
   }
 }
 
+.glow-border {
+  border: 2px solid #ff5722; /* لون مبدئي للإطار */
+  border-radius: 8px;       /* نعومة الحواف (اختياري) */
+  /* طبّق الحركة (النبض) على مدى ثانية واحدة مع تكرار لا نهائي */
+  animation: glowPulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes glowPulse {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+    border-color: #ff5722; 
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(255, 87, 34, 1);
+    border-color: #ffab91;
+  }
+}
+
 
 
