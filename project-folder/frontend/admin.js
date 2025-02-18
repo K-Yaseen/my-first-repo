@@ -257,14 +257,25 @@ function toggleAvailability(id) {
 
 /* ---------- تحميل أوقات الدوام (loadWorkingHours) ---------- */
 function loadWorkingHours() {
-  database.ref("workingHours").on("value", (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      localStorage.setItem("workingHours", JSON.stringify(data));
-      updateWorkingHoursDisplay(data);
-    }
+  return new Promise((resolve, reject) => {
+    database
+      .ref("workingHours")
+      .once("value")
+      .then((snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          localStorage.setItem("workingHours", JSON.stringify(data));
+          updateWorkingHoursDisplay(data); // تأكد من أن هذه الدالة موجودة وتعمل بشكل صحيح
+        }
+        resolve();
+      })
+      .catch((error) => {
+        console.error("Error loading working hours:", error);
+        reject(error);
+      });
   });
 }
+
 
 
 /* تعبئة حقول الاستلام */
