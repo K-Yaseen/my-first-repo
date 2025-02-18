@@ -131,22 +131,23 @@
     </table>
   </div>
 
-  <div class="container-custom">
-    <h2 class="mb-3">Lieferzeiten (Delivery)</h2>
-    <table id="deliveryHoursTable" class="table table-bordered text-center">
-      <thead>
-        <tr>
-          <th>Tag</th>
-          <th>Lieferzeit-Beginn</th>
-          <th>Lieferzeit-Ende</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-day="Montag">
-          <td>Montag</td>
-          <td><input type="time" class="form-control" /></td>
-          <td><input type="time" class="form-control" /></td>
-        </tr>
+<!-- حاوية جدول أوقات التوصيل -->
+<div class="container-custom" id="deliveryContainer">
+  <h2 class="mb-3">Lieferzeiten (Delivery)</h2>
+  <table id="deliveryHoursTable" class="table table-bordered text-center">
+    <thead>
+      <tr>
+        <th>Tag</th>
+        <th>Lieferzeit-Beginn</th>
+        <th>Lieferzeit-Ende</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-day="Montag">
+        <td>Montag</td>
+        <td><input type="time" class="form-control" /></td>
+        <td><input type="time" class="form-control" /></td>
+      </tr>
         <tr data-day="Dienstag">
           <td>Dienstag</td>
           <td><input type="time" class="form-control" /></td>
