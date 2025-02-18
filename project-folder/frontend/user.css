@@ -498,34 +498,7 @@
 }
 
 
-.highlight-section {
-  /* طبّق الحركة neonPulse على مدى ثانيتين وبشكل متكرر لا نهائي */
-  animation: neonPulse 2s ease-in-out infinite;
 
-  /* إطار مرئي حول العنصر (اختياري) */
-  border: 2px solid #ff5722; 
-  border-radius: 10px;
-}
-
-/* حركة التوهّج */
-@keyframes neonPulse {
-  0%, 100% {
-    /* مجموعة ظلال لتكوين توهج متعدد الطبقات باللون البرتقالي */
-    box-shadow:
-      0 0 5px    #ff5722,
-      0 0 10px   #ff5722,
-      0 0 20px   #ff5722,
-      0 0 40px   #ff5722;
-  }
-  50% {
-    /* في المنتصف يتغير اللون إلى درجة أفتح/أكثر إشراقًا أو لون ثانوي (مثلاً #ffa733) */
-    box-shadow:
-      0 0 5px    #ffa733,
-      0 0 10px   #ffa733,
-      0 0 20px   #ffa733,
-      0 0 40px   #ffa733;
-  }
-}
 
 
 
