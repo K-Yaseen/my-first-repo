@@ -584,6 +584,8 @@ function updateFloatingCart(item, quantity = 1, showOverlay = true) {
     return;
   }
 
+  
+
   // إنشاء عنصر li جديد إذا لم يكن الصنف موجوداً
   const li = document.createElement("li");
   li.className = "cart-item";
