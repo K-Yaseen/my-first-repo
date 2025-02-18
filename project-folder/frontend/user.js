@@ -430,12 +430,7 @@ async function sendToWhatsApp() {
     let message = "Hallo, ich möchte gerne bestellen:\n\n";
     message += `📜 *Bestellnummer:* ${orderNum}\n\n`;
     
-    // إضافة اسم المستخدم (Vorname و Nachname)
-    const vorname = document.getElementById("vorname").value.trim();
-    const nachname = document.getElementById("nachname").value.trim();
-    if (vorname || nachname) {
-      message += `👤 *Name:* ${vorname} ${nachname}\n\n`;
-    }
+    
     
     // إضافة ملاحظات العميل إن وجدت
     const customerNotes = document.getElementById("customerNotes").value.trim();
@@ -455,6 +450,13 @@ async function sendToWhatsApp() {
         message += `${itemText} Menge: ${quantity}\n`;
       });
       message += "\n";
+    }
+
+    // إضافة اسم المستخدم (Vorname و Nachname)
+    const vorname = document.getElementById("vorname").value.trim();
+    const nachname = document.getElementById("nachname").value.trim();
+    if (vorname || nachname) {
+      message += `👤 *Name:* ${vorname} ${nachname}\n\n`;
     }
 
     // إعداد معلومات التوصيل أو الاستلام
