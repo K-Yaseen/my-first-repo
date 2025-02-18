@@ -881,17 +881,19 @@ function goToOrderDetails() {
   if (orderDetails) {
     orderDetails.style.display = "block";
 
-    // تمرير انسيابي للقسم
+    // التمرير الانسيابي إلى القسم
     orderDetails.scrollIntoView({ behavior: 'smooth' });
 
     // إضافة تأثير الإبراز (Highlight) عبر كلاس CSS
     orderDetails.classList.add('highlight-section');
 
-    // إمكانية إزالة الـHighlight بعد بضع ثوانٍ
+    // إزالة الكلاس بعد 4 ثوانٍ
     setTimeout(() => {
       orderDetails.classList.remove('highlight-section');
     }, 4000);
   }
+}
+
 
   // يمكنك أيضاً إظهار Alert بسيط أو مودال تنبيهي
   // alert("Bitte füllen Sie jetzt die erforderlichen Daten aus, um Ihre Bestellung abzuschließen.");
