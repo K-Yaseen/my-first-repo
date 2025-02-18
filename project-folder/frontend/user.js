@@ -894,5 +894,74 @@ function goToOrderDetails() {
   }
 }
 
+function showPaymentConfirm(onConfirm) {
+  // إنشاء مودال رئيسي
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.display = 'flex'; // اجعل المودال مرئيًا
+
+  // إنشاء المحتوى الداخلي للمودال
+  const modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+  modalContent.style.maxWidth = '450px';
+  modalContent.style.textAlign = 'center';
+
+  // عنوان المودال
+  const title = document.createElement('h2');
+  title.innerText = 'Hinweis';
+
+  // الرسالة التي كانت في الفقرة (يمكنك تخصيص نصها كما تحب)
+  const paragraph = document.createElement('p');
+  paragraph.innerText = 'Die Bezahlung erfolgt erst bei Erhalt der Bestellung. Sind Sie damit einverstanden?';
+  paragraph.style.margin = '15px 0';
+  paragraph.style.fontSize = '16px';
+
+  // زر التأكيد
+  const confirmBtn = document.createElement('button');
+  confirmBtn.innerText = 'Ja, fortfahren';
+  confirmBtn.style.margin = '10px';
+  confirmBtn.style.backgroundColor = '#28a745';
+  confirmBtn.style.color = '#fff';
+  confirmBtn.style.border = 'none';
+  confirmBtn.style.padding = '10px 20px';
+  confirmBtn.style.borderRadius = '5px';
+  confirmBtn.style.cursor = 'pointer';
+
+  // زر الإلغاء
+  const cancelBtn = document.createElement('button');
+  cancelBtn.innerText = 'Abbrechen';
+  cancelBtn.style.margin = '10px';
+  cancelBtn.style.backgroundColor = '#dc3545';
+  cancelBtn.style.color = '#fff';
+  cancelBtn.style.border = 'none';
+  cancelBtn.style.padding = '10px 20px';
+  cancelBtn.style.borderRadius = '5px';
+  cancelBtn.style.cursor = 'pointer';
+
+  // إضافة العناصر للمحتوى
+  modalContent.appendChild(title);
+  modalContent.appendChild(paragraph);
+  modalContent.appendChild(confirmBtn);
+  modalContent.appendChild(cancelBtn);
+
+  // إضافة المحتوى لعنصر المودال الرئيسي
+  modal.appendChild(modalContent);
+
+  // إضافة المودال إلى DOM
+  document.body.appendChild(modal);
+
+  // حدث الضغط على زر التأكيد
+  confirmBtn.onclick = () => {
+    // إزالة المودال
+    document.body.removeChild(modal);
+    // استدعاء الدالة المطلوبة (onConfirm)
+    if (onConfirm) onConfirm();
+  };
+
+  // حدث الضغط على زر الإلغاء
+  cancelBtn.onclick = () => {
+    document.body.removeChild(modal);
+  };
+}
 
 
