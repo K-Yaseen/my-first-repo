@@ -375,11 +375,11 @@ function updateDeliveryNote() {
 }
 
 /* ---------- عند تحميل الصفحة ---------- */
-document.addEventListener("DOMContentLoaded", async () => {
+ddocument.addEventListener("DOMContentLoaded", async () => {
   // نافذة 1: تحميل البيانات الأولية
   await fetchItems();
   loadUserData();
-  await loadWorkingHours();
+  await loadWorkingHours();  // الآن loadWorkingHours تنتظر تحميل البيانات
   loadCart(); // استرجاع بيانات السلة من localStorage
 
   // نافذة 2: تعبئة حقول أوقات الدوام من البيانات المحفوظة في localStorage
@@ -391,12 +391,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // نافذة 3: إضافة مستمعي الأحداث لحقول جداول أوقات الدوام لحفظ التغييرات عند التعديل
-  const workingHoursInputs = document.querySelectorAll("#pickupHoursTable input, #deliveryHoursTable input");
-  workingHoursInputs.forEach(input => {
+  const workingHoursInputs = document.querySelectorAll(
+    "#pickupHoursTable input, #deliveryHoursTable input"
+  );
+  workingHoursInputs.forEach((input) => {
     input.addEventListener("change", saveWorkingHours);
   });
 
-  // نافذة 4: التعامل مع نافذة مودال أوقات الدوام (Pre-Login Modal)
+  // باقي النوافذ كما هو...
+  // نافذة 4: التعامل مع مودال أوقات الدوام
   const preLoginModal = document.getElementById("preLoginModal");
   if (preLoginModal) {
     preLoginModal.style.display = "flex";
@@ -411,7 +414,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // نافذة 5: تحديث قيود التوقيت بناءً على الوقت الحالي
   updateTimeConstraints();
 
-  // نافذة 6: تغيير خيارات التوصيل والاستلام وتحديث عرض الحقول بناءً على الخيار المحدد
+  // نافذة 6: تغيير خيارات التوصيل والاستلام وتحديث عرض الحقول
   const deliverySelect = document.getElementById("deliveryOption");
   if (deliverySelect) {
     deliverySelect.addEventListener("change", function () {
@@ -428,6 +431,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
+
 
 
 
