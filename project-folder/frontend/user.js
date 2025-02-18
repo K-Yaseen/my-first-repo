@@ -695,6 +695,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadWorkingHours();
   loadCart(); // استرجاع بيانات السلة من localStorage
 
+  await fetchItems();
+await loadWorkingHours();
+...
+const snapshot = await firebase.database().ref("config/serviceOption").once("value");
+const serviceOption = snapshot.val() || "beides";
+...
+updateWorkingHoursDisplay(storedWorkingHours, serviceOption);
+
+
   // إظهار مودال أوقات الدوام عند الفتح
   const preLoginModal = document.getElementById("preLoginModal");
   if (preLoginModal) {
