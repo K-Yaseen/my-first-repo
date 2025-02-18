@@ -425,6 +425,13 @@ function validateDeliveryFields() {
 }
 
 async function sendToWhatsApp() {
+  // أولاً: التحقق من أن هناك عناصر في السلة
+  const cartItemsElement = document.getElementById("cartItems");
+  if (!cartItemsElement || cartItemsElement.children.length === 0) {
+    alert("Bitte fügen Sie mindestens ein Gericht in den Warenkorb hinzu, bevor Sie bestellen.");
+    return; // إيقاف التنفيذ إذا كانت السلة فارغة
+  }
+
   const deliveryOption = document.getElementById("deliveryOption").value;
 
   // التحقق من صحة الحقول المطلوبة إذا كانت Lieferung
@@ -441,21 +448,18 @@ async function sendToWhatsApp() {
     let message = "Hallo, ich möchte gerne bestellen:\n\n";
     message += `📜 *Bestellnummer:* ${orderNum}\n\n`;
 
-
-
     // إضافة ملاحظات العميل إن وجدت
     const customerNotes = document.getElementById("customerNotes").value.trim();
     if (customerNotes) {
       message += `📝 *Dazu:* ${customerNotes}\n\n`;
     }
 
-    // إضافة محتوى السلة إن وجد
-    const cartItemsElement = document.getElementById("cartItems");
+    // إضافة محتوى السلة
     if (cartItemsElement && cartItemsElement.children.length > 0) {
       message += "🛒 *Warenkorb-Inhalt:*\n";
-      cartItemsElement.querySelectorAll('.cart-item').forEach(cartItem => {
-        const itemInfoEl = cartItem.querySelector('.item-info');
-        const quantitySelectEl = cartItem.querySelector('.quantity-dropdown');
+      cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
+        const itemInfoEl = cartItem.querySelector(".item-info");
+        const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
         const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Item";
         const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
         message += `${itemText} Menge: ${quantity}\n`;
@@ -463,7 +467,7 @@ async function sendToWhatsApp() {
       message += "\n";
     }
 
-    // إضافة اسم المستخدم (Vorname و Nachname)
+    // إضافة اسم المستخدم
     const vorname = document.getElementById("vorname").value.trim();
     const nachname = document.getElementById("nachname").value.trim();
     if (vorname || nachname) {
@@ -487,16 +491,16 @@ async function sendToWhatsApp() {
       const deliveryDate = document.getElementById("deliveryDate").value.trim();
       const deliveryTime = document.getElementById("deliveryTime").value.trim();
       if (deliveryDate || deliveryTime) {
-        message += `📅 *Lieferdatum:* ${deliveryDate}\n` +
-          `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
+        message += `📅 *Lieferdatum:* ${deliveryDate}\n`
+          + `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
       }
     } else if (deliveryOption === "pickup") {
       const pickupDate = document.getElementById("pickupDate").value.trim();
       const pickupTime = document.getElementById("pickupTime").value.trim();
       message +=
-        `🚶 *Selbstabholung*\n` +
-        `📅 *Abholdatum:* ${pickupDate}\n` +
-        `⏰ *Abholzeit:* ${pickupTime}\n\n`;
+        `🚶 *Selbstabholung*\n`
+        + `📅 *Abholdatum:* ${pickupDate}\n`
+        + `⏰ *Abholzeit:* ${pickupTime}\n\n`;
     }
 
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
