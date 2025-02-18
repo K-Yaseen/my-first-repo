@@ -483,6 +483,19 @@ async function sendToWhatsApp() {
           `📅 *Abholdatum:* ${pickupDate}\n` +
           `⏰ *Abholzeit:* ${pickupTime}\n\n`;
       }
+      // التحقق من صحة الحقول المطلوبة للتوصيل
+      if (!validateDeliveryFields()) return;
+
+      // التحقق من صحة الموعد المختار
+      if (!validateSchedule()) return;
+
+      // باقي الكود لإعداد وإرسال الطلب عبر الواتساب
+      try {
+        // ... (كود إرسال الطلب كما هو)
+      } catch (error) {
+        console.error("Error sending to WhatsApp:", error);
+        showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
+      }
     }
 
     function validateDeliveryFields() {
@@ -491,7 +504,7 @@ async function sendToWhatsApp() {
       const deliveryOption = document.getElementById("deliveryOption")
         ? document.getElementById("deliveryOption").value
         : "";
-    
+
       // التحقق من الحقول الإلزامية عند اختيار التوصيل
       if (serviceOption === "nurLieferung" || deliveryOption === "delivery") {
         const vorname = document.getElementById("vorname").value.trim();
@@ -500,7 +513,7 @@ async function sendToWhatsApp() {
         const hausnummer = document.getElementById("hausnummer").value.trim();
         const plz = document.getElementById("plz").value.trim();
         const stadt = document.getElementById("stadt").value.trim();
-    
+
         if (!vorname || !nachname || !strasse || !hausnummer || !plz || !stadt) {
           showFloatingMessage(
             "Bitte füllen Sie alle erforderlichen Felder für die Lieferung aus.",
@@ -511,10 +524,10 @@ async function sendToWhatsApp() {
       }
       return true;
 
-      
+
     }
-    
-    
+
+
 
     // فتح الواتساب في نافذة جديدة
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
@@ -843,7 +856,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // الاستماع لتحديثات إعداد الخدمة من Firebase وتطبيقها على واجهة المستخدم
-firebase.database().ref("config/serviceOption").on("value", function(snapshot) {
+firebase.database().ref("config/serviceOption").on("value", function (snapshot) {
   const option = snapshot.val() || "beides";
   applyUserServiceOption(option);
 });
