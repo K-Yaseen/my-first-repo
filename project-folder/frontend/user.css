@@ -462,7 +462,6 @@
 /* تأكد من أن الحاوية ذات وضع نسبي */
 .container {
   position: relative;
-  
 }
 
 /* تنسيق زر العودة إلى السلة */
@@ -511,45 +510,12 @@
 
   /* الظلال الخارجية والداخلية لخلق تأثير النيون */
   box-shadow:
-    0 0 15px rgba(255, 0, 0, 0.7),   /* توهج خفيف خارجي */
-    0 0 30px rgba(255, 0, 0, 0.7),   /* توهج أكثر قوة */
-    inset 0 0 15px rgba(255, 0, 0, 0.7),  /* توهج داخلي خفيف */
-    inset 0 0 30px rgba(255, 0, 0, 0.7);  /* توهج داخلي أقوى */
+    0 0 15px rgba(255, 255, 255, 0.7),   /* توهج خفيف خارجي */
+    0 0 30px rgba(255, 255, 255, 0.7),   /* توهج أكثر قوة */
+    inset 0 0 15px rgba(255, 255, 255, 0.7),  /* توهج داخلي خفيف */
+    inset 0 0 30px rgba(255, 255, 255, 0.7);  /* توهج داخلي أقوى */
 }
 
-.glowing-border {
-  position: relative; /* لضمان عرض الظلال الداخلية والخارجية */
-  border: 3px solid #ff0000;
-  border-radius: 15px;
-  background-color: #222;
-  padding: 20px;
-
-  animation: neonPulse 2s ease-in-out infinite alternate; /* الحركة */
-
-  /* الوضع الابتدائي */
-  box-shadow:
-    0 0 15px rgba(255, 0, 0, 0.7),
-    0 0 30px rgba(255, 0, 0, 0.7),
-    inset 0 0 15px rgba(255, 0, 0, 0.7),
-    inset 0 0 30px rgba(255, 0, 0, 0.7);
-}
-
-@keyframes neonPulse {
-  0% {
-    box-shadow:
-      0 0 10px rgba(255, 0, 0, 0.5),
-      0 0 20px rgba(255, 0, 0, 0.5),
-      inset 0 0 10px rgba(255, 0, 0, 0.5),
-      inset 0 0 20px rgba(244, 0, 0, 0.5);
-  }
-  100% {
-    box-shadow:
-      0 0 20px rgb(255, 0, 0),
-      0 0 40px rgb(255, 0, 0),
-      inset 0 0 20px rgb(255, 0, 0),
-      inset 0 0 40px rgb(255, 6, 6);
-  }
-}
 
 
 
