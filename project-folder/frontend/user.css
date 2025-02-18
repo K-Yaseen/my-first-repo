@@ -462,7 +462,7 @@
 /* تأكد من أن الحاوية ذات وضع نسبي */
 .container {
   position: relative;
-  background: #fff;
+  
 }
 
 /* تنسيق زر العودة إلى السلة */
