@@ -422,16 +422,21 @@ async function sendToWhatsApp() {
   if (!validateSchedule()) return;
 
   try {
-    // جلب رقم WhatsApp من Firebase أو استخدام الافتراضي
     const snapshot = await database.ref("config/whatsappNumber").once("value");
     let rawNumber = snapshot.val() || "4915759100569";
     const whatsappNumber = rawNumber.replace(/\D/g, "");
 
-    // إعداد رقم الطلب والرسالة الأساسية
     const orderNum = generateOrderNumber();
     let message = "Hallo, ich möchte gerne bestellen:\n\n";
     message += `📜 *Bestellnummer:* ${orderNum}\n\n`;
-
+    
+    // إضافة اسم المستخدم (Vorname و Nachname)
+    const vorname = document.getElementById("vorname").value.trim();
+    const nachname = document.getElementById("nachname").value.trim();
+    if (vorname || nachname) {
+      message += `👤 *Name:* ${vorname} ${nachname}\n\n`;
+    }
+    
     // إضافة ملاحظات العميل إن وجدت
     const customerNotes = document.getElementById("customerNotes").value.trim();
     if (customerNotes) {
@@ -452,10 +457,8 @@ async function sendToWhatsApp() {
       message += "\n";
     }
 
-    // إعداد معلومات التوصيل أو الاستلام بناءً على الخيار
+    // إعداد معلومات التوصيل أو الاستلام
     if (deliveryOption === "delivery") {
-      const vorname = document.getElementById("vorname").value.trim();
-      const nachname = document.getElementById("nachname").value.trim();
       const strasse = document.getElementById("strasse").value.trim();
       const hausnummer = document.getElementById("hausnummer").value.trim();
       const plz = document.getElementById("plz").value.trim();
@@ -483,7 +486,6 @@ async function sendToWhatsApp() {
         `⏰ *Abholzeit:* ${pickupTime}\n\n`;
     }
 
-    // فتح WhatsApp في نافذة جديدة
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappURL, "_blank");
 
@@ -493,6 +495,7 @@ async function sendToWhatsApp() {
     showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
   }
 }
+
 
 
 // ================================================
