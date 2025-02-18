@@ -800,17 +800,18 @@ function loadCart() {
     const cartItemsContainer = document.getElementById("cartItems");
     cartItemsContainer.innerHTML = "";
     cartItemsArray.forEach(cartItem => {
-      // البحث عن تفاصيل الصنف من المصفوفة العالمية items
+      // ابحث عن تفاصيل الصنف في المصفوفة العالمية items
       const item = items.find(i => i.id == cartItem.id);
       if (item) {
-        // استدعاء الدالة مع تحديد الكمية المخزنة
-        updateFloatingCart(item, cartItem.quantity);
+        // هنا يمكنك استدعاء الدالة مع تحديد الكمية وعدم إظهار الحاوية مباشرةً
+        updateFloatingCart(item, cartItem.quantity, false);
       }
     });
   } catch (error) {
     console.error("Error loading cart:", error);
   }
 }
+
 
 function clearCart() {
   localStorage.removeItem("cart");
