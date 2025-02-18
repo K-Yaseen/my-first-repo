@@ -365,19 +365,27 @@ function updateDeliveryNote() {
 
 /* ---------- عند تحميل الصفحة ---------- */
 document.addEventListener("DOMContentLoaded", async () => {
-  // نافذة 1: تحميل البيانات الأولية واسترجاعها من localStorage
+  // نافذة 1: تحميل البيانات الأولية
   await fetchItems();
   loadUserData();
   await loadWorkingHours();
   loadCart(); // استرجاع بيانات السلة من localStorage
 
-  // نافذة 2: إضافة مستمعي الأحداث لحقول الوقت والتاريخ لحفظ التغييرات
-  document.getElementById("pickupTime").addEventListener("change", saveUserData);
-  document.getElementById("pickupDate").addEventListener("change", saveUserData);
-  document.getElementById("deliveryTime").addEventListener("change", saveUserData);
-  document.getElementById("deliveryDate").addEventListener("change", saveUserData);
+  // نافذة 2: تعبئة حقول أوقات الدوام من البيانات المحفوظة في localStorage
+  const storedWorkingHours = localStorage.getItem("workingHours");
+  if (storedWorkingHours) {
+    const workingHours = JSON.parse(storedWorkingHours);
+    fillPickupHoursForm(workingHours);
+    fillDeliveryHoursForm(workingHours);
+  }
 
-  // نافذة 3: التعامل مع نافذة مودال أوقات الدوام (Pre-Login Modal)
+  // نافذة 3: إضافة مستمعي الأحداث لحقول جداول أوقات الدوام لحفظ التغييرات عند التعديل
+  const workingHoursInputs = document.querySelectorAll("#pickupHoursTable input, #deliveryHoursTable input");
+  workingHoursInputs.forEach(input => {
+    input.addEventListener("change", saveWorkingHours);
+  });
+
+  // نافذة 4: التعامل مع نافذة مودال أوقات الدوام (Pre-Login Modal)
   const preLoginModal = document.getElementById("preLoginModal");
   if (preLoginModal) {
     preLoginModal.style.display = "flex";
@@ -388,6 +396,28 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
   }
+
+  // نافذة 5: تحديث قيود التوقيت بناءً على الوقت الحالي
+  updateTimeConstraints();
+
+  // نافذة 6: تغيير خيارات التوصيل والاستلام وتحديث عرض الحقول بناءً على الخيار المحدد
+  const deliverySelect = document.getElementById("deliveryOption");
+  if (deliverySelect) {
+    deliverySelect.addEventListener("change", function () {
+      const selected = this.value;
+      if (selected === "pickup") {
+        document.getElementById("pickupScheduleField").style.display = "block";
+        document.getElementById("deliveryScheduleField").style.display = "none";
+        document.getElementById("deliveryFields").style.display = "none";
+      } else if (selected === "delivery") {
+        document.getElementById("deliveryScheduleField").style.display = "block";
+        document.getElementById("deliveryFields").style.display = "block";
+        document.getElementById("pickupScheduleField").style.display = "none";
+      }
+    });
+  }
+});
+
 
   // نافذة 4: تحديث قيود التوقيت بناءً على الوقت الحالي
   updateTimeConstraints();
