@@ -1,54 +1,45 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel</title>
   <!-- Font Awesome (Version 6) -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- Bootstrap CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <!-- Externes CSS -->
   <link rel="stylesheet" href="admin.css" />
 </head>
+
 <body>
   <!-- Toast für Benachrichtigungen -->
   <div id="toast" class="toast"></div>
 
   <!-- Service Optionen konfigurieren -->
-<div class="container-custom" id="serviceOptionContainer">
-  <h2>Service Optionen</h2>
-  <div class="btn-group" role="group" aria-label="Service Optionen">
-    <button type="button" class="btn btn-outline-primary" id="btnNurLieferung">
-      Nur Lieferung
-    </button>
-    <button type="button" class="btn btn-outline-primary" id="btnNurAbholung">
-      Nur Abholung
-    </button>
-    <button type="button" class="btn btn-outline-primary" id="btnBeides">
-      Beides
-    </button>
+  <div class="container-custom" id="serviceOptionContainer">
+    <h2>Service Optionen</h2>
+    <div class="btn-group" role="group" aria-label="Service Optionen">
+      <button type="button" class="btn btn-outline-primary" id="btnNurLieferung">
+        Nur Lieferung
+      </button>
+      <button type="button" class="btn btn-outline-primary" id="btnNurAbholung">
+        Nur Abholung
+      </button>
+      <button type="button" class="btn btn-outline-primary" id="btnBeides">
+        Beides
+      </button>
+    </div>
   </div>
-</div>
 
 
   <!-- WhatsApp-Nummer Konfiguration -->
   <div class="container-custom">
     <h2>WhatsApp Nummer konfigurieren</h2>
     <div class="mb-3">
-      <input
-        type="text"
-        id="whatsappNumber"
-        placeholder="WhatsApp-Nummer eingeben (z.B. +49123456789)"
-        required
-        class="form-control"
-      />
+      <input type="text" id="whatsappNumber" placeholder="WhatsApp-Nummer eingeben (z.B. +49123456789)" required
+        class="form-control" />
     </div>
     <button onclick="saveWhatsAppNumber()" class="btn btn-primary w-100">
       Speichern
@@ -70,37 +61,18 @@
     <div class="add-item-form">
       <h2>Gerichte bearbeiten (nach ID)</h2>
       <div class="mb-2">
-        <input
-          type="number"
-          id="edit-item-id"
-          placeholder="Gerichtsnummer (z. B. 106)"
-          required
-          class="form-control"
-        />
+        <input type="number" id="edit-item-id" placeholder="Gerichtsnummer (z. B. 106)" required class="form-control" />
       </div>
       <div class="mb-2">
-        <input
-          type="text"
-          id="edit-item-name"
-          placeholder="Neuer Gerichtsname (z. B. Pizza)"
-          class="form-control"
-        />
+        <input type="text" id="edit-item-name" placeholder="Neuer Gerichtsname (z. B. Pizza)" class="form-control" />
       </div>
       <div class="mb-2">
-        <input
-          type="number"
-          step="0.01"
-          id="edit-item-price"
-          placeholder="Neuer Preis (z. B. 9.99)"
-          class="form-control"
-        />
+        <input type="number" step="0.01" id="edit-item-price" placeholder="Neuer Preis (z. B. 9.99)"
+          class="form-control" />
       </div>
       <div class="mb-2">
-        <textarea
-          id="edit-item-ingredients"
-          placeholder="Neue Zutaten (z. B. Tomaten, Käse, Basilikum)"
-          class="form-control"
-        ></textarea>
+        <textarea id="edit-item-ingredients" placeholder="Neue Zutaten (z. B. Tomaten, Käse, Basilikum)"
+          class="form-control"></textarea>
       </div>
       <button onclick="updateItem()" class="btn btn-secondary w-100">
         Aktualisieren
@@ -218,10 +190,9 @@
   <!-- Firebase & Bootstrap -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Admin Panel Script -->
   <script src="admin.js"></script>
 </body>
+
 </html>
