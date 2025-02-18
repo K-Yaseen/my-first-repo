@@ -364,16 +364,52 @@ function updateDeliveryNote() {
 }
 
 /* ---------- عند تحميل الصفحة ---------- */
-document.addEventListener("DOMContentLoaded", () => {
-  // تحميل الأقسام ثم جلب الأصناف
-  loadCategories();
-  // تحميل أوقات الدوام
-  loadWorkingHours();
-  // تحديث ظهور الملاحظة الخاصة بالتوصيل
-  updateDeliveryNote();
+document.addEventListener("DOMContentLoaded", async () => {
+  // نافذة 1: تحميل البيانات الأولية واسترجاعها من localStorage
+  await fetchItems();
+  loadUserData();
+  await loadWorkingHours();
+  loadCart(); // استرجاع بيانات السلة من localStorage
 
-  
+  // نافذة 2: إضافة مستمعي الأحداث لحقول الوقت والتاريخ لحفظ التغييرات
+  document.getElementById("pickupTime").addEventListener("change", saveUserData);
+  document.getElementById("pickupDate").addEventListener("change", saveUserData);
+  document.getElementById("deliveryTime").addEventListener("change", saveUserData);
+  document.getElementById("deliveryDate").addEventListener("change", saveUserData);
+
+  // نافذة 3: التعامل مع نافذة مودال أوقات الدوام (Pre-Login Modal)
+  const preLoginModal = document.getElementById("preLoginModal");
+  if (preLoginModal) {
+    preLoginModal.style.display = "flex";
+    const continueBtn = document.getElementById("continueBtn");
+    if (continueBtn) {
+      continueBtn.addEventListener("click", function () {
+        preLoginModal.style.display = "none";
+      });
+    }
+  }
+
+  // نافذة 4: تحديث قيود التوقيت بناءً على الوقت الحالي
+  updateTimeConstraints();
+
+  // نافذة 5: تغيير خيارات التوصيل والاستلام وتحديث عرض الحقول بناءً على الخيار المحدد
+  const deliverySelect = document.getElementById("deliveryOption");
+  if (deliverySelect) {
+    deliverySelect.addEventListener("change", function () {
+      const selected = this.value;
+      if (selected === "pickup") {
+        document.getElementById("pickupScheduleField").style.display = "block";
+        document.getElementById("deliveryScheduleField").style.display = "none";
+        document.getElementById("deliveryFields").style.display = "none";
+      } else if (selected === "delivery") {
+        document.getElementById("deliveryScheduleField").style.display = "block";
+        document.getElementById("deliveryFields").style.display = "block";
+        document.getElementById("pickupScheduleField").style.display = "none";
+      }
+    });
+  }
 });
+
 
 
 
