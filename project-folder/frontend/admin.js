@@ -377,6 +377,8 @@ function applyServiceOption(option) {
 }
 
 
+
+
 // إضافة مستمعي الأحداث للأزرار الجديدة
 document.getElementById("btnNurLieferung").addEventListener("click", function() {
   updateServiceOption("nurLieferung");
