@@ -360,18 +360,23 @@ function updateServiceOption(option) {
 
 // دالة لتطبيق إعداد الخدمة على واجهة المسؤول
 function applyServiceOption(option) {
-  // تعديل عرض جداول أوقات الاستلام والتوصيل بناءً على الخيار المحدد
+  // الحصول على الحاوية الخاصة بجدول أوقات الاستلام
+  const pickupContainer = document.getElementById("pickupHoursTable").closest('.container-custom');
+  // الحصول على الحاوية الخاصة بجدول أوقات التوصيل
+  const deliveryContainer = document.getElementById("deliveryHoursTable").closest('.container-custom');
+
   if (option === "nurLieferung") {
-    document.getElementById("pickupHoursTable").style.display = "none";
-    document.getElementById("deliveryHoursTable").style.display = "block";
+      pickupContainer.style.display = "none";
+      deliveryContainer.style.display = "block";
   } else if (option === "nurAbholung") {
-    document.getElementById("deliveryHoursTable").style.display = "none";
-    document.getElementById("pickupHoursTable").style.display = "block";
-  } else { // الخيار "beides"
-    document.getElementById("pickupHoursTable").style.display = "block";
-    document.getElementById("deliveryHoursTable").style.display = "block";
+      deliveryContainer.style.display = "none";
+      pickupContainer.style.display = "block";
+  } else { // "beides"
+      pickupContainer.style.display = "block";
+      deliveryContainer.style.display = "block";
   }
 }
+
 
 // إضافة مستمعي الأحداث للأزرار الجديدة
 document.getElementById("btnNurLieferung").addEventListener("click", function() {
