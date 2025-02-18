@@ -466,6 +466,8 @@
 
 /* تنسيق زر العودة إلى السلة */
 .back-to-cart-btn {
+  top: 10px; /* مسافة من أعلى الحاوية */
+  right: 10px; /* مسافة من يمين الحاوية */
   background-color: #FF5722; /* لون مميز */
   color: #fff;
   border: none;
@@ -478,7 +480,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   margin-bottom: 20px;
-  width: auto;
 }
 
 .back-to-cart-btn:hover {
@@ -491,13 +492,5 @@
   margin-right: 4px;
   font-size: 14px;
 }
-
-/* إذا كان لديك صنف "hinweis" للفقرة التي تحتوي على النص */
-#deliveryFields p.hinweis {
-  display: none !important;
-}
-
-
-
 
 
