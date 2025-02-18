@@ -847,39 +847,28 @@ function applyUserServiceOption(option) {
     document.getElementById("deliveryFields").style.display = "block";
     deliveryOptionSelect.style.display = "none";
     
-    // إخفاء رسالة "Hinweis: Bitte füllen Sie diese Felder nur aus, wenn Sie eine Lieferung wünschen."
-    const deliveryHint = document.querySelector("#deliveryFields p.hinweis");
+    // استهداف الفقرة بدون الحاجة لصنف "hinweis"
+    const deliveryHint = document.querySelector("#deliveryFields p");
     if (deliveryHint) {
       deliveryHint.style.display = "none";
     }
-
-    // إذا كنت تريد إظهار النص أو الحقول الخاصة بوقت التوصيل فابقها ظاهرة
-    // أما إذا كنت تريد إخفاء أي شيء غير ضروري فعدّل حسب الحاجة
   } else if (option === "nurAbholung") {
-    // عرض خيار الاستلام فقط وإخفاء حقول التوصيل
     deliveryOptionSelect.innerHTML = '<option value="pickup">Selbstabholung</option>';
     document.getElementById("deliveryScheduleField").style.display = "none";
     document.getElementById("deliveryFields").style.display = "none";
     document.getElementById("pickupScheduleField").style.display = "block";
-
-    // أخفِ القائمة المنسدلة بما أنها أصبحت بخيار واحد
     deliveryOptionSelect.style.display = "none";
-
   } else {
-    // "beides": التوصيل والاستلام معًا
     deliveryOptionSelect.innerHTML =
       '<option value="pickup">Selbstabholung</option>' +
       '<option value="delivery">Lieferung</option>';
-
-    // نعيد إظهار القائمة المنسدلة في حال الخيار "beides"
     deliveryOptionSelect.style.display = "block";
-
-    // إظهار / إخفاء الحقول الافتراضية هنا إذا لزم
     var deliveryNote = document.querySelector("#deliveryFields p");
     if (deliveryNote) {
       deliveryNote.style.display = "block";
     }
   }
 }
+
 
 
