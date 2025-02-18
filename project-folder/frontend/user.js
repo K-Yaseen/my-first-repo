@@ -869,5 +869,32 @@ function applyUserServiceOption(option) {
   }
 }
 
+function goToOrderDetails() {
+  // إخفاء حاوية السلة العائمة
+  const overlay = document.getElementById("floatingCartOverlay");
+  if (overlay) {
+    overlay.style.display = "none";
+  }
+
+  // إظهار قسم "orderDetails" في حال كان مخفياً
+  const orderDetails = document.getElementById("orderDetails");
+  if (orderDetails) {
+    orderDetails.style.display = "block";
+
+    // تمرير انسيابي للقسم
+    orderDetails.scrollIntoView({ behavior: 'smooth' });
+
+    // إضافة تأثير الإبراز (Highlight) عبر كلاس CSS
+    orderDetails.classList.add('highlight-section');
+
+    // إمكانية إزالة الـHighlight بعد بضع ثوانٍ
+    setTimeout(() => {
+      orderDetails.classList.remove('highlight-section');
+    }, 4000);
+  }
+
+  // يمكنك أيضاً إظهار Alert بسيط أو مودال تنبيهي
+  // alert("Bitte füllen Sie jetzt die erforderlichen Daten aus, um Ihre Bestellung abzuschließen.");
+}
 
 
