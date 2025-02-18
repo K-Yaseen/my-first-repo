@@ -514,3 +514,76 @@ border-radius: 10px;
   box-shadow: 0 0 50px rgba(255, 87, 34, 1);
 }
 }
+
+/* حاوية المودال بالكامل */
+#preLoginModal.modal {
+  display: flex; /* تأكد من استعماله في بعض الأحيان */
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6); /* خلفية نصف شفافة */
+  z-index: 2000; /* ليظهر فوق المحتوى */
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* محتوى المودال */
+#preLoginModal .modal-content {
+  position: relative;
+  max-width: 500px;
+  width: 90%;
+  background-color: #ffffff;
+  border: 2px solid #28a745; /* إطار أخضر خفيف */
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  padding: 30px;
+  text-align: center;
+  animation: slideDown 0.5s ease forwards;
+}
+
+/* عنوان المودال */
+#preLoginModal .modal-content h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #28a745; /* لون أخضر مواكب لتصميمك */
+}
+
+/* النص داخل المودال */
+#preLoginModal .modal-content p {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* الزر داخل المودال */
+#preLoginModal .modal-content button {
+  background-color: #28a745;
+  border: none;
+  color: #ffffff;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+#preLoginModal .modal-content button:hover {
+  background-color: #218838; /* درجة أغمق قليلاً */
+  transform: scale(1.02);
+}
+
+/* حركة الدخول التدريجية */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* حركة انزلاق المودال من الأعلى */
+@keyframes slideDown {
+  0% {
+    transform: translateY(-30%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
