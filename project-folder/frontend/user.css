@@ -505,7 +505,7 @@ animation: neonPulse 2s ease-in-out infinite;
 /* إطار مرئي حول العنصر (اختياري) */
 border: 2px solid #ff5722; 
 border-radius: 10px;
-box-shadow: #ffa733;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* حركة التوهّج */
