@@ -336,6 +336,8 @@ function saveWorkingHours() {
   });
 }
 
+
+
 /* ---------- عند تحميل الصفحة ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   // تحميل الأقسام ثم جلب الأصناف
