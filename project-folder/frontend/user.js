@@ -820,33 +820,44 @@ firebase.database().ref("config/serviceOption").on("value", function(snapshot) {
 // دالة لتطبيق إعداد الخدمة على واجهة المستخدم
 function applyUserServiceOption(option) {
   const deliveryOptionSelect = document.getElementById("deliveryOption");
+  // إذا كان خيار الخدمة من قبل الادمن "nurLieferung"
   if (option === "nurLieferung") {
-    // عرض خيار التوصيل فقط وإخفاء حقول الاستلام
-    deliveryOptionSelect.innerHTML = '<option value="delivery">Lieferung</option>';
-    document.getElementById("pickupScheduleField").style.display = "none";
-    // عرض حقول التوصيل
+    // إخفاء القائمة المنسدلة
+    deliveryOptionSelect.style.display = "none";
+    // إنشاء أو إظهار عنصر نص ثابت يُظهر "Lieferung"
+    let staticText = document.getElementById("deliveryOptionStatic");
+    if (!staticText) {
+      staticText = document.createElement("span");
+      staticText.id = "deliveryOptionStatic";
+      deliveryOptionSelect.parentNode.insertBefore(staticText, deliveryOptionSelect.nextSibling);
+    }
+    staticText.textContent = "Lieferung";
+    staticText.style.display = "inline-block";
+    // إظهار حقول التوصيل وإخفاء حقول الاستلام
     document.getElementById("deliveryScheduleField").style.display = "block";
     document.getElementById("deliveryFields").style.display = "block";
-    // إخفاء رسالة الملاحظة داخل قسم التوصيل
-    var deliveryNote = document.querySelector("#deliveryFields p");
-    if (deliveryNote) {
-      deliveryNote.style.display = "none";
-    }
+    document.getElementById("pickupScheduleField").style.display = "none";
   } else if (option === "nurAbholung") {
-    // عرض خيار الاستلام فقط وإخفاء حقول التوصيل
-    deliveryOptionSelect.innerHTML = '<option value="pickup">Selbstabholung</option>';
+    // إذا كان خيار الخدمة "nurAbholung"
+    deliveryOptionSelect.style.display = "none";
+    let staticText = document.getElementById("deliveryOptionStatic");
+    if (!staticText) {
+      staticText = document.createElement("span");
+      staticText.id = "deliveryOptionStatic";
+      deliveryOptionSelect.parentNode.insertBefore(staticText, deliveryOptionSelect.nextSibling);
+    }
+    staticText.textContent = "Selbstabholung";
+    staticText.style.display = "inline-block";
+    // إظهار حقول الاستلام وإخفاء حقول التوصيل
+    document.getElementById("pickupScheduleField").style.display = "block";
     document.getElementById("deliveryScheduleField").style.display = "none";
     document.getElementById("deliveryFields").style.display = "none";
-    document.getElementById("pickupScheduleField").style.display = "block";
   } else {
-    // عند اختيار "beides" (التوصيل والاستلام)
-    deliveryOptionSelect.innerHTML =
-      '<option value="pickup">Selbstabholung</option>' +
-      '<option value="delivery">Lieferung</option>';
-    // التأكد من إظهار رسالة الملاحظة
-    var deliveryNote = document.querySelector("#deliveryFields p");
-    if (deliveryNote) {
-      deliveryNote.style.display = "block";
+    // عند اختيار "beides" (كلا الخيارين متاحين)
+    deliveryOptionSelect.style.display = "block";
+    let staticText = document.getElementById("deliveryOptionStatic");
+    if (staticText) {
+      staticText.style.display = "none";
     }
   }
 }
