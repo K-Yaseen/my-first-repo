@@ -596,7 +596,7 @@ async function sendToEmail() {
   }
 
   // يمكنك تحديد بريد المتجر أو المطعم هنا:
-  const shopEmail = "bestellung@restaurant.de";
+  const shopEmail = "yas";
 
   // إعداد رابط mailto
   // subject = \"Bestellung Nr. xyz\"
