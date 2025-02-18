@@ -576,7 +576,9 @@ function updateFloatingCart(item, quantity = 1) {
         quantitySelect.value = currentQuantity;
       }
     }
-    overlay.style.display = "flex";
+    if (showOverlay) {
+      overlay.style.display = "flex";
+    }
     updateCartButton();
     saveCart();
     return;
