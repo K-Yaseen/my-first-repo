@@ -523,8 +523,6 @@ async function sendToWhatsApp() {
         }
       }
       return true;
-
-
     }
 
 
