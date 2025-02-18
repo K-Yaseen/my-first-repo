@@ -485,6 +485,8 @@ async function sendToWhatsApp() {
       }
     }
 
+    
+
     // فتح الواتساب في نافذة جديدة
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappURL, "_blank");
