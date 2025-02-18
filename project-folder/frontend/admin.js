@@ -419,27 +419,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
-  // نافذة 4: تحديث قيود التوقيت بناءً على الوقت الحالي
-  updateTimeConstraints();
-
-  // نافذة 5: تغيير خيارات التوصيل والاستلام وتحديث عرض الحقول بناءً على الخيار المحدد
-  const deliverySelect = document.getElementById("deliveryOption");
-  if (deliverySelect) {
-    deliverySelect.addEventListener("change", function () {
-      const selected = this.value;
-      if (selected === "pickup") {
-        document.getElementById("pickupScheduleField").style.display = "block";
-        document.getElementById("deliveryScheduleField").style.display = "none";
-        document.getElementById("deliveryFields").style.display = "none";
-      } else if (selected === "delivery") {
-        document.getElementById("deliveryScheduleField").style.display = "block";
-        document.getElementById("deliveryFields").style.display = "block";
-        document.getElementById("pickupScheduleField").style.display = "none";
-      }
-    });
-  }
-});
-
 
 
 
