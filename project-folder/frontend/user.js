@@ -269,26 +269,36 @@ function loadWorkingHours() {
   });
 }
 
-function updateWorkingHoursDisplay(workingHours) {
+function updateWorkingHoursDisplay(workingHours, serviceOption = "beides") {
   const container = document.getElementById("workingHoursDisplay");
   if (!container) return;
   container.innerHTML = "";
+
   const dayNames = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
-  const dayAbbr = { Montag: "Mo", Dienstag: "Di", Mittwoch: "Mi", Donnerstag: "Do", Freitag: "Fr", Samstag: "Sa", Sonntag: "So" };
-  dayNames.forEach(day => {
+  const dayAbbr = {
+    Montag: "Mo", Dienstag: "Di", Mittwoch: "Mi",
+    Donnerstag: "Do", Freitag: "Fr", Samstag: "Sa", Sonntag: "So"
+  };
+
+  dayNames.forEach((day) => {
     if (workingHours[day]) {
       const hours = workingHours[day];
       const segments = [];
+
+      // إذا اليوم مغلق
       if (hours.closed) {
         segments.push("🚫");
       } else {
-        if (hours.pickupStart && hours.pickupEnd && hours.pickupStart.trim() !== "" && hours.pickupEnd.trim() !== "") {
+        // اعرض أوقات الاستلام (Pickup) إذا لم يكن serviceOption = nurLieferung
+        if (serviceOption !== "nurLieferung" && hours.pickupStart && hours.pickupEnd) {
           segments.push(`Abholung: ${hours.pickupStart}–${hours.pickupEnd}`);
         }
-        if (hours.deliveryStart && hours.deliveryEnd && hours.deliveryStart.trim() !== "" && hours.deliveryEnd.trim() !== "") {
+        // اعرض أوقات التوصيل (Delivery) إذا لم يكن serviceOption = nurAbholung
+        if (serviceOption !== "nurAbholung" && hours.deliveryStart && hours.deliveryEnd) {
           segments.push(`Lieferung: ${hours.deliveryStart}–${hours.deliveryEnd}`);
         }
       }
+
       if (segments.length > 0) {
         const entry = document.createElement("p");
         entry.innerHTML = `<strong>${dayAbbr[day]}:</strong> ${segments.join(" | ")}`;
@@ -297,6 +307,7 @@ function updateWorkingHoursDisplay(workingHours) {
     }
   });
 }
+
 
 function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
   const workingHours = JSON.parse(localStorage.getItem("workingHours"));
