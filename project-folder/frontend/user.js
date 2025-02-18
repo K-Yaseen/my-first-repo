@@ -510,6 +510,20 @@ async function sendToWhatsApp() {
         }
       }
       return true;
+
+       // التحقق من صحة الحقول المطلوبة للتوصيل
+  if (!validateDeliveryFields()) return;
+
+  // التحقق من صحة الموعد المختار
+  if (!validateSchedule()) return;
+
+  // باقي الكود لإعداد وإرسال الطلب عبر الواتساب
+  try {
+    // ... (كود إرسال الطلب كما هو)
+  } catch (error) {
+    console.error("Error sending to WhatsApp:", error);
+    showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
+  }
     }
     
     
