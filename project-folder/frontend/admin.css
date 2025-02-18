@@ -16,6 +16,10 @@ body {
   max-width: 800px;
 }
 
+.container-custom table {
+  width: 100% im;
+}
+
 /* Toast für Benachrichtigungen */
 .toast {
   position: fixed;
