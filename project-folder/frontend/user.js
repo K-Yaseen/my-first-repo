@@ -811,3 +811,35 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+// الاستماع لتحديثات إعداد الخدمة من Firebase وتطبيقها على واجهة المستخدم
+firebase.database().ref("config/serviceOption").on("value", function(snapshot) {
+  const option = snapshot.val() || "beides";
+  applyUserServiceOption(option);
+});
+
+// دالة لتطبيق إعداد الخدمة على واجهة المستخدم
+function applyUserServiceOption(option) {
+  const deliveryOptionSelect = document.getElementById("deliveryOption");
+
+  if (option === "nurLieferung") {
+    // عرض خيار التوصيل فقط وإخفاء حقول الاستلام
+    deliveryOptionSelect.innerHTML = '<option value="delivery">Lieferung</option>';
+    document.getElementById("pickupScheduleField").style.display = "none";
+    // عرض الحقول الخاصة بالتوصيل
+    document.getElementById("deliveryScheduleField").style.display = "block";
+    document.getElementById("deliveryFields").style.display = "block";
+  } else if (option === "nurAbholung") {
+    // عرض خيار الاستلام فقط وإخفاء حقول التوصيل
+    deliveryOptionSelect.innerHTML = '<option value="pickup">Selbstabholung</option>';
+    document.getElementById("deliveryScheduleField").style.display = "none";
+    document.getElementById("deliveryFields").style.display = "none";
+    // عرض الحقول الخاصة بالاستلام
+    document.getElementById("pickupScheduleField").style.display = "block";
+  } else {
+    // عرض كلا الخيارين في حال اختيار "beides"
+    deliveryOptionSelect.innerHTML = 
+      '<option value="pickup">Selbstabholung</option>' +
+      '<option value="delivery">Lieferung</option>';
+    // يمكن التحكم في ظهور الحقول بناءً على اختيار المستخدم لاحقاً
+  }
+}
