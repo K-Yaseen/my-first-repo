@@ -499,21 +499,16 @@ async function sendToWhatsApp() {
     }
 
     function validateDeliveryFields() {
-      // الحصول على خيار الخدمة من localStorage أو من القائمة (إن وجدت)
-      const serviceOption = localStorage.getItem("serviceOption");
-      const deliveryOption = document.getElementById("deliveryOption")
-        ? document.getElementById("deliveryOption").value
-        : "";
-
-      // التحقق من الحقول الإلزامية عند اختيار التوصيل
-      if (serviceOption === "nurLieferung" || deliveryOption === "delivery") {
+      const deliveryOption = document.getElementById("deliveryOption").value;
+      // إذا كان الخيار "Lieferung" (توصيل) نقوم بالتحقق من الحقول الإلزامية
+      if (deliveryOption === "delivery") {
         const vorname = document.getElementById("vorname").value.trim();
         const nachname = document.getElementById("nachname").value.trim();
         const strasse = document.getElementById("strasse").value.trim();
         const hausnummer = document.getElementById("hausnummer").value.trim();
         const plz = document.getElementById("plz").value.trim();
         const stadt = document.getElementById("stadt").value.trim();
-
+    
         if (!vorname || !nachname || !strasse || !hausnummer || !plz || !stadt) {
           showFloatingMessage(
             "Bitte füllen Sie alle erforderlichen Felder für die Lieferung aus.",
