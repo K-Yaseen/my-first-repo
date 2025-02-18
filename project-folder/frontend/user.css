@@ -518,7 +518,7 @@
 
 .glowing-border {
   position: relative; /* لضمان عرض الظلال الداخلية والخارجية */
-  border: 3px solid #fff;
+  border: 3px solid #ff0000;
   border-radius: 15px;
   background-color: #222;
   padding: 20px;
