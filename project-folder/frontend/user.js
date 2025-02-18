@@ -841,14 +841,17 @@ firebase.database().ref("config/serviceOption").on("value", function (snapshot) 
 function applyUserServiceOption(option) {
   const deliveryOptionSelect = document.getElementById("deliveryOption");
   if (option === "nurLieferung") {
-    // عرض خيار التوصيل فقط 
     deliveryOptionSelect.innerHTML = '<option value="delivery">Lieferung</option>';
     document.getElementById("pickupScheduleField").style.display = "none";
     document.getElementById("deliveryScheduleField").style.display = "block";
     document.getElementById("deliveryFields").style.display = "block";
-
-    // أخفِ القائمة المنسدلة بما أنها أصبحت بخيار واحد
     deliveryOptionSelect.style.display = "none";
+    
+    // إخفاء رسالة "Hinweis: Bitte füllen Sie diese Felder nur aus, wenn Sie eine Lieferung wünschen."
+    const deliveryHint = document.querySelector("#deliveryFields p.hinweis");
+    if (deliveryHint) {
+      deliveryHint.style.display = "none";
+    }
 
     // إذا كنت تريد إظهار النص أو الحقول الخاصة بوقت التوصيل فابقها ظاهرة
     // أما إذا كنت تريد إخفاء أي شيء غير ضروري فعدّل حسب الحاجة
