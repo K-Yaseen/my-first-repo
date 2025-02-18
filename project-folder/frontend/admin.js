@@ -264,6 +264,7 @@ function loadWorkingHours() {
       // الدالتان المسؤولتان عن تعبئة الحقول
       fillPickupHoursForm(data);    // ← أضف هذا السطر
       fillDeliveryHoursForm(data);  // ← أضف هذا السطر
+      
       updateWorkingHoursDisplay(data);
     }
   });
