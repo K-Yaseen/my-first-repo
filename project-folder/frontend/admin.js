@@ -257,25 +257,14 @@ function toggleAvailability(id) {
 
 /* ---------- تحميل أوقات الدوام (loadWorkingHours) ---------- */
 function loadWorkingHours() {
-  return new Promise((resolve, reject) => {
-    database
-      .ref("workingHours")
-      .once("value")
-      .then((snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          localStorage.setItem("workingHours", JSON.stringify(data));
-          updateWorkingHoursDisplay(data); // تأكد من أن هذه الدالة موجودة وتعمل بشكل صحيح
-        }
-        resolve();
-      })
-      .catch((error) => {
-        console.error("Error loading working hours:", error);
-        reject(error);
-      });
+  database.ref("workingHours").on("value", (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      localStorage.setItem("workingHours", JSON.stringify(data));
+      updateWorkingHoursDisplay(data);
+    }
   });
 }
-
 
 
 /* تعبئة حقول الاستلام */
@@ -304,47 +293,38 @@ function fillDeliveryHoursForm(workingHours) {
 
 /* ---------- حفظ أوقات الدوام (saveWorkingHours) ---------- */
 function saveWorkingHours() {
-  // استرجاع البيانات الحالية من localStorage إن وجدت
-  let existingWorkingHours = {};
-  const stored = localStorage.getItem("workingHours");
-  if (stored) {
-    existingWorkingHours = JSON.parse(stored);
-  }
-  // نبدأ بالبيانات الحالية حتى ندمج التحديثات الجديدة عليها
-  let workingHours = { ...existingWorkingHours };
+  let workingHours = {};
 
-  // تحديث بيانات الاستلام فقط إذا كانت الحاوية مرئية
-  const pickupContainer = document.getElementById("pickupContainer");
-  if (window.getComputedStyle(pickupContainer).display !== "none") {
-    document.querySelectorAll("#pickupHoursTable tr[data-day]").forEach((row) => {
-      const day = row.getAttribute("data-day");
-      const inputs = row.querySelectorAll("input");
-      if (!workingHours[day]) workingHours[day] = {};
-      workingHours[day].pickupStart = inputs[0].value || null;
-      workingHours[day].pickupEnd = inputs[1].value || null;
-    });
-  }
+  // جمع بيانات الاستلام
+  document.querySelectorAll("#pickupHoursTable tr[data-day]").forEach((row) => {
+    const day = row.getAttribute("data-day");
+    const inputs = row.querySelectorAll("input");
+    if (!workingHours[day]) {
+      workingHours[day] = {};
+    }
+    workingHours[day].pickupStart = inputs[0].value || null;
+    workingHours[day].pickupEnd = inputs[1].value || null;
+  });
 
-  // تحديث بيانات التوصيل فقط إذا كانت الحاوية مرئية
-  const deliveryContainer = document.getElementById("deliveryContainer");
-  if (window.getComputedStyle(deliveryContainer).display !== "none") {
-    document.querySelectorAll("#deliveryHoursTable tr[data-day]").forEach((row) => {
-      const day = row.getAttribute("data-day");
-      const inputs = row.querySelectorAll("input");
-      if (!workingHours[day]) workingHours[day] = {};
-      workingHours[day].deliveryStart = inputs[0].value || null;
-      workingHours[day].deliveryEnd = inputs[1].value || null;
-    });
-  }
+  // جمع بيانات التسليم
+  document.querySelectorAll("#deliveryHoursTable tr[data-day]").forEach((row) => {
+    const day = row.getAttribute("data-day");
+    const inputs = row.querySelectorAll("input");
+    if (!workingHours[day]) {
+      workingHours[day] = {};
+    }
+    workingHours[day].deliveryStart = inputs[0].value || null;
+    workingHours[day].deliveryEnd = inputs[1].value || null;
+  });
 
-  // تحديد إذا ما كان اليوم مغلقاً (عدم وجود أي أوقات)
+  // تحديد إن كان اليوم مغلقًا بالكامل
   Object.keys(workingHours).forEach((day) => {
     const { pickupStart, pickupEnd, deliveryStart, deliveryEnd } = workingHours[day];
     workingHours[day].closed =
       !pickupStart && !pickupEnd && !deliveryStart && !deliveryEnd;
   });
 
-  // رفع البيانات المحدثة إلى قاعدة البيانات
+  // رفع التغييرات إلى فايربيز
   database.ref("workingHours").set(workingHours, (error) => {
     if (error) {
       showToast("Fehler beim Speichern der Öffnungszeiten.", "#f44336");
@@ -354,7 +334,6 @@ function saveWorkingHours() {
     }
   });
 }
-
 
 function updateDeliveryNote() {
   // الحصول على خيار الخدمة المخزن في localStorage
@@ -375,65 +354,14 @@ function updateDeliveryNote() {
 }
 
 /* ---------- عند تحميل الصفحة ---------- */
-ddocument.addEventListener("DOMContentLoaded", async () => {
-  // نافذة 1: تحميل البيانات الأولية
-  await fetchItems();
-  loadUserData();
-  await loadWorkingHours();  // الآن loadWorkingHours تنتظر تحميل البيانات
-  loadCart(); // استرجاع بيانات السلة من localStorage
-
-  // نافذة 2: تعبئة حقول أوقات الدوام من البيانات المحفوظة في localStorage
-  const storedWorkingHours = localStorage.getItem("workingHours");
-  if (storedWorkingHours) {
-    const workingHours = JSON.parse(storedWorkingHours);
-    fillPickupHoursForm(workingHours);
-    fillDeliveryHoursForm(workingHours);
-  }
-
-  // نافذة 3: إضافة مستمعي الأحداث لحقول جداول أوقات الدوام لحفظ التغييرات عند التعديل
-  const workingHoursInputs = document.querySelectorAll(
-    "#pickupHoursTable input, #deliveryHoursTable input"
-  );
-  workingHoursInputs.forEach((input) => {
-    input.addEventListener("change", saveWorkingHours);
-  });
-
-  // باقي النوافذ كما هو...
-  // نافذة 4: التعامل مع مودال أوقات الدوام
-  const preLoginModal = document.getElementById("preLoginModal");
-  if (preLoginModal) {
-    preLoginModal.style.display = "flex";
-    const continueBtn = document.getElementById("continueBtn");
-    if (continueBtn) {
-      continueBtn.addEventListener("click", function () {
-        preLoginModal.style.display = "none";
-      });
-    }
-  }
-
-  // نافذة 5: تحديث قيود التوقيت بناءً على الوقت الحالي
-  updateTimeConstraints();
-
-  // نافذة 6: تغيير خيارات التوصيل والاستلام وتحديث عرض الحقول
-  const deliverySelect = document.getElementById("deliveryOption");
-  if (deliverySelect) {
-    deliverySelect.addEventListener("change", function () {
-      const selected = this.value;
-      if (selected === "pickup") {
-        document.getElementById("pickupScheduleField").style.display = "block";
-        document.getElementById("deliveryScheduleField").style.display = "none";
-        document.getElementById("deliveryFields").style.display = "none";
-      } else if (selected === "delivery") {
-        document.getElementById("deliveryScheduleField").style.display = "block";
-        document.getElementById("deliveryFields").style.display = "block";
-        document.getElementById("pickupScheduleField").style.display = "none";
-      }
-    });
-  }
+document.addEventListener("DOMContentLoaded", () => {
+  // تحميل الأقسام ثم جلب الأصناف
+  loadCategories();
+  // تحميل أوقات الدوام
+  loadWorkingHours();
+  // تحديث ظهور الملاحظة الخاصة بالتوصيل
+  updateDeliveryNote();
 });
-
-
-
 
 
 
