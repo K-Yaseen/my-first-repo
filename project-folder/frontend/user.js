@@ -620,8 +620,11 @@ function updateFloatingCart(item, quantity = 1, showOverlay = true) {
   deleteBtn.className = "delete-btn";
   deleteBtn.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-      <path d="M170.5 51.6..."/>
-    </svg>`;
+  <path d="M135.2 17.8C141.6 7.2 152.2 0 163.8 0H284.2C295.8 0 306.4 7.2 312.8 17.8l12.9 20.2h102.3c8.8 0 16 7.2 16 16v16c0 8.8-7.2 
+    16-16 16h-26l-26.9 405.3c-2.3 34.2-30.9 60.7-65.2 60.7H171c-34.3 0-62.9-26.5-65.2-60.7L78.8 90H52c-8.8 0-16-7.2-16-16V58c0-8.8 
+    7.2-16 16-16h102.3l12.9-20.2zM171 464h106c8.5 0 15.5-6.6 16-15.1l14.3-343H140.8l14.3 343c.5 8.5 7.5 15.1 15.9 15.1z"/>
+</svg>
+`;
   deleteBtn.title = "Gericht Löschen";
   deleteBtn.addEventListener("click", function () {
     if (confirm("Möchten Sie diesen Artikel wirklich aus dem Warenkorb entfernen?")) {
