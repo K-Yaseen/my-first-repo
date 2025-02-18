@@ -247,8 +247,7 @@ function toggleAvailability(id) {
 
       database.ref("items").set(items);
       showToast(
-        `Gericht ${items[index].name} ist jetzt ${
-          items[index].available ? "Verfügbar" : "Nicht verfügbar"
+        `Gericht ${items[index].name} ist jetzt ${items[index].available ? "Verfügbar" : "Nicht verfügbar"
         }`,
         items[index].available ? "#4caf50" : "#f44336"
       );
@@ -259,11 +258,11 @@ function toggleAvailability(id) {
 /* ---------- تحميل أوقات الدوام (loadWorkingHours) ---------- */
 function loadWorkingHours() {
   database.ref("workingHours").on("value", (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-          localStorage.setItem("workingHours", JSON.stringify(data));
-          updateWorkingHoursDisplay(data);
-      }
+    const data = snapshot.val();
+    if (data) {
+      localStorage.setItem("workingHours", JSON.stringify(data));
+      updateWorkingHoursDisplay(data);
+    }
   });
 }
 
@@ -341,16 +340,16 @@ function updateDeliveryNote() {
   var serviceOption = localStorage.getItem("serviceOption");
   // تحديد عنصر الفقرة داخل قسم الحقول الخاصة بالتوصيل
   var deliveryNote = document.querySelector("#deliveryFields p");
-  
+
   if (deliveryNote) {
-      if (serviceOption === "nurLieferung") {
-          deliveryNote.style.display = "none";
-      } else if (serviceOption === "beides") {
-          deliveryNote.style.display = "block";
-      } else {
-          // في حالة عدم تحديد خيار أو اختيار "Nur Abholung" مثلاً
-          deliveryNote.style.display = "none";
-      }
+    if (serviceOption === "nurLieferung") {
+      deliveryNote.style.display = "none";
+    } else if (serviceOption === "beides") {
+      deliveryNote.style.display = "block";
+    } else {
+      // في حالة عدم تحديد خيار أو اختيار "Nur Abholung" مثلاً
+      deliveryNote.style.display = "none";
+    }
   }
 }
 
@@ -360,12 +359,15 @@ document.addEventListener("DOMContentLoaded", () => {
   loadCategories();
   // تحميل أوقات الدوام
   loadWorkingHours();
+  // تحديث ظهور الملاحظة الخاصة بالتوصيل
+  updateDeliveryNote();
 });
+
 
 
 // دالة لتحديث إعدادات الخدمة في قاعدة البيانات
 function updateServiceOption(option) {
-  firebase.database().ref("config/serviceOption").set(option, function(error) {
+  firebase.database().ref("config/serviceOption").set(option, function (error) {
     if (error) {
       showToast("Fehler beim Aktualisieren der Service Optionen.", "#f44336");
     } else {
@@ -383,27 +385,27 @@ function applyServiceOption(option) {
   const deliveryContainer = document.getElementById("deliveryHoursTable").closest('.container-custom');
 
   if (option === "nurLieferung") {
-      pickupContainer.style.display = "none";
-      deliveryContainer.style.display = "block";
+    pickupContainer.style.display = "none";
+    deliveryContainer.style.display = "block";
   } else if (option === "nurAbholung") {
-      deliveryContainer.style.display = "none";
-      pickupContainer.style.display = "block";
+    deliveryContainer.style.display = "none";
+    pickupContainer.style.display = "block";
   } else { // "beides"
-      pickupContainer.style.display = "block";
-      deliveryContainer.style.display = "block";
+    pickupContainer.style.display = "block";
+    deliveryContainer.style.display = "block";
   }
 }
 
 // تخزين خيار الخدمة في localStorage عند اختيار زر الخدمة
-document.getElementById("btnNurLieferung").addEventListener("click", function() {
+document.getElementById("btnNurLieferung").addEventListener("click", function () {
   localStorage.setItem("serviceOption", "nurLieferung");
   applyServiceOption("nurLieferung");
 });
-document.getElementById("btnBeides").addEventListener("click", function() {
+document.getElementById("btnBeides").addEventListener("click", function () {
   localStorage.setItem("serviceOption", "beides");
   applyServiceOption("beides");
 });
-document.getElementById("btnNurAbholung").addEventListener("click", function() {
+document.getElementById("btnNurAbholung").addEventListener("click", function () {
   localStorage.setItem("serviceOption", "nurAbholung");
   applyServiceOption("nurAbholung");
 });
@@ -411,20 +413,20 @@ document.getElementById("btnNurAbholung").addEventListener("click", function() {
 
 
 // إضافة مستمعي الأحداث للأزرار الجديدة
-document.getElementById("btnNurLieferung").addEventListener("click", function() {
+document.getElementById("btnNurLieferung").addEventListener("click", function () {
   updateServiceOption("nurLieferung");
 });
 
-document.getElementById("btnNurAbholung").addEventListener("click", function() {
+document.getElementById("btnNurAbholung").addEventListener("click", function () {
   updateServiceOption("nurAbholung");
 });
 
-document.getElementById("btnBeides").addEventListener("click", function() {
+document.getElementById("btnBeides").addEventListener("click", function () {
   updateServiceOption("beides");
 });
 
 // استرجاع وتطبيق إعداد الخدمة عند تحميل الصفحة
-firebase.database().ref("config/serviceOption").on("value", function(snapshot) {
+firebase.database().ref("config/serviceOption").on("value", function (snapshot) {
   const option = snapshot.val() || "beides";
   applyServiceOption(option);
 });
