@@ -511,7 +511,7 @@
     box-shadow: 0 0 30px rgba(255, 87, 34, 0.5);
   }
   100% {
-    box-shadow: 0 0 25px rgba(255, 87, 34, 1);
+    box-shadow: 0 0 50px rgba(255, 87, 34, 1);
   }
 }
 
