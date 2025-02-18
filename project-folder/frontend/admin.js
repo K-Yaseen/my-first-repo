@@ -379,10 +379,8 @@ function updateServiceOption(option) {
 
 // دالة لتطبيق إعداد الخدمة على واجهة المسؤول
 function applyServiceOption(option) {
-  // الحصول على الحاوية الخاصة بجدول أوقات الاستلام
-  const pickupContainer = document.getElementById("pickupHoursTable").closest('.container-custom');
-  // الحصول على الحاوية الخاصة بجدول أوقات التوصيل
-  const deliveryContainer = document.getElementById("deliveryHoursTable").closest('.container-custom');
+  const pickupContainer = document.getElementById("pickupContainer");
+  const deliveryContainer = document.getElementById("deliveryContainer");
 
   if (option === "nurLieferung") {
     pickupContainer.style.display = "none";
@@ -395,6 +393,7 @@ function applyServiceOption(option) {
     deliveryContainer.style.display = "block";
   }
 }
+
 
 // تخزين خيار الخدمة في localStorage عند اختيار زر الخدمة
 document.getElementById("btnNurLieferung").addEventListener("click", function () {
