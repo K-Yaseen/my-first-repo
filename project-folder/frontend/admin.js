@@ -336,7 +336,23 @@ function saveWorkingHours() {
   });
 }
 
-
+function updateDeliveryNote() {
+  // الحصول على خيار الخدمة المخزن في localStorage
+  var serviceOption = localStorage.getItem("serviceOption");
+  // تحديد عنصر الفقرة داخل قسم الحقول الخاصة بالتوصيل
+  var deliveryNote = document.querySelector("#deliveryFields p");
+  
+  if (deliveryNote) {
+      if (serviceOption === "nurLieferung") {
+          deliveryNote.style.display = "none";
+      } else if (serviceOption === "beides") {
+          deliveryNote.style.display = "block";
+      } else {
+          // في حالة عدم تحديد خيار أو اختيار "Nur Abholung" مثلاً
+          deliveryNote.style.display = "none";
+      }
+  }
+}
 
 /* ---------- عند تحميل الصفحة ---------- */
 document.addEventListener("DOMContentLoaded", () => {
