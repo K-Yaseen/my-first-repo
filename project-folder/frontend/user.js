@@ -498,28 +498,8 @@ async function sendToWhatsApp() {
       }
     }
 
-   // دالة التحقق من صحة الحقول المطلوبة für Lieferung
-function validateDeliveryFields() {
-  const deliveryOption = document.getElementById("deliveryOption").value;
-  // إذا كان خيار "Lieferung" محددًا، يتم التحقق من تعبئة الحقول المطلوبة
-  if (deliveryOption === "delivery") {
-    const vorname = document.getElementById("vorname").value.trim();
-    const nachname = document.getElementById("nachname").value.trim();
-    const strasse = document.getElementById("strasse").value.trim();
-    const hausnummer = document.getElementById("hausnummer").value.trim();
-    const plz = document.getElementById("plz").value.trim();
-    const stadt = document.getElementById("stadt").value.trim();
 
-    if (!vorname || !nachname || !strasse || !hausnummer || !plz || !stadt) {
-      showFloatingMessage(
-        "Bitte füllen Sie alle erforderlichen Felder für die Lieferung aus.",
-        "red"
-      );
-      return false;
-    }
-  }
-  return true;
-}
+
 
 
 
