@@ -394,65 +394,45 @@ function validateSchedule() {
 // VII. WhatsApp Order Functions / Funktionen für WhatsApp-Bestellung
 // ================================================
 async function sendToWhatsApp() {
-  // التحقق من صلاحية الموعد المختار
+  const deliveryOption = document.getElementById("deliveryOption").value;
+
+  // إذا كان خيار "Lieferung" محددًا، التحقق من تعبئة الحقول المطلوبة
+  if (deliveryOption === "delivery" && !validateDeliveryFields()) return;
+  // التحقق من صحة الموعد المختار (سواء للتوصيل أو للاستلام)
   if (!validateSchedule()) return;
 
   try {
-    // جلب رقم الواتساب من الفايربيس أو استخدام الافتراضي
+    // جلب رقم WhatsApp من Firebase أو استخدام الافتراضي
     const snapshot = await database.ref("config/whatsappNumber").once("value");
     let rawNumber = snapshot.val() || "4915759100569";
     const whatsappNumber = rawNumber.replace(/\D/g, "");
 
-    // إعداد المعلومات العامة للرسالة
+    // إعداد رقم الطلب والرسالة الأساسية
     const orderNum = generateOrderNumber();
-    const deliveryOption = document.getElementById("deliveryOption").value;
+    let message = "Hallo, ich möchte gerne bestellen:\n\n";
+    message += `📜 *Bestellnummer:* ${orderNum}\n\n`;
 
-    // هذه الأسطر لا تزال تدعم صنفًا واحدًا إذا تم البحث عنه عبر حقل البحث:
-    const itemId = document.getElementById("whatsappBtn").getAttribute("data-item-id");
-    const itemName = document.getElementById("whatsappBtn").getAttribute("data-item-name");
-    const item = items.find(i => i.id == itemId);
-    const ingredients = item ? item.ingredients || "Keine Angaben" : "Unbekannt";
-    const price = item ? (item.price ? item.price.toFixed(2) + " €" : "Preis nicht verfügbar") : "Preis nicht verfügbar";
-
+    // إضافة محتوى ملاحظات العميل إن وجدت
     const customerNotes = document.getElementById("customerNotes").value.trim();
-    const welcomeMessage = "Hallo, ich möchte gerne bestellen:\n\n";
-
-    // بداية بناء الرسالة
-    let message = welcomeMessage + `📜 *Bestellnummer:* ${orderNum}\n\n`;
-
-    // // إذا أردت الاستغناء عن إرسال صنف البحث مفصّلًا، احذف الأسطر أدناه
-    // if (itemId && itemName) {
-    //   message += 
-    //     `🍛 *Gericht:* - ${itemId}. ${itemName}\n` +
-    //     `🧂 *Zutaten:* ${ingredients}\n` +
-    //     `💰 *Preis:* ${price}\n\n`;
-    // }
-
-    // إن كانت هناك ملاحظات من العميل
     if (customerNotes) {
       message += `📝 *Dazu:* ${customerNotes}\n\n`;
     }
 
-    // (1) **تعديلات لإدراج أصناف السلة**:
+    // إضافة محتوى السلة إذا كانت موجودة
     const cartItemsElement = document.getElementById("cartItems");
     if (cartItemsElement && cartItemsElement.children.length > 0) {
       message += "🛒 *Warenkorb-Inhalt:*\n";
-
-      // نجمع كل عناصر <li> التي تحمل class="cart-item"
       cartItemsElement.querySelectorAll('.cart-item').forEach(cartItem => {
         const itemInfoEl = cartItem.querySelector('.item-info');
         const quantitySelectEl = cartItem.querySelector('.quantity-dropdown');
-
         const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Item";
         const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
-
-        // عرض كل عنصر مع كميته
         message += `${itemText} Menge: ${quantity}\n`;
       });
       message += "\n";
     }
 
-    // (2) إعداد معلومات التوصيل أو الاستلام
+    // إعداد معلومات التوصيل أو الاستلام بناءً على الخيار المختار
     if (deliveryOption === "delivery") {
       const vorname = document.getElementById("vorname").value.trim();
       const nachname = document.getElementById("nachname").value.trim();
@@ -472,31 +452,28 @@ async function sendToWhatsApp() {
       const deliveryTime = document.getElementById("deliveryTime").value.trim();
       if (deliveryDate || deliveryTime) {
         message += `📅 *Lieferdatum:* ${deliveryDate}\n` +
-          `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
+                   `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
       }
     } else if (deliveryOption === "pickup") {
       const pickupDate = document.getElementById("pickupDate").value.trim();
       const pickupTime = document.getElementById("pickupTime").value.trim();
-      if (pickupDate || pickupTime) {
-        message +=
-          `🚶 *Selbstabholung*\n` +
-          `📅 *Abholdatum:* ${pickupDate}\n` +
-          `⏰ *Abholzeit:* ${pickupTime}\n\n`;
-      }
-      // التحقق من صحة الحقول المطلوبة للتوصيل
-      if (!validateDeliveryFields()) return;
-
-      // التحقق من صحة الموعد المختار
-      if (!validateSchedule()) return;
-
-      // باقي الكود لإعداد وإرسال الطلب عبر الواتساب
-      try {
-        // ... (كود إرسال الطلب كما هو)
-      } catch (error) {
-        console.error("Error sending to WhatsApp:", error);
-        showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
-      }
+      message +=
+        `🚶 *Selbstabholung*\n` +
+        `📅 *Abholdatum:* ${pickupDate}\n` +
+        `⏰ *Abholzeit:* ${pickupTime}\n\n`;
     }
+
+    // فتح WhatsApp في نافذة جديدة
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, "_blank");
+
+    clearCart(); // مسح السلة بعد إرسال الطلب
+  } catch (error) {
+    console.error("Error sending to WhatsApp:", error);
+    showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
+  }
+}
+
 
    // دالة التحقق من صحة الحقول المطلوبة für Lieferung
 function validateDeliveryFields() {
