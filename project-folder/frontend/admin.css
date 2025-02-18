@@ -7,6 +7,9 @@ body {
   text-align: center;
 }
 
+.container-custom table {
+  width: 100%;
+}
 .container-custom {
   background: #ffffff;
   border-radius: 15px;
@@ -16,9 +19,7 @@ body {
   max-width: 800px;
 }
 
-.container-custom table {
-  width: 100%;
-}
+
 
 /* Toast für Benachrichtigungen */
 .toast {
