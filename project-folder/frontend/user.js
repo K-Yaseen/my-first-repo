@@ -485,6 +485,25 @@ async function sendToWhatsApp() {
       }
     }
 
+    function validateDeliveryFields() {
+      // الحصول على خيار الخدمة من localStorage أو من القائمة (إن وجدت)
+      var serviceOption = localStorage.getItem("serviceOption");
+      // إذا كان خيار الخدمة من الادمن "nurLieferung" أو كانت قيمة القائمة "delivery"
+      if (serviceOption === "nurLieferung" || 
+         (document.getElementById("deliveryOption") && document.getElementById("deliveryOption").value === "delivery")) {
+        var vorname = document.getElementById("vorname").value.trim();
+        var nachname = document.getElementById("nachname").value.trim();
+        var strasse = document.getElementById("strasse").value.trim();
+        var hausnummer = document.getElementById("hausnummer").value.trim();
+        var plz = document.getElementById("plz").value.trim();
+        var stadt = document.getElementById("stadt").value.trim();
+        if (!vorname || !nachname || !strasse || !hausnummer || !plz || !stadt) {
+          showFloatingMessage("Bitte füllen Sie alle erforderlichen Felder für die Lieferung aus.", "red");
+          return false;
+        }
+      }
+      return true;
+    }
     
 
     // فتح الواتساب في نافذة جديدة
