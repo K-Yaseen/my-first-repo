@@ -376,6 +376,19 @@ function applyServiceOption(option) {
   }
 }
 
+// تخزين خيار الخدمة في localStorage عند اختيار زر الخدمة
+document.getElementById("btnNurLieferung").addEventListener("click", function() {
+  localStorage.setItem("serviceOption", "nurLieferung");
+  applyServiceOption("nurLieferung");
+});
+document.getElementById("btnBeides").addEventListener("click", function() {
+  localStorage.setItem("serviceOption", "beides");
+  applyServiceOption("beides");
+});
+document.getElementById("btnNurAbholung").addEventListener("click", function() {
+  localStorage.setItem("serviceOption", "nurAbholung");
+  applyServiceOption("nurAbholung");
+});
 
 
 
