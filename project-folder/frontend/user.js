@@ -692,10 +692,18 @@ document.getElementById("vorname").addEventListener("input", function () {
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchItems();
   loadUserData();
-  await loadWorkingHours();
+  await loadWorkingHours(); // سيضع workingHours في localStorage
   loadCart(); // استرجاع بيانات السلة من localStorage
 
-  
+  // 1) اجلب خيار الخدمة من Firebase
+  const snapshot = await firebase.database().ref("config/serviceOption").once("value");
+  const serviceOption = snapshot.val() || "beides";
+
+  // 2) استدعِ الدالة updateWorkingHoursDisplay مع تمرير خيار الخدمة
+  const storedWorkingHours = JSON.parse(localStorage.getItem("workingHours"));
+  if (storedWorkingHours) {
+    updateWorkingHoursDisplay(storedWorkingHours, serviceOption);
+  }
 
   // إظهار مودال أوقات الدوام عند الفتح
   const preLoginModal = document.getElementById("preLoginModal");
@@ -712,10 +720,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   // تحديث قيود التوقيت
   updateTimeConstraints();
 
-  // 1) الحصول على العنصر <select> الخاص بالـ "deliveryOption"
+  // الحصول على العنصر <select> الخاص بالـdeliveryOption
   const deliverySelect = document.getElementById("deliveryOption");
   if (deliverySelect) {
-    // 2) إضافة مستمع لتغيير القيمة
     deliverySelect.addEventListener("change", function () {
       const selected = this.value;
       if (selected === "pickup") {
@@ -734,6 +741,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
+
 
 function saveUserData() {
   // 1) اجمع بيانات المستخدم من الحقول
