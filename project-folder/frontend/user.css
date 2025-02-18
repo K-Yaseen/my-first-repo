@@ -492,6 +492,10 @@
   font-size: 14px;
 }
 
+/* إذا كان لديك صنف "hinweis" للفقرة التي تحتوي على النص */
+#deliveryFields p.hinweis {
+  display: none !important;
+}
 
 
 
