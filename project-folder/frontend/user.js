@@ -558,7 +558,7 @@ function addToCart() {
 }
 
 
-function updateFloatingCart(item, quantity = 1) {
+function updateFloatingCart(item, quantity = 1, showOverlay = true) {
   const overlay = document.getElementById("floatingCartOverlay");
   const cartItems = document.getElementById("cartItems");
   if (!overlay || !cartItems) return;
