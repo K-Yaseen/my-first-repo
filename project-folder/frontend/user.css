@@ -498,23 +498,6 @@
 }
 
 
-/* تأثير إضاءة (نبض) لجذب الانتباه */
-.highlight-section {
-  animation: highlightPulse 0.8s ease-in-out 0s 3 alternate;
-  border: 2px solid #ff5722; /* إطار مميز */
-  border-radius: 10px;
-}
-
-/* تعريف حركة النبض */
-@keyframes highlightPulse {
-  0% {
-    box-shadow: 0 0 10px rgba(255, 87, 34, 0.5);
-  }
-  100% {
-    box-shadow: 0 0 25px rgba(255, 87, 34, 1);
-  }
-}
-
 .glow-border {
   border: 2px solid #ff5722; /* لون مبدئي للإطار */
   border-radius: 8px;       /* نعومة الحواف (اختياري) */
