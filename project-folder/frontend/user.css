@@ -503,7 +503,7 @@
   animation: highlightPulse 0.8s ease-in-out 0s 3 alternate;
   border: 2px solid #ff5722; /* إطار مميز */
   border-radius: 10px;
-  bo
+  box-shadow: #E64A19;
 }
 
 /* تعريف حركة النبض */
