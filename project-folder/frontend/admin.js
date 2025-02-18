@@ -293,38 +293,47 @@ function fillDeliveryHoursForm(workingHours) {
 
 /* ---------- حفظ أوقات الدوام (saveWorkingHours) ---------- */
 function saveWorkingHours() {
-  let workingHours = {};
+  // استرجاع البيانات الحالية من localStorage إن وجدت
+  let existingWorkingHours = {};
+  const stored = localStorage.getItem("workingHours");
+  if (stored) {
+    existingWorkingHours = JSON.parse(stored);
+  }
+  // نبدأ بالبيانات الحالية حتى ندمج التحديثات الجديدة عليها
+  let workingHours = { ...existingWorkingHours };
 
-  // جمع بيانات الاستلام
-  document.querySelectorAll("#pickupHoursTable tr[data-day]").forEach((row) => {
-    const day = row.getAttribute("data-day");
-    const inputs = row.querySelectorAll("input");
-    if (!workingHours[day]) {
-      workingHours[day] = {};
-    }
-    workingHours[day].pickupStart = inputs[0].value || null;
-    workingHours[day].pickupEnd = inputs[1].value || null;
-  });
+  // تحديث بيانات الاستلام فقط إذا كانت الحاوية مرئية
+  const pickupContainer = document.getElementById("pickupContainer");
+  if (window.getComputedStyle(pickupContainer).display !== "none") {
+    document.querySelectorAll("#pickupHoursTable tr[data-day]").forEach((row) => {
+      const day = row.getAttribute("data-day");
+      const inputs = row.querySelectorAll("input");
+      if (!workingHours[day]) workingHours[day] = {};
+      workingHours[day].pickupStart = inputs[0].value || null;
+      workingHours[day].pickupEnd = inputs[1].value || null;
+    });
+  }
 
-  // جمع بيانات التسليم
-  document.querySelectorAll("#deliveryHoursTable tr[data-day]").forEach((row) => {
-    const day = row.getAttribute("data-day");
-    const inputs = row.querySelectorAll("input");
-    if (!workingHours[day]) {
-      workingHours[day] = {};
-    }
-    workingHours[day].deliveryStart = inputs[0].value || null;
-    workingHours[day].deliveryEnd = inputs[1].value || null;
-  });
+  // تحديث بيانات التوصيل فقط إذا كانت الحاوية مرئية
+  const deliveryContainer = document.getElementById("deliveryContainer");
+  if (window.getComputedStyle(deliveryContainer).display !== "none") {
+    document.querySelectorAll("#deliveryHoursTable tr[data-day]").forEach((row) => {
+      const day = row.getAttribute("data-day");
+      const inputs = row.querySelectorAll("input");
+      if (!workingHours[day]) workingHours[day] = {};
+      workingHours[day].deliveryStart = inputs[0].value || null;
+      workingHours[day].deliveryEnd = inputs[1].value || null;
+    });
+  }
 
-  // تحديد إن كان اليوم مغلقًا بالكامل
+  // تحديد إذا ما كان اليوم مغلقاً (عدم وجود أي أوقات)
   Object.keys(workingHours).forEach((day) => {
     const { pickupStart, pickupEnd, deliveryStart, deliveryEnd } = workingHours[day];
     workingHours[day].closed =
       !pickupStart && !pickupEnd && !deliveryStart && !deliveryEnd;
   });
 
-  // رفع التغييرات إلى فايربيز
+  // رفع البيانات المحدثة إلى قاعدة البيانات
   database.ref("workingHours").set(workingHours, (error) => {
     if (error) {
       showToast("Fehler beim Speichern der Öffnungszeiten.", "#f44336");
@@ -334,6 +343,7 @@ function saveWorkingHours() {
     }
   });
 }
+
 
 function updateDeliveryNote() {
   // الحصول على خيار الخدمة المخزن في localStorage
