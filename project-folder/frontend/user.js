@@ -584,7 +584,9 @@ function updateFloatingCart(item, quantity = 1, showOverlay = true) {
     return;
   }
 
-  
+  // أثناء تحميل السلة من LocalStorage
+updateFloatingCart(item, cartItem.quantity, false);
+
 
   // إنشاء عنصر li جديد إذا لم يكن الصنف موجوداً
   const li = document.createElement("li");
