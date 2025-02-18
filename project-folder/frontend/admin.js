@@ -258,16 +258,15 @@ function toggleAvailability(id) {
 
 /* ---------- تحميل أوقات الدوام (loadWorkingHours) ---------- */
 function loadWorkingHours() {
-  database.ref("workingHours").once("value").then((snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      localStorage.setItem("workingHours", JSON.stringify(data));
-      // تعبئة جدول الاستلام والتسليم كلٌ على حدة
-      fillPickupHoursForm(data);
-      fillDeliveryHoursForm(data);
-    }
+  database.ref("workingHours").on("value", (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+          localStorage.setItem("workingHours", JSON.stringify(data));
+          updateWorkingHoursDisplay(data);
+      }
   });
 }
+
 
 /* تعبئة حقول الاستلام */
 function fillPickupHoursForm(workingHours) {
