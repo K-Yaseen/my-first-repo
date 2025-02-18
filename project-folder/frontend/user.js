@@ -820,26 +820,34 @@ firebase.database().ref("config/serviceOption").on("value", function(snapshot) {
 // دالة لتطبيق إعداد الخدمة على واجهة المستخدم
 function applyUserServiceOption(option) {
   const deliveryOptionSelect = document.getElementById("deliveryOption");
-
   if (option === "nurLieferung") {
     // عرض خيار التوصيل فقط وإخفاء حقول الاستلام
     deliveryOptionSelect.innerHTML = '<option value="delivery">Lieferung</option>';
     document.getElementById("pickupScheduleField").style.display = "none";
-    // عرض الحقول الخاصة بالتوصيل
+    // عرض حقول التوصيل
     document.getElementById("deliveryScheduleField").style.display = "block";
     document.getElementById("deliveryFields").style.display = "block";
+    // إخفاء رسالة الملاحظة داخل قسم التوصيل
+    var deliveryNote = document.querySelector("#deliveryFields p");
+    if (deliveryNote) {
+      deliveryNote.style.display = "none";
+    }
   } else if (option === "nurAbholung") {
     // عرض خيار الاستلام فقط وإخفاء حقول التوصيل
     deliveryOptionSelect.innerHTML = '<option value="pickup">Selbstabholung</option>';
     document.getElementById("deliveryScheduleField").style.display = "none";
     document.getElementById("deliveryFields").style.display = "none";
-    // عرض الحقول الخاصة بالاستلام
     document.getElementById("pickupScheduleField").style.display = "block";
   } else {
-    // عرض كلا الخيارين في حال اختيار "beides"
-    deliveryOptionSelect.innerHTML = 
+    // عند اختيار "beides" (التوصيل والاستلام)
+    deliveryOptionSelect.innerHTML =
       '<option value="pickup">Selbstabholung</option>' +
       '<option value="delivery">Lieferung</option>';
-    // يمكن التحكم في ظهور الحقول بناءً على اختيار المستخدم لاحقاً
+    // التأكد من إظهار رسالة الملاحظة
+    var deliveryNote = document.querySelector("#deliveryFields p");
+    if (deliveryNote) {
+      deliveryNote.style.display = "block";
+    }
   }
 }
+
