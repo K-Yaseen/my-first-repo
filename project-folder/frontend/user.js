@@ -497,6 +497,7 @@ async function sendToWhatsApp() {
         showFloatingMessage("Fehler beim Senden der Bestellung.", "red");
       }
     }
+
     // فتح الواتساب في نافذة جديدة
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappURL, "_blank");
