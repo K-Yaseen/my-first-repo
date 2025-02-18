@@ -137,3 +137,8 @@ body {
 .toggle-switch input:checked + .slider::before {
   transform: translateX(20px);
 }
+
+/* جعل جدول أوقات العمل يمتد داخل الحاوية بالكامل */
+.container-custom table {
+  width: 100%;
+}
