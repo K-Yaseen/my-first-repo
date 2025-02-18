@@ -526,6 +526,94 @@ window.sendToWhatsApp = function () {
   });
 };
 
+async function sendToEmail() {
+  // تحقق من وجود عناصر في السلة (نفس منطق sendToWhatsApp)
+  const cartItemsElement = document.getElementById("cartItems");
+  if (!cartItemsElement || cartItemsElement.children.length === 0) {
+    alert("Bitte fügen Sie mindestens ein Gericht in den Warenkorb hinzu, bevor Sie bestellen.");
+    return;
+  }
+
+  const deliveryOption = document.getElementById("deliveryOption").value;
+  // التحقق من صحة الحقول المطلوبة (إن كانت Lieferung) مثلاً
+  if (deliveryOption === "delivery" && !validateDeliveryFields()) return;
+  // التحقق من صحة الموعد المختار
+  if (!validateSchedule()) return;
+
+  // نبني رسالة الطلب
+  let message = "Hallo, ich möchte gerne bestellen:\n\n";
+  const orderNum = generateOrderNumber();
+  message += `📜 Bestellnummer: ${orderNum}\n\n`;
+
+  // ملاحظات العميل إن وجدت
+  const customerNotes = document.getElementById("customerNotes").value.trim();
+  if (customerNotes) {
+    message += `📝 Dazu: ${customerNotes}\n\n`;
+  }
+
+  // محتوى السلة
+  message += "🛒 Warenkorb-Inhalt:\n";
+  cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
+    const itemInfoEl = cartItem.querySelector(".item-info");
+    const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
+    const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Item";
+    const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
+    message += `- ${itemText} (Menge: ${quantity})\n`;
+  });
+  message += "\n";
+
+  // اسم المستخدم
+  const vorname = document.getElementById("vorname").value.trim();
+  const nachname = document.getElementById("nachname").value.trim();
+  if (vorname || nachname) {
+    message += `👤 Name: ${vorname} ${nachname}\n\n`;
+  }
+
+  // إذا كان توصيل (delivery) أو استلام (pickup)
+  if (deliveryOption === "delivery") {
+    const strasse = document.getElementById("strasse").value.trim();
+    const hausnummer = document.getElementById("hausnummer").value.trim();
+    const plz = document.getElementById("plz").value.trim();
+    const stadt = document.getElementById("stadt").value.trim();
+
+    message += "🚚 Lieferung\n";
+    message += `🏠 Adresse: ${strasse} ${hausnummer}, ${plz} ${stadt}\n\n`;
+
+    const deliveryDate = document.getElementById("deliveryDate").value.trim();
+    const deliveryTime = document.getElementById("deliveryTime").value.trim();
+    if (deliveryDate || deliveryTime) {
+      message += `📅 Lieferdatum: ${deliveryDate}\n`;
+      message += `⏰ Lieferzeit: ${deliveryTime}\n\n`;
+    }
+  } else {
+    // Abholung
+    const pickupDate = document.getElementById("pickupDate").value.trim();
+    const pickupTime = document.getElementById("pickupTime").value.trim();
+
+    message += "🚶 Selbstabholung\n";
+    message += `📅 Abholdatum: ${pickupDate}\n`;
+    message += `⏰ Abholzeit: ${pickupTime}\n\n`;
+  }
+
+  // يمكنك تحديد بريد المتجر أو المطعم هنا:
+  const shopEmail = "bestellung@restaurant.de";
+
+  // إعداد رابط mailto
+  // subject = \"Bestellung Nr. xyz\"
+  // body = \"نص الطلب\"
+  const subject = encodeURIComponent(`Bestellung Nr. ${orderNum}`);
+  const body = encodeURIComponent(message);
+
+  // فتح رابط mailto في نافذة أو تبويب جديد
+  // بعض المتصفحات قد تستبدل النافذة بتطبيق البريد تلقائيًا
+  const mailtoLink = `mailto:${shopEmail}?subject=${subject}&body=${body}`;
+  window.open(mailtoLink, "_blank");
+
+  // مسح السلة مثلاً:
+  clearCart();
+}
+
+
 
 
 // ================================================
