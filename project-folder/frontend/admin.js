@@ -372,7 +372,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // تحديث ظهور الملاحظة الخاصة بالتوصيل
   updateDeliveryNote();
 
-  document.getElementById("pickupTime").addEventListener("change", saveUserData); document.getElementById("pickupDate").addEventListener("change", saveUserData); document.getElementById("deliveryTime").addEventListener("change", saveUserData); document.getElementById("deliveryDate").addEventListener("change", saveUserData);
+  
 });
 
 
