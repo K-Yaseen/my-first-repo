@@ -499,6 +499,19 @@ async function sendToWhatsApp() {
 }
 
 
+// احتفظ بالدالة الأصلية
+const _originalSendToWhatsApp = window.sendToWhatsApp;
+
+// استبدل الدالة بواحدة جديدة
+window.sendToWhatsApp = function() {
+  // استدعِ المودال قبل الإرسال
+  showPaymentConfirm(() => {
+    // إذا وافق المستخدم، نستدعي الدالة الأصلية فعليًا
+    _originalSendToWhatsApp();
+  });
+};
+
+
 
 // ================================================
 // VIII. Floating Cart Functions / وظائف للسلة العائمة
