@@ -841,33 +841,42 @@ firebase.database().ref("config/serviceOption").on("value", function (snapshot) 
 function applyUserServiceOption(option) {
   const deliveryOptionSelect = document.getElementById("deliveryOption");
   if (option === "nurLieferung") {
-    // عرض خيار التوصيل فقط وإخفاء حقول الاستلام
+    // عرض خيار التوصيل فقط 
     deliveryOptionSelect.innerHTML = '<option value="delivery">Lieferung</option>';
     document.getElementById("pickupScheduleField").style.display = "none";
-    // عرض حقول التوصيل
     document.getElementById("deliveryScheduleField").style.display = "block";
     document.getElementById("deliveryFields").style.display = "block";
-    // إخفاء رسالة الملاحظة داخل قسم التوصيل
-    var deliveryNote = document.querySelector("#deliveryFields p");
-    if (deliveryNote) {
-      deliveryNote.style.display = "none";
-    }
+
+    // أخفِ القائمة المنسدلة بما أنها أصبحت بخيار واحد
+    deliveryOptionSelect.style.display = "none";
+
+    // إذا كنت تريد إظهار النص أو الحقول الخاصة بوقت التوصيل فابقها ظاهرة
+    // أما إذا كنت تريد إخفاء أي شيء غير ضروري فعدّل حسب الحاجة
   } else if (option === "nurAbholung") {
     // عرض خيار الاستلام فقط وإخفاء حقول التوصيل
     deliveryOptionSelect.innerHTML = '<option value="pickup">Selbstabholung</option>';
     document.getElementById("deliveryScheduleField").style.display = "none";
     document.getElementById("deliveryFields").style.display = "none";
     document.getElementById("pickupScheduleField").style.display = "block";
+
+    // أخفِ القائمة المنسدلة بما أنها أصبحت بخيار واحد
+    deliveryOptionSelect.style.display = "none";
+
   } else {
-    // عند اختيار "beides" (التوصيل والاستلام)
+    // "beides": التوصيل والاستلام معًا
     deliveryOptionSelect.innerHTML =
       '<option value="pickup">Selbstabholung</option>' +
       '<option value="delivery">Lieferung</option>';
-    // التأكد من إظهار رسالة الملاحظة
+
+    // نعيد إظهار القائمة المنسدلة في حال الخيار "beides"
+    deliveryOptionSelect.style.display = "block";
+
+    // إظهار / إخفاء الحقول الافتراضية هنا إذا لزم
     var deliveryNote = document.querySelector("#deliveryFields p");
     if (deliveryNote) {
       deliveryNote.style.display = "block";
     }
   }
 }
+
 
