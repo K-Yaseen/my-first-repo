@@ -37,7 +37,6 @@
   
   #orderDetails {
     margin-top: 20px;
-    background: #222;
   }
   
   /* =======================================
@@ -518,20 +517,16 @@
     inset 0 0 30px rgba(255, 0, 0, 0.7);  /* توهج داخلي أقوى */
 }
 
-/* -----------------------------------------------------------------------------------
-   إطار متوهج باللون الأحمر (Neon Red Glow)
------------------------------------------------------------------------------------ */
 .glowing-border {
-  position: relative;      /* مهم لعرض الظلال بشكل صحيح */
-  border: 3px solid #ff0000;  /* لون إطار أحمر */
+  position: relative; /* لضمان عرض الظلال الداخلية والخارجية */
+  border: 3px solid #ff0000;
   border-radius: 15px;
-  background-color: #222;  /* خلفية داكنة تبرز الإضاءة */
+  background-color: #222;
   padding: 20px;
 
-  /* حركة النبض (pulse) للأضواء */
-  animation: neonPulse 2s ease-in-out infinite alternate;
+  animation: neonPulse 2s ease-in-out infinite alternate; /* الحركة */
 
-  /* الوضع الابتدائي للظلال */
+  /* الوضع الابتدائي */
   box-shadow:
     0 0 15px rgba(255, 0, 0, 0.7),
     0 0 30px rgba(255, 0, 0, 0.7),
@@ -539,21 +534,20 @@
     inset 0 0 30px rgba(255, 0, 0, 0.7);
 }
 
-/* الحركة من حالة توهج أخف (0%) إلى توهج أقوى (100%) */
 @keyframes neonPulse {
   0% {
     box-shadow:
       0 0 10px rgba(255, 0, 0, 0.5),
       0 0 20px rgba(255, 0, 0, 0.5),
       inset 0 0 10px rgba(255, 0, 0, 0.5),
-      inset 0 0 20px rgba(255, 0, 0, 0.5);
+      inset 0 0 20px rgba(244, 0, 0, 0.5);
   }
   100% {
     box-shadow:
-      0 0 20px rgba(255, 0, 0, 1),
-      0 0 40px rgba(255, 0, 0, 1),
-      inset 0 0 20px rgba(255, 0, 0, 1),
-      inset 0 0 40px rgba(255, 0, 0, 1);
+      0 0 20px rgb(255, 0, 0),
+      0 0 40px rgb(255, 0, 0),
+      inset 0 0 20px rgb(255, 0, 0),
+      inset 0 0 40px rgb(255, 6, 6);
   }
 }
 
