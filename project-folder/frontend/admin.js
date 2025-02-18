@@ -371,6 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadWorkingHours();
   // تحديث ظهور الملاحظة الخاصة بالتوصيل
   updateDeliveryNote();
+  
 });
 
 
