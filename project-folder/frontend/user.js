@@ -503,7 +503,7 @@ async function sendToWhatsApp() {
 const _originalSendToWhatsApp = window.sendToWhatsApp;
 
 // استبدل الدالة بواحدة جديدة
-window.sendToWhatsApp = function() {
+window.sendToWhatsApp = function () {
   // استدعِ المودال قبل الإرسال
   showPaymentConfirm(() => {
     // إذا وافق المستخدم، نستدعي الدالة الأصلية فعليًا
