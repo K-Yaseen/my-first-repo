@@ -264,7 +264,7 @@ function loadWorkingHours() {
       // الدالتان المسؤولتان عن تعبئة الحقول
       fillPickupHoursForm(data);    // ← أضف هذا السطر
       fillDeliveryHoursForm(data);  // ← أضف هذا السطر
-      
+
       updateWorkingHoursDisplay(data);
     }
   });
@@ -385,18 +385,26 @@ function updateServiceOption(option) {
 function applyServiceOption(option) {
   const pickupContainer = document.getElementById("pickupContainer");
   const deliveryContainer = document.getElementById("deliveryContainer");
+  const saveBtn = document.getElementById("saveWorkingHoursButton"); // زر حفظ الأوقات
 
   if (option === "nurLieferung") {
+    // خدمة التوصيل فقط
     pickupContainer.style.display = "none";
     deliveryContainer.style.display = "block";
+    saveBtn.textContent = "Lieferzeiten speichern";
   } else if (option === "nurAbholung") {
+    // خدمة الاستلام فقط
     deliveryContainer.style.display = "none";
     pickupContainer.style.display = "block";
-  } else { // "beides"
+    saveBtn.textContent = "Abholzeiten speichern";
+  } else {
+    // كلتا الخدمتين
     pickupContainer.style.display = "block";
     deliveryContainer.style.display = "block";
+    saveBtn.textContent = "Abhol- und Lieferzeiten speichern";
   }
 }
+
 
 
 // تخزين خيار الخدمة في localStorage عند اختيار زر الخدمة
