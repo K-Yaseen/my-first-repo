@@ -415,7 +415,7 @@ function validateDeliveryFields() {
 
 async function sendToWhatsApp() {
   const deliveryOption = document.getElementById("deliveryOption").value;
-  
+
   // التحقق من صحة الحقول المطلوبة إذا كانت Lieferung
   if (deliveryOption === "delivery" && !validateDeliveryFields()) return;
   // التحقق من صحة الموعد المختار (سواء للتوصيل أو للاستلام)
@@ -429,9 +429,9 @@ async function sendToWhatsApp() {
     const orderNum = generateOrderNumber();
     let message = "Hallo, ich möchte gerne bestellen:\n\n";
     message += `📜 *Bestellnummer:* ${orderNum}\n\n`;
-    
-    
-    
+
+
+
     // إضافة ملاحظات العميل إن وجدت
     const customerNotes = document.getElementById("customerNotes").value.trim();
     if (customerNotes) {
@@ -477,7 +477,7 @@ async function sendToWhatsApp() {
       const deliveryTime = document.getElementById("deliveryTime").value.trim();
       if (deliveryDate || deliveryTime) {
         message += `📅 *Lieferdatum:* ${deliveryDate}\n` +
-                   `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
+          `⏰ *Lieferzeit:* ${deliveryTime}\n\n`;
       }
     } else if (deliveryOption === "pickup") {
       const pickupDate = document.getElementById("pickupDate").value.trim();
@@ -849,7 +849,7 @@ function applyUserServiceOption(option) {
     document.getElementById("deliveryScheduleField").style.display = "block";
     document.getElementById("deliveryFields").style.display = "block";
     deliveryOptionSelect.style.display = "none";
-    
+
     // استهداف الفقرة بدون الحاجة لصنف "hinweis"
     const deliveryHint = document.querySelector("#deliveryFields p");
     if (deliveryHint) {
