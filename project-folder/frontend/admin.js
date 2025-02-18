@@ -261,6 +261,9 @@ function loadWorkingHours() {
     const data = snapshot.val();
     if (data) {
       localStorage.setItem("workingHours", JSON.stringify(data));
+      // الدالتان المسؤولتان عن تعبئة الحقول
+      fillPickupHoursForm(data);    // ← أضف هذا السطر
+      fillDeliveryHoursForm(data);  // ← أضف هذا السطر
       updateWorkingHoursDisplay(data);
     }
   });
