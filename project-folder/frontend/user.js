@@ -782,7 +782,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("floatingCartOverlay").style.display = "flex";
   });
 
-
+  const emailBtn = document.getElementById("emailBtn");
+  if (emailBtn) {
+    emailBtn.addEventListener("click", () => {
+      selectedOrderChannel = "email";
+      showPaymentInfo(); 
+    });
+  }
   
 });
 
