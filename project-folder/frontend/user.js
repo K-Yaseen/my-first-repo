@@ -570,21 +570,76 @@ function showSavePopup() {
   }
 }
 
-// Original sendToWhatsApp-Funktion wird hier übersprungen,
-// weil wir sie durch showPaymentConfirm erweitert haben.
-// async function sendToWhatsApp() { /* Code siehe Original... */ }
-// const originalSendToWhatsApp = window.sendToWhatsApp;
-// window.sendToWhatsApp = function() {
-//   // 1. اعرض النافذة
-//   showPaymentInfo();
+function sendToWhatsApp() {
+  // 1. التحقق من صحة الحقول المطلوبة (مثل validateDeliveryFields و validateSchedule)
+  if (!validateDeliveryFields()) return;
+  if (!validateSchedule()) return;
 
-//   // 2. عند ضغط "فهمت"، نغلق المودال ونتابع
-//   const closeBtn = document.getElementById("closePaymentModalBtn");
-//   closeBtn.onclick = () => {
-//     closePaymentInfo(); 
-//     originalSendToWhatsApp();
-//   };
-// };
+  // 2. جلب بيانات الطلب (الأصناف + الكمية)
+  const cartItemsElement = document.getElementById("cartItems");
+  if (!cartItemsElement || cartItemsElement.children.length === 0) {
+    alert("سلة المشتريات فارغة.");
+    return;
+  }
+
+  // تحضير نص الطلب لضمّه ضمن رسالة الواتساب
+  let orderText = "طلب جديد عبر التطبيق:\n";
+  cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
+    const itemInfoEl = cartItem.querySelector(".item-info");
+    const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
+    const itemName = itemInfoEl ? itemInfoEl.textContent.trim() : "صنف غير معروف";
+    const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
+    orderText += `\n- ${itemName} (الكمية: ${quantity})`;
+  });
+
+  // 3. معلومات العميل وطريقة التوصيل
+  const deliveryOption = document.getElementById("deliveryOption").value;
+  const vorname = document.getElementById("vorname").value.trim();
+  const nachname = document.getElementById("nachname").value.trim();
+  const strasse = document.getElementById("strasse").value.trim();
+  const hausnummer = document.getElementById("hausnummer").value.trim();
+  const plz = document.getElementById("plz").value.trim();
+  const stadt = document.getElementById("stadt").value.trim();
+  const notes = document.getElementById("customerNotes").value.trim();
+
+  orderText += `\n\nـ تفاصيل العميل:`;
+  orderText += `\nالاسم: ${vorname} ${nachname}`;
+  orderText += `\nالعنوان: ${strasse} ${hausnummer}, ${plz} ${stadt}`;
+  orderText += `\nملاحظات: ${notes}`;
+
+  if (deliveryOption === "delivery") {
+    const deliveryDate = document.getElementById("deliveryDate").value;
+    const deliveryTime = document.getElementById("deliveryTime").value;
+    orderText += `\n\nطريقة التسليم: توصيل`;
+    orderText += `\nالتاريخ والوقت: ${deliveryDate} - ${deliveryTime}`;
+  } else {
+    const pickupDate = document.getElementById("pickupDate").value;
+    const pickupTime = document.getElementById("pickupTime").value;
+    orderText += `\n\nطريقة التسليم: استلام`;
+    orderText += `\nالتاريخ والوقت: ${pickupDate} - ${pickupTime}`;
+  }
+
+  // 4. إضافة رقم الطلب (pendingOrderId)
+  if (pendingOrderId) {
+    orderText += `\n\nرقم الطلب: ${pendingOrderId}`;
+  }
+
+  // 5. حساب المجموع
+  const totalPrice = calculateCartTotal().toFixed(2);
+  orderText += `\nإجمالي السعر: ${totalPrice} €`;
+
+  // 6. تعديل رقم الهاتف المطلوب الإرسال إليه
+  const phoneNumber = "YOUR_PHONE_NUMBER_HERE"; 
+  // ملاحظة: يجب كتابة الرقم بصيغة دولية بدون "+"، مثل  966123456789 أو 491234567890
+
+  // 7. بناء رابط الـ WhatsApp
+  const encodedMessage = encodeURIComponent(orderText);
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+  // 8. فتح نافذة جديدة مع رابط الواتساب
+  window.open(whatsappUrl, "_blank");
+}
+
 
 function sendToEmail() {
   // هنا تضع كود إرسال الطلب عبر البريد الإلكتروني
