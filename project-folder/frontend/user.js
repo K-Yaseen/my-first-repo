@@ -10,7 +10,7 @@ let phoneNumber = ""; // سيتم قراءته من Firebase (whatsappNumber)
 
 // Firebase-Konfiguration
 const firebaseConfig = {
-  apiKey: "AIzaSyBeAkTPw9nswsCy9NtWEgf6nG4al5Qx83c",
+  apiKey: "AIzaSyBeAkTPw...",
   authDomain: "restaurant-system-f50cf.firebaseapp.com",
   databaseURL: "https://restaurant-system-f50cf-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "restaurant-system-f50cf",
@@ -55,7 +55,6 @@ async function fetchConfig() {
   try {
     const snapshot = await database.ref("config").once("value");
     const configData = snapshot.val() || {};
-    // قراءة whatsappNumber بدلاً من phoneNumber
     phoneNumber = configData.whatsappNumber || "";
     console.log("Telefonnummer aus Firebase:", phoneNumber);
   } catch (error) {
@@ -80,14 +79,12 @@ async function fetchItems() {
 // Anzeige des Status & Laden/Speichern von Daten
 // ================================================
 function showFloatingMessage(message, color = "red") {
-  // Für schnelles Feedback
   alert(message);
 }
 
 function loadUserData() {
   const storedData = safeJSONParse(localStorage.getItem("userData"));
   if (storedData) {
-    // Bestelloption
     if (storedData.deliveryOption) {
       document.getElementById("deliveryOption").value = storedData.deliveryOption;
       if (storedData.deliveryOption === "delivery") {
@@ -101,7 +98,6 @@ function loadUserData() {
         document.getElementById("pickupTime").value = storedData.pickupTime || "";
       }
     }
-    // Restliche Felder
     document.getElementById("vorname").value = storedData.vorname || "";
     document.getElementById("nachname").value = storedData.nachname || "";
     document.getElementById("strasse").value = storedData.strasse || "";
@@ -181,7 +177,7 @@ function saveCart() {
   cartItemsContainer.querySelectorAll(".cart-item").forEach(item => {
     const itemId = item.getAttribute("data-item-id");
     const quantity = item.querySelector(".quantity-dropdown").value;
-    cartItemsArray.push({ id: itemId, quantity: quantity });
+    cartItemsArray.push({ id: itemId, quantity });
   });
   localStorage.setItem("cart", JSON.stringify(cartItemsArray));
 }
@@ -227,7 +223,6 @@ function checkItem() {
   const orderDetails = document.getElementById("orderDetails");
   const addToCartBtn = document.getElementById("addToCartBtn");
 
-  // Reset/Hide
   result.style.display = "block";
   addToCartBtn.style.display = "none";
 
@@ -315,7 +310,6 @@ function updateFloatingCart(item, quantity = 1, showOverlay = true) {
     return;
   }
 
-  // Neues Listenelement:
   const li = document.createElement("li");
   li.className = "cart-item";
   li.setAttribute("data-item-id", item.id);
@@ -338,13 +332,17 @@ function updateFloatingCart(item, quantity = 1, showOverlay = true) {
   deleteBtn.className = "delete-btn";
   deleteBtn.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-      <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96
-               0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0
-               7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm
-               96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16
-               -16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8
-               -7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2
-               16-16l0-224c0-8.8-7.2-16-16-16z"/>
+      <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 
+      17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 
+      96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 
+      35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 
+      64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 
+      16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 
+      7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 
+      16-16l0-224c0-8.8-7.2-16-16-16zm96 
+      0c-8.8 0-16 7.2-16 16l0 224c0 
+      8.8 7.2 16 16 16s16-7.2 
+      16-16l0-224c0-8.8-7.2-16-16-16z"/>
     </svg>`;
   deleteBtn.title = "Gericht löschen";
   deleteBtn.addEventListener("click", () => {
@@ -558,36 +556,45 @@ function validateDeliveryFields() {
 }
 
 // ================================================
-// Funktionen für die Bestellvorgänge (WhatsApp/Email)
+// الدالة الناقصة لحساب المجموع الكلي
 // ================================================
-function showSavePopup() {
-  saveUserData();
-  const popup = document.getElementById("popupMessage");
-  if (popup) {
-    popup.classList.add("show");
-    setTimeout(() => {
-      popup.classList.remove("show");
-    }, 3000);
-  }
+function calculateCartTotal() {
+  let total = 0;
+  const cartItemsElement = document.getElementById("cartItems");
+  if (!cartItemsElement) return 0;
+  
+  cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
+    const itemId = cartItem.getAttribute("data-item-id");
+    const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
+    const quantity = quantitySelectEl ? parseInt(quantitySelectEl.value) : 1;
+
+    // إذا أردت حساب السعر من items:
+    const realItem = items.find(x => x.id == itemId);
+    if (realItem && realItem.price) {
+      total += realItem.price * quantity;
+    }
+  });
+  return total;
 }
 
+// ================================================
+// دالة sendToEmail تستدعي الخادم لإرسال الإيميل
+// ================================================
 async function sendToEmail() {
-  // إذا كانت السلة فارغة...
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
     alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
     return;
   }
 
-  // جهّز بيانات الطلب كما تفعل عادةً:
   const orderId = pendingOrderId || generateOrderNumber();
-  const items = [];
+  const itemsData = [];
   cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
     const itemInfoEl = cartItem.querySelector(".item-info");
     const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
     const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Produkt";
     const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
-    items.push({ name: itemText, quantity });
+    itemsData.push({ name: itemText, quantity });
   });
 
   const totalPrice = calculateCartTotal().toFixed(2);
@@ -605,14 +612,13 @@ async function sendToEmail() {
   const deliveryDate = document.getElementById("deliveryDate").value;
   const deliveryTime = document.getElementById("deliveryTime").value;
 
-  // أرسل الطلب إلى خادمك:
   try {
     const response = await fetch("http://localhost:3000/send-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         orderId,
-        items,
+        items: itemsData,
         customer: {
           vorname,
           nachname,
@@ -631,16 +637,11 @@ async function sendToEmail() {
         totalPrice
       })
     });
-    
+
     const data = await response.json();
     if (response.ok && data.success) {
-      // نجح الإرسال عبر nodemailer
       alert("Die Bestellung wurde erfolgreich per E-Mail gesendet!");
-      
-      // إذا رغبت أيضًا بحفظ الطلب في فايربيس:
       pushOrderToFirebase(orderId);
-
-      // تفريغ السلة والعودة للبحث
       clearCart();
       redirectToSearchField();
     } else {
@@ -651,7 +652,6 @@ async function sendToEmail() {
     alert("Ein Fehler ist aufgetreten beim Senden der E-Mail.");
   }
 }
-
 
 // ================================================
 // Bestellvorgang an Firebase (pushOrderToFirebase)
@@ -664,14 +664,14 @@ function pushOrderToFirebase(customOrderId) {
   }
 
   const orderId = customOrderId || generateOrderNumber();
-
   const orderedItems = [];
+
   cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
     const itemInfoEl = cartItem.querySelector(".item-info");
     const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
     const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Produkt";
     const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
-    orderedItems.push({ name: itemText, quantity: quantity });
+    orderedItems.push({ name: itemText, quantity });
   });
 
   const deliveryOption = document.getElementById("deliveryOption").value;
@@ -690,7 +690,7 @@ function pushOrderToFirebase(customOrderId) {
   const orderData = {
     orderId: orderId,
     timestamp: Date.now(),
-    deliveryOption: deliveryOption,
+    deliveryOption,
     items: orderedItems,
     customer: {
       vorname,
@@ -808,36 +808,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // زر "Bestellung an das Restaurant senden" (مثال)
+  // Beispiel: "Bestellung an das Restaurant senden"
   const sendOrderBtn = document.getElementById("sendOrderBtn");
   if (sendOrderBtn) {
     sendOrderBtn.addEventListener("click", () => {
-      selectedOrderChannel = "restaurant"; 
+      selectedOrderChannel = "restaurant";
       showPaymentInfo();
     });
   }
 
-  // إضافة مستمع الحدث لزر واتساب:
+  // WhatsApp Button
   const whatsappBtn = document.getElementById("whatsappBtn");
   if (whatsappBtn) {
     whatsappBtn.addEventListener("click", () => {
       selectedOrderChannel = "whatsapp";
-      showPaymentInfo(); 
+      showPaymentInfo();
     });
   }
 
-  document.getElementById("backToCartBtn").addEventListener("click", function () {
-    document.getElementById("floatingCartOverlay").style.display = "flex";
-  });
-
+  // E-Mail Button
   const emailBtn = document.getElementById("emailBtn");
   if (emailBtn) {
     emailBtn.addEventListener("click", () => {
       selectedOrderChannel = "email";
-      showPaymentInfo(); 
+      showPaymentInfo();
     });
   }
-  
+
+  // Button zum Öffnen des Warenkorbs
+  const backToCartBtn = document.getElementById("backToCartBtn");
+  if (backToCartBtn) {
+    backToCartBtn.addEventListener("click", function () {
+      document.getElementById("floatingCartOverlay").style.display = "flex";
+    });
+  }
 });
 
 // العودة لحقل البحث
@@ -873,6 +877,7 @@ firebase.database().ref("config/serviceOption").on("value", function (snapshot) 
 
 function applyUserServiceOption(option) {
   const deliveryOptionSelect = document.getElementById("deliveryOption");
+  if (!deliveryOptionSelect) return;
   if (option === "nurLieferung") {
     deliveryOptionSelect.innerHTML = '<option value="delivery">Lieferung</option>';
     document.getElementById("pickupScheduleField").style.display = "none";
@@ -950,7 +955,6 @@ function closePaymentInfo() {
     }
   }
 
-  // الآن، بناءً على القناة:
   if (selectedOrderChannel === "whatsapp") {
     sendToWhatsApp();
   } else if (selectedOrderChannel === "email") {
@@ -986,15 +990,11 @@ function sendToWhatsApp() {
   let timeText = "";
 
   if (deliveryOption === "delivery") {
-    const deliveryDate = document.getElementById("deliveryDate").value;
-    const deliveryTime = document.getElementById("deliveryTime").value;
-    dateText = deliveryDate;
-    timeText = deliveryTime;
+    dateText = document.getElementById("deliveryDate").value;
+    timeText = document.getElementById("deliveryTime").value;
   } else {
-    const pickupDate = document.getElementById("pickupDate").value;
-    const pickupTime = document.getElementById("pickupTime").value;
-    dateText = pickupDate;
-    timeText = pickupTime;
+    dateText = document.getElementById("pickupDate").value;
+    timeText = document.getElementById("pickupTime").value;
   }
 
   let warenkorbText = "";
@@ -1028,20 +1028,15 @@ function sendToWhatsApp() {
     orderText += `Abholzeit: ${timeText}\n`;
   }
 
-  // إن رغبت بإضافة الملاحظات:
-  // if (notes) orderText += `Notizen: ${notes}\n\n`;
-
   if (!phoneNumber) {
     alert("Es wurde keine WhatsApp-Nummer konfiguriert.");
     return;
   }
 
-  // فتح الواتساب
   const encodedMessage = encodeURIComponent(orderText);
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
   window.open(whatsappUrl, "_blank");
 
-  // الآن قم بتفريغ السلة وإعادة المستخدم لصفحة البحث
   clearCart();
   redirectToSearchField();
 }
