@@ -622,7 +622,7 @@ function pushOrderToFirebase() {
   // 2) جلب عناصر السلة
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
-    alert("");
+    alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
     return;
   }
 
