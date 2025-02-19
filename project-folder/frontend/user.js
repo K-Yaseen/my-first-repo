@@ -871,7 +871,7 @@ function showPaymentInfo() {
 
   // قراءة خيار التوصيل أو الاستلام لعرض رسالة مناسبة (كما لديك)
   // ...
-  paymentTextEl.textContent = "Sie zahlen den Gesamtbetrag ...";
+  paymentTextEl.textContent = "Sie bezahlen Ihre Bestellung bei Erhalt";
   // ...
 
   // 1. توليد رقم الطلب وحفظه في متغير عام
