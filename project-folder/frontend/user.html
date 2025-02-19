@@ -73,42 +73,42 @@
         Weitere Bestellung hinzufügen
       </button>
       <!-- Bestelldetails -->
-  <div id="orderDetails" class="glow-border" style="display: none;">
-    <div class="delivery-container">
-      <select id="deliveryOption">
-        <option value="pickup">Selbstabholung</option>
-        <option value="delivery">Lieferung</option>
-      </select>
-    </div>
-    <div id="pickupScheduleField" style="display: none;">
-      <label for="pickupDate">Gewünschtes Abholdatum:</label>
-      <input type="date" id="pickupDate">
-      <label for="pickupTime">Gewünschte Abholzeit:</label>
-      <input type="time" id="pickupTime">
-    </div>
-    <div id="deliveryScheduleField" style="display: none;">
-      <label for="deliveryDate">Gewünschtes Lieferdatum:</label>
-      <input type="date" id="deliveryDate">
-      <label for="deliveryTime">Gewünschte Lieferzeit:</label>
-      <input type="time" id="deliveryTime">
-    </div>
-    <div id="deliveryFields" style="display: none;">
-      <p style="font-size: 14px; color: #555; margin-bottom: 10px;">
-        Hinweis: Bitte füllen Sie diese Felder nur aus, wenn Sie eine Lieferung wünschen.
-      </p>
-      <input type="text" id="vorname" placeholder="Vorname">
-      <input type="text" id="nachname" placeholder="Nachname">
-      <input type="text" id="strasse" placeholder="Straße">
-      <input type="text" id="hausnummer" placeholder="Hausnummer">
-      <input type="text" id="plz" placeholder="PLZ">
-      <input type="text" id="stadt" placeholder="Stadt">
-    </div>
-    <button onclick="showSavePopup()">Daten speichern</button>
-    <button id="whatsappBtn">Bestellung per WhatsApp senden</button>
-<button id="emailBtn">Bestellung per E-Mail senden</button>
-<button id="sendOrderBtn">Bestellung an das Restaurant senden</button>
+      <div id="orderDetails" class="glow-border" style="display: none;">
+        <div class="delivery-container">
+          <select id="deliveryOption">
+            <option value="pickup">Selbstabholung</option>
+            <option value="delivery">Lieferung</option>
+          </select>
+        </div>
+        <div id="pickupScheduleField" style="display: none;">
+          <label for="pickupDate">Gewünschtes Abholdatum:</label>
+          <input type="date" id="pickupDate">
+          <label for="pickupTime">Gewünschte Abholzeit:</label>
+          <input type="time" id="pickupTime">
+        </div>
+        <div id="deliveryScheduleField" style="display: none;">
+          <label for="deliveryDate">Gewünschtes Lieferdatum:</label>
+          <input type="date" id="deliveryDate">
+          <label for="deliveryTime">Gewünschte Lieferzeit:</label>
+          <input type="time" id="deliveryTime">
+        </div>
+        <div id="deliveryFields" style="display: none;">
+          <p style="font-size: 14px; color: #555; margin-bottom: 10px;">
+            Hinweis: Bitte füllen Sie diese Felder nur aus, wenn Sie eine Lieferung wünschen.
+          </p>
+          <input type="text" id="vorname" placeholder="Vorname">
+          <input type="text" id="nachname" placeholder="Nachname">
+          <input type="text" id="strasse" placeholder="Straße">
+          <input type="text" id="hausnummer" placeholder="Hausnummer">
+          <input type="text" id="plz" placeholder="PLZ">
+          <input type="text" id="stadt" placeholder="Stadt">
+        </div>
+        <button onclick="showSavePopup()">Daten speichern</button>
+        <button id="whatsappBtn">Bestellung per WhatsApp senden</button>
+        <button id="emailBtn">Bestellung per E-Mail senden</button>
+        <button id="sendOrderBtn">Bestellung an das Restaurant senden</button>
 
-  </div>
+      </div>
     </div>
   </div>
 
@@ -117,23 +117,23 @@
     <div class="modal-content">
       <div class="payment-emoji">💳</div>
       <h2>Zahlungsinformationen</h2>
-  
+
       <!-- النص الأساسي للدفع -->
       <p id="paymentInfoText" style="white-space: pre-line;"></p>
-  
+
       <!-- السعر الإجمالي -->
       <p id="paymentInfoTotal" style="font-weight: bold; margin-bottom: 10px;"></p>
-  
+
       <!-- رقم الطلب -->
       <p id="paymentInfoOrderId" style="font-weight: bold; color: #d9534f;"></p>
-  
+
       <!-- حقل الملاحظات الإضافية (إن وجد) -->
       <!-- <textarea id="additionalNotes" ...></textarea> -->
-  
+
       <button id="closePaymentModalBtn">Verstanden</button>
     </div>
   </div>
-  
+
 
   <!-- Unser Skript mit allen Funktionen -->
   <script src="user.js"></script>
