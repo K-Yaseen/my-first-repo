@@ -6,7 +6,6 @@ let currentItem = null;
 let pendingOrderId = null;  // رقم الطلب المؤقت
 let selectedOrderChannel = "";
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyBeAkTPw9nswsCy9NtWEgf6nG4al5Qx83c",
   authDomain: "restaurant-system-f50cf.firebaseapp.com",
@@ -154,7 +153,7 @@ function loadCart() {
     cartItemsArray.forEach(cartItem => {
       const item = items.find(i => i.id == cartItem.id);
       if (item) {
-        updateFloatingCart(item, cartItem.quantity, false); 
+        updateFloatingCart(item, cartItem.quantity, false);
       }
     });
   } catch (error) {
@@ -339,7 +338,7 @@ function updateFloatingCart(item, quantity = 1, showOverlay = true) {
                -7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2
                16-16l0-224c0-8.8-7.2-16-16-16z"/>
     </svg>`;
-  deleteBtn.title = "Gericht Löschen";
+  deleteBtn.title = "Gericht löschen";
   deleteBtn.addEventListener("click", () => {
     if (confirm("Möchten Sie diesen Artikel wirklich aus dem Warenkorb entfernen?")) {
       li.remove();
@@ -570,22 +569,6 @@ function showSavePopup() {
   }
 }
 
-// Original sendToWhatsApp-Funktion wird hier übersprungen,
-// weil wir sie durch showPaymentConfirm erweitert haben.
-// async function sendToWhatsApp() { /* Code siehe Original... */ }
-// const originalSendToWhatsApp = window.sendToWhatsApp;
-// window.sendToWhatsApp = function() {
-//   // 1. اعرض النافذة
-//   showPaymentInfo();
-
-//   // 2. عند ضغط "فهمت"، نغلق المودال ونتابع
-//   const closeBtn = document.getElementById("closePaymentModalBtn");
-//   closeBtn.onclick = () => {
-//     closePaymentInfo(); 
-//     originalSendToWhatsApp();
-//   };
-// };
-
 function sendToEmail() {
   // هنا تضع كود إرسال الطلب عبر البريد الإلكتروني
   alert("Die Bestellung wird per E-Mail gesendet.");
@@ -598,7 +581,6 @@ function sendToRestaurant() {
   alert("Die Bestellung wird an das Restaurant gesendet.");
   pushOrderToFirebase(pendingOrderId);
 }
-
 
 // ================================================
 // FUNKTION ZUR BERECHNUNG DES GESAMTPREISES
@@ -622,10 +604,6 @@ function calculateCartTotal() {
 // ================================================
 // Bestellvorgang an Firebase (pushOrderToFirebase)
 // ================================================
-/**
- * يسمح بإرسال الطلب إلى Firebase مع إمكانية تلقي رقم الطلب من الخارج
- * إن لم يُمرَّر رقم طلب، فسيتم توليده داخل الدالة.
- */
 function pushOrderToFirebase(customOrderId) {
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
@@ -641,7 +619,7 @@ function pushOrderToFirebase(customOrderId) {
   cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
     const itemInfoEl = cartItem.querySelector(".item-info");
     const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
-    const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Item";
+    const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Produkt";
     const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
     orderedItems.push({ name: itemText, quantity: quantity });
   });
@@ -687,7 +665,7 @@ function pushOrderToFirebase(customOrderId) {
   // Bestelldaten in Firebase speichern
   database.ref("orders").push(orderData)
     .then(() => {
-      // Erfolgsnachricht mit Nummer الطلب
+      // Erfolgsnachricht mit Nummer
       showOrderSuccessMessage(orderId, cartTotal, {
         deliveryOption,
         pickupDate,
@@ -704,9 +682,8 @@ function pushOrderToFirebase(customOrderId) {
     });
 }
 
-// يُظهر رسالة نجاح فيها موعد الاستلام/التسليم + المبلغ
+// يُظهر Nachricht mit Termin + Gesamtbetrag
 function showOrderSuccessMessage(orderId, totalPrice, scheduleData) {
-  // بناء نص الموعد
   let scheduleText = "";
   if (scheduleData.deliveryOption === "pickup") {
     scheduleText = `Abholung am ${scheduleData.pickupDate} um ${scheduleData.pickupTime} Uhr.`;
@@ -714,10 +691,9 @@ function showOrderSuccessMessage(orderId, totalPrice, scheduleData) {
     scheduleText = `Lieferung am ${scheduleData.deliveryDate} um ${scheduleData.deliveryTime} Uhr.`;
   }
 
-  // Popup erzeugen
   const successPopup = document.createElement('div');
   successPopup.className = 'popup';
-  successPopup.style.backgroundColor = '#4caf50'; // Grün als Hinweis für Erfolg
+  successPopup.style.backgroundColor = '#4caf50';
   successPopup.innerHTML = `
     <p style="margin: 0; padding: 0;">
       ✅ Bestellung <strong>${orderId}</strong> wurde erfolgreich gesendet!<br>
@@ -729,7 +705,6 @@ function showOrderSuccessMessage(orderId, totalPrice, scheduleData) {
   document.body.appendChild(successPopup);
   successPopup.classList.add("show");
 
-  // Nach einigen Sekunden ausblenden & entfernen
   setTimeout(() => {
     successPopup.classList.remove("show");
     document.body.removeChild(successPopup);
@@ -743,8 +718,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   await fetchItems();
   loadUserData();
   await loadWorkingHours();
-  loadCart(); 
-  updateCartButton(); // Sicherstellen, dass Button-Zustand stimmt
+  loadCart();
+  updateCartButton(); // Sicherstellen, dass der Button-Zustand stimmt
 
   // ServiceOption aus Firebase laden
   const snapshot = await firebase.database().ref("config/serviceOption").once("value");
@@ -791,11 +766,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Sende-Button
   const sendOrderBtn = document.getElementById("sendOrderBtn");
   if (sendOrderBtn) {
     sendOrderBtn.addEventListener("click", () => {
-      // استدعاء النافذة الجديدة:
       showPaymentInfo();
     });
   }
@@ -879,16 +852,12 @@ function showPaymentInfo() {
   const paymentInfoTotalEl = document.getElementById("paymentInfoTotal");
   const paymentOrderIdEl = document.getElementById("paymentInfoOrderId");
 
-  // (كود حساب السعر الكلي وعرضه كما لديك سابقًا)
   const totalPrice = calculateCartTotal().toFixed(2);
   if (paymentInfoTotalEl) {
     paymentInfoTotalEl.textContent = "Gesamtbetrag: " + totalPrice + " €";
   }
 
-  // قراءة خيار التوصيل أو الاستلام لعرض رسالة مناسبة (كما لديك)
-  // ...
   paymentTextEl.textContent = "Sie bezahlen Ihre Bestellung bei Erhalt";
-  // ...
 
   // 1. توليد رقم الطلب وحفظه في متغير عام
   pendingOrderId = generateOrderNumber();
@@ -896,18 +865,16 @@ function showPaymentInfo() {
   // 2. عرض رقم الطلب داخل المودال
   if (paymentOrderIdEl) {
     paymentOrderIdEl.innerHTML = `
-  <span style="color: red;">
-    Bitte zeigen Sie diese Bestellnummer <br>
-    <span style="font-size: 40px;">(${pendingOrderId})</span> <br>
-    dem Mitarbeiter
-  </span>
-`;
-
+      <span style="color: red;">
+        Bitte zeigen Sie diese Bestellnummer <br>
+        <span style="font-size: 40px;">(${pendingOrderId})</span> <br>
+        dem Mitarbeiter
+      </span>
+    `;
   }
 
   paymentModal.classList.add("show");
 }
-
 
 /**
  * إغلاق مودال الدفع + دمج الملاحظات الإضافية مع الملاحظات الأصلية
@@ -916,7 +883,6 @@ function closePaymentInfo() {
   const paymentModal = document.getElementById("paymentInfoModal");
   paymentModal.classList.remove("show");
 
-  // دمج الملاحظات الإضافية مع الملاحظات الأصلية (إذا وُجدت)
   const additionalNotesEl = document.getElementById("additionalNotes");
   const mainNotesEl = document.getElementById("customerNotes");
   if (additionalNotesEl && mainNotesEl) {
@@ -934,7 +900,9 @@ function closePaymentInfo() {
   // تنفيذ الطلب بناءً على قناة الإرسال المختارة
   if (selectedOrderChannel === "whatsapp") {
     // إرسال الطلب عبر واتساب
-    originalSendToWhatsApp();  // تأكد من أن المتغير originalSendToWhatsApp محفوظ مسبقاً
+    // لاحظ أنه يجب توفير دالة sendToWhatsApp بنفس منطقك أو مباشرةً هنا
+    // مثال (مكان الدالة الافتراضية):
+    sendToWhatsApp();
   } else if (selectedOrderChannel === "email") {
     sendToEmail();
   } else if (selectedOrderChannel === "restaurant") {
@@ -942,7 +910,66 @@ function closePaymentInfo() {
   }
 }
 
-// إزالة استخدام onclick الموجود في HTML واستبداله بمستمع أحداث
+// Beispielhafte Implementierung einer WhatsApp-Funktion auf Deutsch
+function sendToWhatsApp() {
+  if (!validateDeliveryFields()) return;
+  if (!validateSchedule()) return;
+
+  const cartItemsElement = document.getElementById("cartItems");
+  if (!cartItemsElement || cartItemsElement.children.length === 0) {
+    alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
+    return;
+  }
+
+  let orderText = "Neue Bestellung über die App:\n";
+  cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
+    const itemInfoEl = cartItem.querySelector(".item-info");
+    const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
+    const itemName = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Produkt";
+    const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
+    orderText += `\n- ${itemName} (Menge: ${quantity})`;
+  });
+
+  const deliveryOption = document.getElementById("deliveryOption").value;
+  const vorname = document.getElementById("vorname").value.trim();
+  const nachname = document.getElementById("nachname").value.trim();
+  const strasse = document.getElementById("strasse").value.trim();
+  const hausnummer = document.getElementById("hausnummer").value.trim();
+  const plz = document.getElementById("plz").value.trim();
+  const stadt = document.getElementById("stadt").value.trim();
+  const notes = document.getElementById("customerNotes").value.trim();
+
+  orderText += `\n\nKundendetails:`;
+  orderText += `\nName: ${vorname} ${nachname}`;
+  orderText += `\nAdresse: ${strasse} ${hausnummer}, ${plz} ${stadt}`;
+  orderText += `\nNotizen: ${notes}`;
+
+  if (deliveryOption === "delivery") {
+    const deliveryDate = document.getElementById("deliveryDate").value;
+    const deliveryTime = document.getElementById("deliveryTime").value;
+    orderText += `\n\nLiefermethode: Lieferung`;
+    orderText += `\nDatum und Uhrzeit: ${deliveryDate} - ${deliveryTime}`;
+  } else {
+    const pickupDate = document.getElementById("pickupDate").value;
+    const pickupTime = document.getElementById("pickupTime").value;
+    orderText += `\n\nLiefermethode: Selbstabholung`;
+    orderText += `\nDatum und Uhrzeit: ${pickupDate} - ${pickupTime}`;
+  }
+
+  if (pendingOrderId) {
+    orderText += `\n\nBestellnummer: ${pendingOrderId}`;
+  }
+
+  const totalPrice = calculateCartTotal().toFixed(2);
+  orderText += `\nGesamtpreis: ${totalPrice} €`;
+
+  // Hier die internationale Telefonnummer eintragen (ohne "+")
+  const phoneNumber = "49123456789"; // Beispiel: 49 für Deutschland
+
+  const encodedMessage = encodeURIComponent(orderText);
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+  window.open(whatsappUrl, "_blank");
+}
 
 // عند الضغط على زر الطلب عبر واتساب
 document.getElementById("whatsappBtn").addEventListener("click", function() {
