@@ -940,7 +940,7 @@ function sendToWhatsApp() {
     const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
     const itemName = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Produkt";
     const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
-    warenkorbText += `- ${itemName} Menge: ${quantity}\n`;
+    warenkorbText += `${itemName} Menge: ${quantity}\n`;
   });
 
   const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(strasse + " " + hausnummer + ", " + plz + " " + stadt)}`;
