@@ -977,3 +977,10 @@ function sendToWhatsApp() {
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
   window.open(whatsappUrl, "_blank");
 }
+
+// بعد فتح رابط الواتساب:
+window.open(whatsappUrl, "_blank");
+
+// أضف الأسطر التالية مباشرة:
+clearCart();
+redirectToSearchField();
