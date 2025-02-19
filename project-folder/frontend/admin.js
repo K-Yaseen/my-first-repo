@@ -31,7 +31,7 @@ function saveWhatsAppNumber() {
     showToast("Bitte geben Sie eine gültige WhatsApp Nummer ein.", "#f44336");
     return;
   }
-  database.ref("config/whatsappNumber").set(number, (error) => {
+  database.ref("config/phoneNumber").set(number, (error) => {
     if (error) {
       showToast("Fehler beim Speichern der WhatsApp Nummer.", "#f44336");
     } else {
