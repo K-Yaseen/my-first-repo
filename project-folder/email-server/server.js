@@ -43,7 +43,7 @@ app.post("/send-order", async (req, res) => {
 
     const mailOptions = {
       from: '"Bestell-System" <khaled.deutschland2016@gmail.com>',
-      to: "DEIN_RESTAURANT_MAIL@domain.de",
+      to: "yaseen@gmail.com",
       subject: mailSubject,
       text: mailBody
     };
