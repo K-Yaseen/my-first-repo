@@ -810,15 +810,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Sende-Button
   const sendOrderBtn = document.getElementById("sendOrderBtn");
-if (sendOrderBtn) {
-  sendOrderBtn.addEventListener("click", () => {
-    // 1. اعرض نافذة الدفع الجديدة
-    showPaymentInfo();
-    // 2. نفّذ الإرسال بعد أن يضغط المستخدم على زر "فهمت"
-    //   ولتحقيق ذلك ببساطة، ننقل استدعاء pushOrderToFirebase داخل دالة closePaymentInfo
-    //   أو يمكننا استعمال زر آخر في المودال نفسه.
-  });
-}
+  if (sendOrderBtn) {
+    sendOrderBtn.addEventListener("click", () => {
+      // استدعاء النافذة الجديدة:
+      showPaymentInfo();
+    });
+  }
 });
 
 // Zeigt / Versteckt den fliegenden Warenkorb
