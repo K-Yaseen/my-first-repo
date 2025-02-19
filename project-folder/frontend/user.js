@@ -904,3 +904,12 @@ function showPaymentInfo() {
   // إظهار المودال
   paymentModal.classList.add("show");
 }
+
+/**
+ * إغلاق مودال معلومات الدفع
+ */
+function closePaymentInfo() {
+  const paymentModal = document.getElementById("paymentInfoModal");
+  paymentModal.classList.remove("show");
+}
+
