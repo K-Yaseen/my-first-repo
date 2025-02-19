@@ -566,60 +566,60 @@ function showSavePopup() {
   }
 }
 
-// Zeigt eine Bestätigungs-Frage an, bevor man per WhatsApp fortfährt
-function showPaymentConfirm(onConfirm) {
-  const modal = document.createElement('div');
-  modal.className = 'modal';
-  modal.style.display = 'flex';
+// // Zeigt eine Bestätigungs-Frage an, bevor man per WhatsApp fortfährt
+// function showPaymentConfirm(onConfirm) {
+//   const modal = document.createElement('div');
+//   modal.className = 'modal';
+//   modal.style.display = 'flex';
 
-  const modalContent = document.createElement('div');
-  modalContent.className = 'modal-content';
-  modalContent.style.maxWidth = '450px';
-  modalContent.style.textAlign = 'center';
+//   const modalContent = document.createElement('div');
+//   modalContent.className = 'modal-content';
+//   modalContent.style.maxWidth = '450px';
+//   modalContent.style.textAlign = 'center';
 
-  const title = document.createElement('h2');
-  title.innerText = 'Hinweis';
-  const paragraph = document.createElement('p');
-  paragraph.innerText = 'Die Bezahlung erfolgt erst bei Erhalt der Bestellung. Sind Sie damit einverstanden?';
-  paragraph.style.margin = '15px 0';
-  paragraph.style.fontSize = '16px';
+//   const title = document.createElement('h2');
+//   title.innerText = 'Hinweis';
+//   const paragraph = document.createElement('p');
+//   paragraph.innerText = 'Die Bezahlung erfolgt erst bei Erhalt der Bestellung. Sind Sie damit einverstanden?';
+//   paragraph.style.margin = '15px 0';
+//   paragraph.style.fontSize = '16px';
 
-  const confirmBtn = document.createElement('button');
-  confirmBtn.innerText = 'Ja, fortfahren';
-  confirmBtn.style.margin = '10px';
-  confirmBtn.style.backgroundColor = '#28a745';
-  confirmBtn.style.color = '#fff';
-  confirmBtn.style.border = 'none';
-  confirmBtn.style.padding = '10px 20px';
-  confirmBtn.style.borderRadius = '5px';
-  confirmBtn.style.cursor = 'pointer';
+//   const confirmBtn = document.createElement('button');
+//   confirmBtn.innerText = 'Ja, fortfahren';
+//   confirmBtn.style.margin = '10px';
+//   confirmBtn.style.backgroundColor = '#28a745';
+//   confirmBtn.style.color = '#fff';
+//   confirmBtn.style.border = 'none';
+//   confirmBtn.style.padding = '10px 20px';
+//   confirmBtn.style.borderRadius = '5px';
+//   confirmBtn.style.cursor = 'pointer';
 
-  const cancelBtn = document.createElement('button');
-  cancelBtn.innerText = 'Abbrechen';
-  cancelBtn.style.margin = '10px';
-  cancelBtn.style.backgroundColor = '#dc3545';
-  cancelBtn.style.color = '#fff';
-  cancelBtn.style.border = 'none';
-  cancelBtn.style.padding = '10px 20px';
-  cancelBtn.style.borderRadius = '5px';
-  cancelBtn.style.cursor = 'pointer';
+//   const cancelBtn = document.createElement('button');
+//   cancelBtn.innerText = 'Abbrechen';
+//   cancelBtn.style.margin = '10px';
+//   cancelBtn.style.backgroundColor = '#dc3545';
+//   cancelBtn.style.color = '#fff';
+//   cancelBtn.style.border = 'none';
+//   cancelBtn.style.padding = '10px 20px';
+//   cancelBtn.style.borderRadius = '5px';
+//   cancelBtn.style.cursor = 'pointer';
 
-  modalContent.appendChild(title);
-  modalContent.appendChild(paragraph);
-  modalContent.appendChild(confirmBtn);
-  modalContent.appendChild(cancelBtn);
-  modal.appendChild(modalContent);
+//   modalContent.appendChild(title);
+//   modalContent.appendChild(paragraph);
+//   modalContent.appendChild(confirmBtn);
+//   modalContent.appendChild(cancelBtn);
+//   modal.appendChild(modalContent);
 
-  document.body.appendChild(modal);
+//   document.body.appendChild(modal);
 
-  confirmBtn.onclick = () => {
-    document.body.removeChild(modal);
-    if (onConfirm) onConfirm();
-  };
-  cancelBtn.onclick = () => {
-    document.body.removeChild(modal);
-  };
-}
+//   confirmBtn.onclick = () => {
+//     document.body.removeChild(modal);
+//     if (onConfirm) onConfirm();
+//   };
+//   cancelBtn.onclick = () => {
+//     document.body.removeChild(modal);
+//   };
+// }
 
 // Original sendToWhatsApp-Funktion wird hier übersprungen,
 // weil wir sie durch showPaymentConfirm erweitert haben.
