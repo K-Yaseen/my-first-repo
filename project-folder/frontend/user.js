@@ -935,6 +935,7 @@ function closePaymentInfo() {
 
 // WhatsApp-Funktion, die phoneNumber aus Firebase verwendet
 function sendToWhatsApp() {
+  // 1) التحقق من الحقول الضرورية
   if (!validateDeliveryFields()) return;
   if (!validateSchedule()) return;
 
@@ -944,15 +945,7 @@ function sendToWhatsApp() {
     return;
   }
 
-  let orderText = "Neue Bestellung über die App:\n";
-  cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
-    const itemInfoEl = cartItem.querySelector(".item-info");
-    const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
-    const itemName = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Produkt";
-    const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
-    orderText += `\n- ${itemName} (Menge: ${quantity})`;
-  });
-
+  // 2) جمع البيانات الأساسية من الصفحة
   const deliveryOption = document.getElementById("deliveryOption").value;
   const vorname = document.getElementById("vorname").value.trim();
   const nachname = document.getElementById("nachname").value.trim();
@@ -962,32 +955,73 @@ function sendToWhatsApp() {
   const stadt = document.getElementById("stadt").value.trim();
   const notes = document.getElementById("customerNotes").value.trim();
 
-  orderText += `\n\nKundendetails:`;
-  orderText += `\nName: ${vorname} ${nachname}`;
-  orderText += `\nAdresse: ${strasse} ${hausnummer}, ${plz} ${stadt}`;
-  orderText += `\nNotizen: ${notes}`;
+  let dateText = "";
+  let timeText = "";
 
   if (deliveryOption === "delivery") {
     const deliveryDate = document.getElementById("deliveryDate").value;
     const deliveryTime = document.getElementById("deliveryTime").value;
-    orderText += `\n\nLiefermethode: Lieferung`;
-    orderText += `\nDatum und Uhrzeit: ${deliveryDate} - ${deliveryTime}`;
+    dateText = deliveryDate;
+    timeText = deliveryTime;
   } else {
     const pickupDate = document.getElementById("pickupDate").value;
     const pickupTime = document.getElementById("pickupTime").value;
-    orderText += `\n\nLiefermethode: Selbstabholung`;
-    orderText += `\nDatum und Uhrzeit: ${pickupDate} - ${pickupTime}`;
+    dateText = pickupDate;
+    timeText = pickupTime;
   }
 
+  // 3) تجهيز نص محتوى السلة (Warenkorb-Inhalt)
+  let warenkorbText = "";
+  cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
+    const itemInfoEl = cartItem.querySelector(".item-info");
+    const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
+    const itemName = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Produkt";
+    const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
+    // يمكن تخصيص التنسيق داخل السطر كما تشاء
+    warenkorbText += `- ${itemName} Menge: ${quantity}\n`;
+  });
+
+  // 4) تجهيز رابط Google Maps استناداً للعنوان
+  //    لو أردت وضعه فقط في حال التوصيل، يمكن عمل شرط if (deliveryOption === "delivery") ...
+  const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(strasse + " " + hausnummer + ", " + plz + " " + stadt)}`;
+
+  // 5) بناء النص بالشكل المطلوب
+  // ملاحظة: استخدمت pendingOrderId كرقم الطلب (إن وجد)
+  let orderText = "";
+  orderText += `Hallo, ich möchte gerne bestellen:\n\n`;
+  
   if (pendingOrderId) {
-    orderText += `\n\nBestellnummer: ${pendingOrderId}`;
+    orderText += `Bestellnummer: ${pendingOrderId}\n\n`;
   }
 
-  const totalPrice = calculateCartTotal().toFixed(2);
-  orderText += `\nGesamtpreis: ${totalPrice} €`;
+  orderText += `Warenkorb-Inhalt:\n${warenkorbText}\n`; 
+  // مثلاً لو أردت أن تعرض الملاحظات هنا أيضاً:
+  // if (notes) orderText += `Notizen: ${notes}\n\n`;
+  
+  // بيانات الاسم
+  orderText += `Name: ${vorname} ${nachname}\n\n`;
+  
+  // طريقة التوصيل أو الاستلام
+  if (deliveryOption === "delivery") {
+    orderText += `Lieferung\n`;
+    orderText += `Adresse:\n${strasse} ${hausnummer}, ${plz} ${stadt}\n\n`;
+    orderText += `Standort auf Google Maps:\n${googleMapsLink}\n\n`;
+    orderText += `Lieferdatum: ${dateText}\n`;
+    orderText += `Lieferzeit: ${timeText}\n`;
+  } else {
+    orderText += `Selbstabholung\n\n`;
+    orderText += `Abholdatum: ${dateText}\n`;
+    orderText += `Abholzeit: ${timeText}\n`;
+  }
 
-  // Nutze den Wert aus phoneNumber (geladen von Firebase)
-  // Falls phoneNumber leer ist, muss das in der Firebase-Konfiguration geprüft werden.
+  // يمكنك إضافة سطر فارغ أو معلومات إضافية في النهاية
+  // orderText += `\nWeitere Hinweise: ${notes}\n`;
+
+  // 6) حساب المجموع (إن أردت إرفاقه في الرسالة)
+  const totalPrice = calculateCartTotal().toFixed(2);
+  // orderText += `\nGesamtpreis: ${totalPrice} €\n`; // إذا تريد إظهاره
+
+  // 7) إرسال إلى واتساب عبر الرقم المحفوظ في phoneNumber
   if (!phoneNumber) {
     alert("Es wurde keine WhatsApp-Nummer konfiguriert.");
     return;
@@ -997,21 +1031,3 @@ function sendToWhatsApp() {
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
   window.open(whatsappUrl, "_blank");
 }
-
-// عند الضغط على زر "Bestellung per WhatsApp senden"
-document.getElementById("whatsappBtn").addEventListener("click", function() {
-  selectedOrderChannel = "whatsapp";
-  showPaymentInfo();
-});
-
-// عند الضغط auf "Bestellung per E-Mail senden"
-document.getElementById("emailBtn").addEventListener("click", function() {
-  selectedOrderChannel = "email";
-  showPaymentInfo();
-});
-
-// عند الضغط auf "Bestellung an das Restaurant senden"
-document.getElementById("sendOrderBtn").addEventListener("click", function() {
-  selectedOrderChannel = "restaurant";
-  showPaymentInfo();
-});
