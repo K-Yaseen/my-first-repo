@@ -310,10 +310,9 @@ button:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   text-align: left;
   font-family: 'Arial', sans-serif;
-  max-height: 90vh;   /* الحد الأقصى للارتفاع بنسبة 90% من ارتفاع النافذة */
-  overflow-y: auto;   /* تفعيل التمرير العمودي */
+  max-height: 90vh;
+  overflow-y: auto;
 }
-
 
 .floating-cart h3 {
   font-size: 22px;
