@@ -19,6 +19,11 @@
 
   <!-- Service Optionen konfigurieren -->
   <div class="container-custom" id="serviceOptionContainer">
+    <!-- ضمن admin.html في المكان المناسب (مثلا داخل .container-custom) -->
+    <button type="button" class="btn btn-primary" onclick="window.open('adminOrders.html', '_blank')">
+      عرض الطلبات
+    </button>
+
     <h2>Service Optionen</h2>
     <div class="btn-group" role="group" aria-label="Service Optionen">
       <button type="button" class="btn btn-outline-primary" id="btnNurLieferung">
@@ -187,7 +192,7 @@
       Abhol- und Lieferzeiten speichern
     </button>
   </div>
-  
+
 
   <!-- Firebase & Bootstrap -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
