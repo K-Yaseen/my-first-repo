@@ -441,3 +441,20 @@ firebase.database().ref("config/serviceOption").on("value", function (snapshot) 
   const option = snapshot.val() || "beides";
   applyServiceOption(option);
 });
+
+function listenToOrdersCount() {
+  // نفترض لديك Firebase مهيأ (كما في admin.js).
+  firebase.database().ref('orders').on('value', function(snapshot) {
+    const data = snapshot.val() || {};
+    const count = Object.keys(data).length; 
+    // حدّث الشارة
+    const badge = document.getElementById('ordersCountBadge');
+    if (badge) {
+      badge.textContent = count;
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  listenToOrdersCount();
+});
