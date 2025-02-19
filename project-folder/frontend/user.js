@@ -4,6 +4,8 @@
 
 let currentItem = null;
 let pendingOrderId = null;  // رقم الطلب المؤقت
+let selectedOrderChannel = "";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBeAkTPw9nswsCy9NtWEgf6nG4al5Qx83c",
