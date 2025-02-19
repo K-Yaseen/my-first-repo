@@ -572,19 +572,19 @@ function showSavePopup() {
 
 // Original sendToWhatsApp-Funktion wird hier übersprungen,
 // weil wir sie durch showPaymentConfirm erweitert haben.
-async function sendToWhatsApp() { /* Code siehe Original... */ }
-const originalSendToWhatsApp = window.sendToWhatsApp;
-window.sendToWhatsApp = function() {
-  // 1. اعرض النافذة
-  showPaymentInfo();
+// async function sendToWhatsApp() { /* Code siehe Original... */ }
+// const originalSendToWhatsApp = window.sendToWhatsApp;
+// window.sendToWhatsApp = function() {
+//   // 1. اعرض النافذة
+//   showPaymentInfo();
 
-  // 2. عند ضغط "فهمت"، نغلق المودال ونتابع
-  const closeBtn = document.getElementById("closePaymentModalBtn");
-  closeBtn.onclick = () => {
-    closePaymentInfo(); 
-    originalSendToWhatsApp();
-  };
-};
+//   // 2. عند ضغط "فهمت"، نغلق المودال ونتابع
+//   const closeBtn = document.getElementById("closePaymentModalBtn");
+//   closeBtn.onclick = () => {
+//     closePaymentInfo(); 
+//     originalSendToWhatsApp();
+//   };
+// };
 
 // ================================================
 // FUNKTION ZUR BERECHNUNG DES GESAMTPREISES
