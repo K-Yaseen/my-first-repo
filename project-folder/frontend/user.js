@@ -681,45 +681,35 @@ function pushOrderToFirebase() {
 
 // يُظهر رسالة نجاح فيها موعد الاستلام/التسليم + المبلغ
 function showOrderSuccessMessage(orderId, totalPrice, scheduleData) {
-  // كود تحديد نوع الموعد (Abholung/Lieferung) إن كنت تستخدمه
+  // بناء نص الموعد
   let scheduleText = "";
-  if (scheduleData && scheduleData.deliveryOption) {
-    if (scheduleData.deliveryOption === "pickup") {
-      scheduleText = `Abholung am ${scheduleData.pickupDate} um ${scheduleData.pickupTime} Uhr.`;
-    } else {
-      scheduleText = `Lieferung am ${scheduleData.deliveryDate} um ${scheduleData.deliveryTime} Uhr.`;
-    }
+  if (scheduleData.deliveryOption === "pickup") {
+    scheduleText = `Abholung am ${scheduleData.pickupDate} um ${scheduleData.pickupTime} Uhr.`;
+  } else {
+    scheduleText = `Lieferung am ${scheduleData.deliveryDate} um ${scheduleData.deliveryTime} Uhr.`;
   }
 
-  // نص الرسالة المنبثقة
+  // Popup erzeugen
   const successPopup = document.createElement('div');
   successPopup.className = 'popup';
-  successPopup.style.backgroundColor = '#4caf50'; // خلفية خضراء
+  successPopup.style.backgroundColor = '#4caf50'; // Grün als Hinweis für Erfolg
   successPopup.innerHTML = `
     <p style="margin: 0; padding: 0;">
       ✅ Bestellung <strong>${orderId}</strong> wurde erfolgreich gesendet!<br>
       Gesamtbetrag: <strong>${totalPrice.toFixed(2)} €</strong><br>
-      ${scheduleText && scheduleText + '<br>'}
-      Bitte zeigen Sie diese Bestellnummer (<strong>${orderId}</strong>) einem Mitarbeiter bei 
-      ${
-        (scheduleData && scheduleData.deliveryOption === 'pickup')
-          ? 'der Abholung' // إذا كان استلام
-          : 'der Lieferung' // إذا كان تسليم
-      }.
+      ${scheduleText}
     </p>
   `;
 
-  // إظهار النافذة المنبثقة
   document.body.appendChild(successPopup);
   successPopup.classList.add("show");
 
-  // إخفاء النافذة بعد 5 ثوانٍ
+  // Nach einigen Sekunden ausblenden & entfernen
   setTimeout(() => {
     successPopup.classList.remove("show");
     document.body.removeChild(successPopup);
   }, 5000);
 }
-
 
 // ================================================
 // EVENT LISTENERS (DOM laden usw.)
