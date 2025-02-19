@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "khaled.deutschland2016.com", // بريد جيميل
-    pass: "YOUR_GMAIL_PASSWORD"          // كلمة مرور جيميل
+    pass: "Qwertzuiop1234567890/"          // كلمة مرور جيميل
   }
 });
 
