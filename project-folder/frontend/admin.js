@@ -452,6 +452,14 @@ function listenToOrdersCount() {
     if (badge) {
       badge.textContent = count;
     }
+
+    if (count === 0) {
+      badge.style.display = "none";
+    } else {
+      badge.style.display = "inline-block";
+      badge.textContent = count;
+    }
+    
   });
 }
 
