@@ -566,61 +566,6 @@ function showSavePopup() {
   }
 }
 
-// // Zeigt eine Bestätigungs-Frage an, bevor man per WhatsApp fortfährt
-// function showPaymentConfirm(onConfirm) {
-//   const modal = document.createElement('div');
-//   modal.className = 'modal';
-//   modal.style.display = 'flex';
-
-//   const modalContent = document.createElement('div');
-//   modalContent.className = 'modal-content';
-//   modalContent.style.maxWidth = '450px';
-//   modalContent.style.textAlign = 'center';
-
-//   const title = document.createElement('h2');
-//   title.innerText = 'Hinweis';
-//   const paragraph = document.createElement('p');
-//   paragraph.innerText = 'Die Bezahlung erfolgt erst bei Erhalt der Bestellung. Sind Sie damit einverstanden?';
-//   paragraph.style.margin = '15px 0';
-//   paragraph.style.fontSize = '16px';
-
-//   const confirmBtn = document.createElement('button');
-//   confirmBtn.innerText = 'Ja, fortfahren';
-//   confirmBtn.style.margin = '10px';
-//   confirmBtn.style.backgroundColor = '#28a745';
-//   confirmBtn.style.color = '#fff';
-//   confirmBtn.style.border = 'none';
-//   confirmBtn.style.padding = '10px 20px';
-//   confirmBtn.style.borderRadius = '5px';
-//   confirmBtn.style.cursor = 'pointer';
-
-//   const cancelBtn = document.createElement('button');
-//   cancelBtn.innerText = 'Abbrechen';
-//   cancelBtn.style.margin = '10px';
-//   cancelBtn.style.backgroundColor = '#dc3545';
-//   cancelBtn.style.color = '#fff';
-//   cancelBtn.style.border = 'none';
-//   cancelBtn.style.padding = '10px 20px';
-//   cancelBtn.style.borderRadius = '5px';
-//   cancelBtn.style.cursor = 'pointer';
-
-//   modalContent.appendChild(title);
-//   modalContent.appendChild(paragraph);
-//   modalContent.appendChild(confirmBtn);
-//   modalContent.appendChild(cancelBtn);
-//   modal.appendChild(modalContent);
-
-//   document.body.appendChild(modal);
-
-//   confirmBtn.onclick = () => {
-//     document.body.removeChild(modal);
-//     if (onConfirm) onConfirm();
-//   };
-//   cancelBtn.onclick = () => {
-//     document.body.removeChild(modal);
-//   };
-// }
-
 // Original sendToWhatsApp-Funktion wird hier übersprungen,
 // weil wir sie durch showPaymentConfirm erweitert haben.
 async function sendToWhatsApp() { /* Code siehe Original... */ }
@@ -715,10 +660,16 @@ function pushOrderToFirebase() {
   // Berechnung des Gesamtpreises (anhand items-Array)
   const cartTotal = calculateCartTotal();
 
+  // تمّ تعديل هذا الجزء لتمرير موعد التسليم/الاستلام إلى showOrderSuccessMessage
   database.ref("orders").push(orderData)
     .then(() => {
-      // Anstelle eines Alerts => Floating Popup mit Bestellnummer + Gesamtbetrag
-      showOrderSuccessMessage(orderId, cartTotal);
+      showOrderSuccessMessage(orderId, cartTotal, {
+        deliveryOption,
+        pickupDate,
+        pickupTime,
+        deliveryDate,
+        deliveryTime
+      });
       // Warenkorb leeren
       clearCart();
     })
@@ -728,8 +679,16 @@ function pushOrderToFirebase() {
     });
 }
 
-// Zeigt ein schwebendes Popup mit Bestellnummer und Gesamtbetrag
-function showOrderSuccessMessage(orderId, totalPrice) {
+// يُظهر رسالة نجاح فيها موعد الاستلام/التسليم + المبلغ
+function showOrderSuccessMessage(orderId, totalPrice, scheduleData) {
+  // بناء نص الموعد
+  let scheduleText = "";
+  if (scheduleData.deliveryOption === "pickup") {
+    scheduleText = `Abholung am ${scheduleData.pickupDate} um ${scheduleData.pickupTime} Uhr.`;
+  } else {
+    scheduleText = `Lieferung am ${scheduleData.deliveryDate} um ${scheduleData.deliveryTime} Uhr.`;
+  }
+
   // Popup erzeugen
   const successPopup = document.createElement('div');
   successPopup.className = 'popup';
@@ -737,13 +696,12 @@ function showOrderSuccessMessage(orderId, totalPrice) {
   successPopup.innerHTML = `
     <p style="margin: 0; padding: 0;">
       ✅ Bestellung <strong>${orderId}</strong> wurde erfolgreich gesendet!<br>
-      Gesamtbetrag: <strong>${totalPrice.toFixed(2)} €</strong>
+      Gesamtbetrag: <strong>${totalPrice.toFixed(2)} €</strong><br>
+      ${scheduleText}
     </p>
   `;
 
-  // Popup ins Dokument einfügen
   document.body.appendChild(successPopup);
-  // Klasse "show" hinzufügen, damit es sichtbar wird
   successPopup.classList.add("show");
 
   // Nach einigen Sekunden ausblenden & entfernen
@@ -887,38 +845,66 @@ function applyUserServiceOption(option) {
 /**
  * يعرض مودال يوضّح للعميل طريقة الدفع
  * حسب الخيار الذي اختاره (استلام/توصيل).
+ * + عرض المبلغ الإجمالي
+ * + حقل ملاحظات إضافية
  */
 function showPaymentInfo() {
   const paymentModal = document.getElementById("paymentInfoModal");
   const paymentTextEl = document.getElementById("paymentInfoText");
-  const deliveryOption = document.getElementById("deliveryOption")?.value || "pickup";
 
-  // نص الرسالة
+  // هذه العناصر نحتاجها للإضافات
+  const paymentInfoTotalEl = document.getElementById("paymentInfoTotal"); 
+  const additionalNotesEl = document.getElementById("additionalNotes");
+
+  // حساب الإجمالي
+  const totalPrice = calculateCartTotal().toFixed(2);
+
+  const deliveryOption = document.getElementById("deliveryOption")?.value || "pickup";
   let message = "";
   if (deliveryOption === "pickup") {
-    // في حال اختار الاستلام
-    message = "سيتم دفع المبلغ عند استلام الطلب.\n\n";
-    message += "في حال وجود أي إضافات أو تغييرات في الطلب، يُرجى إبلاغنا.";
+    message = "Sie zahlen den Gesamtbetrag bei Abholung.\n";
   } else {
-    // في حال اختار التوصيل
-    message = "سيتم دفع المبلغ عند تسليم الطلب.\n\n";
-    message += "في حال وجود أي ملاحظات إضافية، يُرجى ذكرها في خانة الملاحظات.";
+    message = "Sie zahlen den Gesamtbetrag bei Lieferung.\n";
   }
 
   // وضع النص في الفقرة
   paymentTextEl.textContent = message;
+  // وضع المجموع في العنصر الخاص به
+  if (paymentInfoTotalEl) {
+    paymentInfoTotalEl.textContent = "Gesamtbetrag: " + totalPrice + " €";
+  }
+
+  // تفريغ خانة الملاحظات الإضافية
+  if (additionalNotesEl) {
+    additionalNotesEl.value = "";
+  }
 
   // إظهار المودال
   paymentModal.classList.add("show");
 }
 
 /**
- * إغلاق مودال معلومات الدفع
+ * إغلاق مودال الدفع + دمج الملاحظات الإضافية مع الملاحظات الأصلية
  */
 function closePaymentInfo() {
   const paymentModal = document.getElementById("paymentInfoModal");
   paymentModal.classList.remove("show");
-  // استدعِ الإرسال الفعلي:
+
+  // دمج الملاحظات
+  const additionalNotesEl = document.getElementById("additionalNotes");
+  const mainNotesEl = document.getElementById("customerNotes");
+  if (additionalNotesEl && mainNotesEl) {
+    const extraNotes = additionalNotesEl.value.trim();
+    const existingNotes = mainNotesEl.value.trim();
+    if (extraNotes) {
+      if (existingNotes) {
+        mainNotesEl.value = existingNotes + "\n" + extraNotes;
+      } else {
+        mainNotesEl.value = extraNotes;
+      }
+    }
+  }
+
+  // ثم تنفيذ الطلب فعليًا
   pushOrderToFirebase();
 }
-
