@@ -120,22 +120,23 @@
     <div class="modal-content">
       <div class="payment-emoji">💳</div>
       <h2>Zahlungsinformationen</h2>
-
-      <!-- فقرة النص الأساسي (Abholung/Lieferung) -->
+  
+      <!-- النص الأساسي للدفع -->
       <p id="paymentInfoText" style="white-space: pre-line;"></p>
-
-      <!-- فقرة السعر الإجمالي -->
+  
+      <!-- السعر الإجمالي -->
       <p id="paymentInfoTotal" style="font-weight: bold; margin-bottom: 10px;"></p>
-
-      <!-- حقل الملاحظات الإضافية -->
-      <label for="additionalNotes" style="display:block; margin-bottom:5px;">
-        Zusätzliche Anmerkungen (falls etwas vergessen wurde):
-      </label>
-      <textarea id="additionalNotes" rows="3" style="width: 100%; box-sizing:border-box;"></textarea>
-
+  
+      <!-- رقم الطلب -->
+      <p id="paymentInfoOrderId" style="font-weight: bold; color: #d9534f;"></p>
+  
+      <!-- حقل الملاحظات الإضافية (إن وجد) -->
+      <!-- <textarea id="additionalNotes" ...></textarea> -->
+  
       <button id="closePaymentModalBtn">Verstanden</button>
     </div>
   </div>
+  
 
   <!-- Unser Skript mit allen Funktionen -->
   <script src="user.js"></script>
