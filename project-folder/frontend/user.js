@@ -942,3 +942,22 @@ function closePaymentInfo() {
   }
 }
 
+// إزالة استخدام onclick الموجود في HTML واستبداله بمستمع أحداث
+
+// عند الضغط على زر الطلب عبر واتساب
+document.getElementById("whatsappBtn").addEventListener("click", function() {
+  selectedOrderChannel = "whatsapp";
+  showPaymentInfo();
+});
+
+// عند الضغط على زر الطلب عبر البريد الإلكتروني
+document.getElementById("emailBtn").addEventListener("click", function() {
+  selectedOrderChannel = "email";
+  showPaymentInfo();
+});
+
+// عند الضغط على زر الطلب عبر صفحة المطعم
+document.getElementById("sendOrderBtn").addEventListener("click", function() {
+  selectedOrderChannel = "restaurant";
+  showPaymentInfo();
+});
