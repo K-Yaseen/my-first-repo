@@ -622,7 +622,7 @@ function pushOrderToFirebase() {
   // 2) جلب عناصر السلة
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
-    alert("سلة المشتريات فارغة. لا يمكن إرسال طلب بدون أصناف.");
+    alert("");
     return;
   }
 
