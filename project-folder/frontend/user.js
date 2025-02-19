@@ -613,6 +613,81 @@ async function sendToEmail() {
   clearCart();
 }
 
+// ضمن دالة الإرسال إلى واتساب أو الإيميل - بعد بناء نص الطلب
+function pushOrderToFirebase() {
+  // اصنع رقم طلب عشوائي أو استخدم دالة generateOrderNumber()
+  const orderId = generateOrderNumber();
+  
+  // جهّز بيانات الطلب
+  // من ضمنها أي معلومات تحتاجها في لوحة المطعم لعرضها
+  // لاحظ أننا هنا نفترض أن لديك أصناف السلة في cartItemsElement
+  const cartItemsElement = document.getElementById("cartItems");
+
+  // 1) ترتيب عناصر السلة في Array:
+  const orderedItems = [];
+  cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
+    const itemInfoEl = cartItem.querySelector(".item-info");
+    const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
+    const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Item";
+    const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
+    orderedItems.push({
+      name: itemText,
+      quantity: quantity
+    });
+  });
+
+  // 2) معلومات العميل
+  const deliveryOption = document.getElementById("deliveryOption").value;
+  const vorname = document.getElementById("vorname").value.trim();
+  const nachname = document.getElementById("nachname").value.trim();
+  const strasse = document.getElementById("strasse").value.trim();
+  const hausnummer = document.getElementById("hausnummer").value.trim();
+  const plz = document.getElementById("plz").value.trim();
+  const stadt = document.getElementById("stadt").value.trim();
+  const notes = document.getElementById("customerNotes").value.trim();
+
+  // التواريخ والأوقات حسب نوع الطلب
+  const pickupDate = document.getElementById("pickupDate").value;
+  const pickupTime = document.getElementById("pickupTime").value;
+  const deliveryDate = document.getElementById("deliveryDate").value;
+  const deliveryTime = document.getElementById("deliveryTime").value;
+
+  // 3) هيكل بيانات الطلب
+  const orderData = {
+    orderId: orderId,
+    timestamp: Date.now(), // الوقت الحالي (يمكن تحويله لتاريخ مقروء)
+    deliveryOption: deliveryOption,
+    items: orderedItems,
+    customer: {
+      vorname: vorname,
+      nachname: nachname,
+      strasse: strasse,
+      hausnummer: hausnummer,
+      plz: plz,
+      stadt: stadt,
+      notes: notes
+    },
+    schedule: {
+      pickupDate: pickupDate,
+      pickupTime: pickupTime,
+      deliveryDate: deliveryDate,
+      deliveryTime: deliveryTime
+    }
+  };
+
+  // 4) حفظ الطلب في firebase تحت عقدة "orders" 
+  firebase.database().ref("orders").push(orderData)
+    .then(() => {
+      console.log("Order pushed to Firebase successfully.");
+      // هنا يمكنك مسح السلة أو أي عملية أخرى
+      clearCart();
+    })
+    .catch((error) => {
+      console.error("Error pushing order to Firebase:", error);
+    });
+}
+
+
 
 
 
