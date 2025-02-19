@@ -590,35 +590,30 @@ border-radius: 10px;
   }
 }
 
-/* ===== Payment Info Modal Styling ===== */
+/* تنسيقات المودال للدفعات */
 #paymentInfoModal {
-  display: none; /* مخفي بشكل افتراضي */
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* خلفية نصف شفافة */
-  z-index: 9999; /* فوق كل العناصر */
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
   justify-content: center;
   align-items: center;
 }
-
 #paymentInfoModal.show {
-  display: flex; /* عندما نضيف الصنف show في الجافاسكربت سيظهر */
+  display: flex;
 }
-
 #paymentInfoModal .modal-content {
-  background: linear-gradient(135deg, #ffffff 0%, #e7f9ee 100%);
-  color: #333;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
   width: 90%;
   max-width: 400px;
-  padding: 20px;
-  border-radius: 15px;
   text-align: center;
-  position: relative;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  animation: scaleUp 0.5s ease forwards;
 }
 
 /* حركة تكبير بسيطة */
