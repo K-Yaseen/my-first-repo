@@ -10,7 +10,7 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "khaled.deutschalnd.com", // بريد جيميل
+    user: "khaled.deutschland2016.com", // بريد جيميل
     pass: "YOUR_GMAIL_PASSWORD"          // كلمة مرور جيميل
   }
 });
