@@ -574,6 +574,9 @@ function showSavePopup() {
 function sendToEmail() {
   alert("Die Bestellung wird per E-Mail gesendet.");
   pushOrderToFirebase(pendingOrderId);
+
+  clearCart();
+  redirectToSearchField();
 }
 
 function sendToRestaurant() {
