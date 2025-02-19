@@ -32,7 +32,7 @@ function saveWhatsAppNumber() {
     return;
   }
   // حفظ الرقم تحت config/whatsappNumber
-  database.ref("config/phoneNumber").set(number, (error) => {
+  database.ref("config/whatsappNumber").set(number, (error) => {
     if (error) {
       showToast("Fehler beim Speichern der WhatsApp Nummer.", "#f44336");
     } else {
