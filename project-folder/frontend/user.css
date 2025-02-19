@@ -294,7 +294,7 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 119, 255, 0.5); /* خلفية زرقاء بنسبة شفافية 50% */
+  background-color: rgba(0, 119, 255, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -350,7 +350,6 @@ button:hover {
   font-size: 16px;
 }
 
-/* تنسيق Dropdown الخاص بالكمية */
 .quantity-dropdown {
   margin: 0px 30px;
   padding: 5px;
@@ -361,8 +360,6 @@ button:hover {
   width: 100px;
 }
 
-
-/* نمط الزر الذي يحتوي على ايقونة الحذف من سلة المشتريات */
 .delete-btn {
   background: transparent;
   border: none;
@@ -374,22 +371,16 @@ button:hover {
   width: 100px;
 }
 
-/* التحكم في حجم ولون الأيقونة (SVG) */
 .delete-btn svg {
-  fill: #000000; /* اللون الأساسي للأيقونة */
+  fill: #000000;
   width: 20px;
   height: 20px;
   transition: fill 0.3s ease;
 }
 
-/* تغيير لون الأيقونة عند التحويم على الزر */
 .delete-btn:hover svg {
   fill: #ffffff;
 }
-
-
-
-/* زر اضافة العناصر الىسلة */
 
 #addOrderBtn {
   background-color: #007BFF;
@@ -408,130 +399,115 @@ button:hover {
   background-color: #0056b3;
 }
 
-
 /* بطاقة عرض تفاصيل الصنف */
 .item-card {
-background-color: #fff;
-border-radius: 10px;
-padding: 16px;
-margin: 20px auto;
-max-width: 400px;
-text-align: left;
-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-animation: fadeIn 0.6s ease-in-out; /* حركة ظهور */
-}
-
-/* عنوان الصنف */
-.item-title {
-font-size: 1.2em;
-margin-bottom: 12px;
-color: #333;
-}
-
-/* الحالة (متوفر / غير متوفر) */
-.item-availability {
-margin: 8px 0;
-}
-
-/* عند توفر الصنف */
-.item-card.available {
-border-left: 6px solid #28a745; /* شريط أخضر يدل على التوفر */
-}
-
-/* عند عدم توفر الصنف */
-.item-card.not-available {
-border-left: 6px solid #dc3545; /* شريط أحمر يدل على عدم التوفر */
-}
-
-/* السعر والمكوّنات */
-.item-price, .item-ingredients {
-margin: 8px 0;
-color: #555;
-}
-
-/* لون الحالة حسب توفر الصنف */
-.item-card.available .item-availability strong {
-color: #28a745;
-}
-.item-card.not-available .item-availability strong {
-color: #dc3545;
-}
-
-/* Floating Button für den Warenkorb */
-/* زر العودة إلى السلة */
-/* تأكد من أن الحاوية ذات وضع نسبي */
-.container {
-position: relative;
-}
-
-/* تنسيق زر العودة إلى السلة */
-.back-to-cart-btn {
-background-color: #FF5722; /* لون مميز */
-color: #fff;
-border: none;
-border-radius: 20px; /* حواف دائرية ناعمة */
-padding: 6px 10px; /* حجم صغير */
-font-size: 12px; /* حجم نص صغير */
-font-weight: 500;
-align-items: center;
-cursor: pointer;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-margin-bottom: 20px;
-width: auto;
-}
-
-.back-to-cart-btn:hover {
-background-color: #E64A19; /* تغيير لون عند التحويم */
-transform: translateY(-2px);
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.back-to-cart-btn i {
-margin-right: 4px;
-font-size: 14px;
-}
-
-/* إذا كان لديك صنف "hinweis" للفقرة التي تحتوي على النص */
-#deliveryFields p.hinweis {
-display: none !important;
-}
-
-
-/* تأثير إضاءة (نبض) لجذب الانتباه */
-.highlight-section {
-animation: highlightPulse 0.8s ease-in-out 0s 3 alternate;
-border: 2px solid #ff5722; /* إطار مميز */
-border-radius: 10px;
-}
-
-/* تعريف حركة النبض */
-@keyframes highlightPulse {
-0% {
-  box-shadow: 0 0 30px rgba(255, 87, 34, 0.5);
-}
-100% {
-  box-shadow: 0 0 50px rgba(255, 87, 34, 1);
-}
-}
-
-/* حاوية المودال بالكامل */
-#preLoginModal.modal {
-  display: flex; /* تأكد من استعماله في بعض الأحيان */
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.6); /* خلفية نصف شفافة */
-  z-index: 2000; /* ليظهر فوق المحتوى */
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  margin: 20px auto;
+  max-width: 400px;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   animation: fadeIn 0.6s ease-in-out;
 }
 
-/* محتوى المودال */
+.item-title {
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.item-availability {
+  margin: 8px 0;
+}
+
+.item-card.available {
+  border-left: 6px solid #28a745;
+}
+
+.item-card.not-available {
+  border-left: 6px solid #dc3545;
+}
+
+.item-price, .item-ingredients {
+  margin: 8px 0;
+  color: #555;
+}
+
+.item-card.available .item-availability strong {
+  color: #28a745;
+}
+.item-card.not-available .item-availability strong {
+  color: #dc3545;
+}
+
+/* Floating Button für den Warenkorb */
+.container {
+  position: relative;
+}
+
+.back-to-cart-btn {
+  background-color: #FF5722;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  margin-bottom: 20px;
+  width: auto;
+}
+
+.back-to-cart-btn:hover {
+  background-color: #E64A19;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back-to-cart-btn i {
+  margin-right: 4px;
+  font-size: 14px;
+}
+
+#deliveryFields p.hinweis {
+  display: none !important;
+}
+
+/* تأثير إضاءة (نبض) لجذب الانتباه */
+.highlight-section {
+  animation: highlightPulse 0.8s ease-in-out 0s 3 alternate;
+  border: 2px solid #ff5722;
+  border-radius: 10px;
+}
+
+@keyframes highlightPulse {
+  0% {
+    box-shadow: 0 0 30px rgba(255, 87, 34, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 50px rgba(255, 87, 34, 1);
+  }
+}
+
+#preLoginModal.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 2000;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
 #preLoginModal .modal-content {
   position: relative;
   max-width: 500px;
   width: 90%;
   background-color: #ffffff;
-  border: 2px solid #28a745; /* إطار أخضر خفيف */
+  border: 2px solid #28a745;
   border-radius: 15px;
   box-shadow: 0 10px 20px rgba(0,0,0,0.2);
   padding: 30px;
@@ -539,14 +515,12 @@ border-radius: 10px;
   animation: slideDown 0.5s ease forwards;
 }
 
-/* عنوان المودال */
 #preLoginModal .modal-content h2 {
   font-size: 24px;
   margin-bottom: 15px;
-  color: #28a745; /* لون أخضر مواكب لتصميمك */
+  color: #28a745;
 }
 
-/* النص داخل المودال */
 #preLoginModal .modal-content p {
   font-size: 16px;
   color: #444;
@@ -554,7 +528,6 @@ border-radius: 10px;
   margin-bottom: 20px;
 }
 
-/* الزر داخل المودال */
 #preLoginModal .modal-content button {
   background-color: #28a745;
   border: none;
@@ -568,17 +541,15 @@ border-radius: 10px;
 }
 
 #preLoginModal .modal-content button:hover {
-  background-color: #218838; /* درجة أغمق قليلاً */
+  background-color: #218838;
   transform: scale(1.02);
 }
 
-/* حركة الدخول التدريجية */
 @keyframes fadeIn {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
 
-/* حركة انزلاق المودال من الأعلى */
 @keyframes slideDown {
   0% {
     transform: translateY(-30%);
@@ -590,20 +561,20 @@ border-radius: 10px;
 
 /* ===== Payment Info Modal Styling ===== */
 #paymentInfoModal {
-  display: none; /* مخفي بشكل افتراضي */
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* خلفية نصف شفافة */
-  z-index: 9999; /* فوق كل العناصر */
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
   justify-content: center;
   align-items: center;
 }
 
 #paymentInfoModal.show {
-  display: flex; /* عندما نضيف الصنف show في الجافاسكربت سيظهر */
+  display: flex;
 }
 
 #paymentInfoModal .modal-content {
@@ -619,7 +590,6 @@ border-radius: 10px;
   animation: scaleUp 0.5s ease forwards;
 }
 
-/* حركة تكبير بسيطة */
 @keyframes scaleUp {
   0% { transform: scale(0.8); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
@@ -633,13 +603,27 @@ border-radius: 10px;
 #paymentInfoModal h2 {
   font-size: 20px;
   margin-bottom: 10px;
-  color: #28a745; /* لون أخضر كتلميح للدفع */
+  color: #28a745;
 }
 
 #paymentInfoModal p {
   font-size: 16px;
   margin-bottom: 20px;
   line-height: 1.6;
+}
+
+#paymentInfoTotal {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#additionalNotes {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  margin-bottom: 15px;
+  resize: vertical;
+  padding: 8px;
 }
 
 #paymentInfoModal button#closePaymentModalBtn {
