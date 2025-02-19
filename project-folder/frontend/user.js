@@ -5,6 +5,7 @@
 let currentItem = null;
 let pendingOrderId = null;  // رقم الطلب المؤقت
 let selectedOrderChannel = "";
+let phoneNumber = "";       // سيتم قراءته من Firebase
 
 const firebaseConfig = {
   apiKey: "AIzaSyBeAkTPw9nswsCy9NtWEgf6nG4al5Qx83c",
@@ -45,6 +46,22 @@ function generateOrderNumber() {
     orderId += numbers.charAt(Math.floor(Math.random() * numbers.length));
   }
   return orderId;
+}
+
+// Neue Funktion: Konfiguration (phoneNumber) laden
+async function fetchConfig() {
+  try {
+    // Lies alle Daten unter "config" oder nur phoneNumber
+    const snapshot = await database.ref("config").once("value");
+    const configData = snapshot.val() || {};
+    // Hole phoneNumber, wenn vorhanden
+    phoneNumber = configData.phoneNumber || "";
+    console.log("Telefonnummer aus Firebase:", phoneNumber);
+  } catch (error) {
+    console.error("Fehler beim Laden der Konfigurationsdaten:", error);
+    // Du kannst optional phoneNumber mit einer Fallback-Nummer belegen
+    phoneNumber = ""; 
+  }
 }
 
 // Funktion zum Abrufen aller Artikel (Items) aus Firebase
@@ -715,11 +732,21 @@ function showOrderSuccessMessage(orderId, totalPrice, scheduleData) {
 // EVENT LISTENERS (DOM laden usw.)
 // ================================================
 document.addEventListener("DOMContentLoaded", async () => {
+  // 1. Lade Konfigurationsdaten (Telefonnummer)
+  await fetchConfig();
+
+  // 2. Lade Items
   await fetchItems();
+
+  // 3. Lade User-Daten
   loadUserData();
+
+  // 4. Lade Öffnungszeiten
   await loadWorkingHours();
+
+  // 5. Lade Warenkorb, aktualisiere Button
   loadCart();
-  updateCartButton(); // Sicherstellen, dass der Button-Zustand stimmt
+  updateCartButton();
 
   // ServiceOption aus Firebase laden
   const snapshot = await firebase.database().ref("config/serviceOption").once("value");
@@ -842,9 +869,9 @@ function applyUserServiceOption(option) {
 
 /**
  * يعرض مودال يوضّح للعميل طريقة الدفع
- * حسب الخيار الذي اختاره (استلام/توصيل).
- * + عرض المبلغ الإجمالي
- * + حقل ملاحظات إضافية
+ * حسب الخيار الذي اختاره (استلام/T Lieferung).
+ * + Anzeige des Gesamtbetrags
+ * + Zusätzliches Notizfeld
  */
 function showPaymentInfo() {
   const paymentModal = document.getElementById("paymentInfoModal");
@@ -899,9 +926,6 @@ function closePaymentInfo() {
 
   // تنفيذ الطلب بناءً على قناة الإرسال المختارة
   if (selectedOrderChannel === "whatsapp") {
-    // إرسال الطلب عبر واتساب
-    // لاحظ أنه يجب توفير دالة sendToWhatsApp بنفس منطقك أو مباشرةً هنا
-    // مثال (مكان الدالة الافتراضية):
     sendToWhatsApp();
   } else if (selectedOrderChannel === "email") {
     sendToEmail();
@@ -910,7 +934,7 @@ function closePaymentInfo() {
   }
 }
 
-// Beispielhafte Implementierung einer WhatsApp-Funktion auf Deutsch
+// WhatsApp-Funktion, die phoneNumber aus Firebase verwendet
 function sendToWhatsApp() {
   if (!validateDeliveryFields()) return;
   if (!validateSchedule()) return;
@@ -963,27 +987,31 @@ function sendToWhatsApp() {
   const totalPrice = calculateCartTotal().toFixed(2);
   orderText += `\nGesamtpreis: ${totalPrice} €`;
 
-  // Hier die internationale Telefonnummer eintragen (ohne "+")
-  const phoneNumber = "49123456789"; // Beispiel: 49 für Deutschland
+  // Nutze den Wert aus phoneNumber (geladen von Firebase)
+  // Falls phoneNumber leer ist, muss das in der Firebase-Konfiguration geprüft werden.
+  if (!phoneNumber) {
+    alert("Es wurde keine WhatsApp-Nummer konfiguriert.");
+    return;
+  }
 
   const encodedMessage = encodeURIComponent(orderText);
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
   window.open(whatsappUrl, "_blank");
 }
 
-// عند الضغط على زر الطلب عبر واتساب
+// عند الضغط على زر "Bestellung per WhatsApp senden"
 document.getElementById("whatsappBtn").addEventListener("click", function() {
   selectedOrderChannel = "whatsapp";
   showPaymentInfo();
 });
 
-// عند الضغط على زر الطلب عبر البريد الإلكتروني
+// عند الضغط auf "Bestellung per E-Mail senden"
 document.getElementById("emailBtn").addEventListener("click", function() {
   selectedOrderChannel = "email";
   showPaymentInfo();
 });
 
-// عند الضغط على زر الطلب عبر صفحة المطعم
+// عند الضغط auf "Bestellung an das Restaurant senden"
 document.getElementById("sendOrderBtn").addEventListener("click", function() {
   selectedOrderChannel = "restaurant";
   showPaymentInfo();
