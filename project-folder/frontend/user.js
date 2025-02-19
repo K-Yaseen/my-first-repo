@@ -683,7 +683,7 @@ function pushOrderToFirebase() {
     })
     .catch((error) => {
       console.error("Error pushing order to Firebase:", error);
-      alert(" Beim Senden der Bestellung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut");
+      alert("Beim Senden der Bestellung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.");
     });
 }
 
