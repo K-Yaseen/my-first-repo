@@ -22,6 +22,10 @@ const userDataStore = {};
 // ================================================
 // Hilfsfunktionen
 // ================================================
+
+/**
+ * يحاول عمل JSON.parse آمن
+ */
 function safeJSONParse(data) {
   try {
     return JSON.parse(data);
@@ -31,6 +35,9 @@ function safeJSONParse(data) {
   }
 }
 
+/**
+ * توليد رقم طلب عشوائي
+ */
 function generateOrderNumber() {
   const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
   const numbers = "123456789";
@@ -44,7 +51,9 @@ function generateOrderNumber() {
   return orderId;
 }
 
-// Funktion zum Abrufen aller Artikel (Items) aus Firebase
+/**
+ * جلب عناصر القائمة (Items) من Firebase
+ */
 async function fetchItems() {
   try {
     const snapshot = await database.ref("items").once("value");
@@ -59,12 +68,17 @@ async function fetchItems() {
 // ================================================
 // Anzeige des Status & Laden/Speichern von Daten
 // ================================================
+
+/**
+ * إظهار رسالة سريعة للمستخدم
+ */
 function showFloatingMessage(message, color = "red") {
-  // Für schnelles Feedback; kann angepasst werden:
   alert(message);
 }
 
-// Daten des Nutzers aus localStorage laden (falls vorhanden)
+/**
+ * تحميل بيانات المستخدم المخزّنة (إن وجدت)
+ */
 function loadUserData() {
   const storedData = safeJSONParse(localStorage.getItem("userData"));
   if (storedData) {
@@ -82,7 +96,7 @@ function loadUserData() {
         document.getElementById("pickupTime").value = storedData.pickupTime || "";
       }
     }
-    // Restliche Felder
+    // بقية الحقول
     document.getElementById("vorname").value = storedData.vorname || "";
     document.getElementById("nachname").value = storedData.nachname || "";
     document.getElementById("strasse").value = storedData.strasse || "";
@@ -94,7 +108,9 @@ function loadUserData() {
   }
 }
 
-// Speichert die Nutzereingaben in localStorage
+/**
+ * حفظ بيانات المستخدم في localStorage
+ */
 function saveUserData() {
   const deliveryOption = document.getElementById("deliveryOption").value;
   const vorname = document.getElementById("vorname").value.trim();
@@ -139,7 +155,10 @@ function saveUserData() {
 // ================================================
 // Funktionen zur Warenkorb-Verwaltung
 // ================================================
-// Lädt den Warenkorb aus localStorage
+
+/**
+ * تحميل محتويات السلة من localStorage
+ */
 function loadCart() {
   const cartData = localStorage.getItem("cart");
   if (!cartData) return;
@@ -158,7 +177,9 @@ function loadCart() {
   }
 }
 
-// Speichert den Warenkorb in localStorage
+/**
+ * حفظ السلة في localStorage
+ */
 function saveCart() {
   const cartItemsContainer = document.getElementById("cartItems");
   const cartItemsArray = [];
@@ -170,7 +191,9 @@ function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cartItemsArray));
 }
 
-// Leert den Warenkorb
+/**
+ * مسح السلة تماماً
+ */
 function clearCart() {
   localStorage.removeItem("cart");
   const cartItemsContainer = document.getElementById("cartItems");
@@ -178,7 +201,9 @@ function clearCart() {
   updateCartButton();
 }
 
-// Aktualisiert die Anzeige des "Einkaufswagen"-Buttons (Anzahl Artikel)
+/**
+ * تحديث الزر الذي يظهر عدد العناصر في السلة
+ */
 function updateCartButton() {
   const cartItems = document.getElementById("cartItems");
   const backToCartBtn = document.getElementById("backToCartBtn");
@@ -206,7 +231,10 @@ function updateCartButton() {
 // ================================================
 // Funktionen für die Anzeige / Bearbeitung der Items
 // ================================================
-// Überprüft, ob ein Gericht verfügbar ist
+
+/**
+ * التحقق من توفّر الصنف (ID) الذي أدخله المستخدم
+ */
 function checkItem() {
   const itemNumberInput = document.getElementById("itemNumber");
   const itemNumber = itemNumberInput ? itemNumberInput.value.trim() : "";
@@ -214,7 +242,7 @@ function checkItem() {
   const orderDetails = document.getElementById("orderDetails");
   const addToCartBtn = document.getElementById("addToCartBtn");
 
-  // Reset/Hide
+  // إظهار قسم النتائج
   result.style.display = "block";
   addToCartBtn.style.display = "none";
 
@@ -263,7 +291,9 @@ function checkItem() {
   }
 }
 
-// Fügt das aktuell gefundene Gericht dem Warenkorb hinzu
+/**
+ * إضافة العنصر الحالي إلى السلة
+ */
 function addToCart() {
   if (currentItem) {
     updateFloatingCart(currentItem);
@@ -280,7 +310,9 @@ function addToCart() {
   }
 }
 
-// Aktualisiert oder erzeugt Einträge im fliegenden Warenkorb
+/**
+ * تحديث سلة المشتريات العائمة
+ */
 function updateFloatingCart(item, quantity = 1, showOverlay = true) {
   const overlay = document.getElementById("floatingCartOverlay");
   const cartItems = document.getElementById("cartItems");
@@ -304,7 +336,7 @@ function updateFloatingCart(item, quantity = 1, showOverlay = true) {
     return;
   }
 
-  // Neues Listenelement:
+  // عنصر جديد في القائمة:
   const li = document.createElement("li");
   li.className = "cart-item";
   li.setAttribute("data-item-id", item.id);
@@ -356,7 +388,9 @@ function updateFloatingCart(item, quantity = 1, showOverlay = true) {
   saveCart();
 }
 
-// Blendet den fliegenden Warenkorb aus
+/**
+ * إخفاء السلة العائمة
+ */
 function hideFloatingCart() {
   const overlay = document.getElementById("floatingCartOverlay");
   if (overlay) overlay.style.display = "none";
@@ -365,6 +399,10 @@ function hideFloatingCart() {
 // ================================================
 // Funktionen zu Öffnungszeiten & Terminprüfung
 // ================================================
+
+/**
+ * تحديث قيم الحد الأدنى للوقت بناء على الوقت الحالي
+ */
 function updateTimeConstraints() {
   const now = new Date();
   const year = now.getFullYear();
@@ -399,7 +437,9 @@ function updateTimeConstraints() {
   }
 }
 
-// Lädt die Öffnungszeiten
+/**
+ * جلب بيانات Öffnungszeiten من Firebase
+ */
 function loadWorkingHours() {
   return new Promise(async (resolve) => {
     try {
@@ -418,7 +458,9 @@ function loadWorkingHours() {
   });
 }
 
-// Aktualisiert die Anzeige der Öffnungszeiten
+/**
+ * عرض الـ Öffnungszeiten في المودال الأول
+ */
 function updateWorkingHoursDisplay(workingHours, serviceOption = "beides") {
   const container = document.getElementById("workingHoursDisplay");
   if (!container) return;
@@ -455,7 +497,9 @@ function updateWorkingHoursDisplay(workingHours, serviceOption = "beides") {
   });
 }
 
-// Prüft, ob die gewählte Zeit in den Öffnungszeiten liegt
+/**
+ * التحقق من أن الوقت المختار ضمن أوقات الدوام
+ */
 function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
   const workingHours = JSON.parse(localStorage.getItem("workingHours"));
   if (!workingHours) {
@@ -490,7 +534,9 @@ function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
   return selectedDateTime >= startTime && selectedDateTime <= endTime;
 }
 
-// Validiert die Wunschzeit & Felder
+/**
+ * التحقق من صحة الموعد المختار
+ */
 function validateSchedule() {
   const deliveryOption = document.getElementById("deliveryOption").value;
   const now = new Date();
@@ -533,7 +579,9 @@ function validateSchedule() {
   return true;
 }
 
-// Überprüft, ob alle erforderlichen Felder bei Lieferung ausgefüllt wurden
+/**
+ * التحقق من ملء حقول التوصيل
+ */
 function validateDeliveryFields() {
   const deliveryOption = document.getElementById("deliveryOption").value;
   if (deliveryOption === "delivery") {
@@ -542,383 +590,4 @@ function validateDeliveryFields() {
     const strasse = document.getElementById("strasse").value.trim();
     const hausnummer = document.getElementById("hausnummer").value.trim();
     const plz = document.getElementById("plz").value.trim();
-    const stadt = document.getElementById("stadt").value.trim();
-
-    if (!vorname || !nachname || !strasse || !hausnummer || !plz || !stadt) {
-      showFloatingMessage("Bitte füllen Sie alle erforderlichen Felder für die Lieferung aus.", "red");
-      return false;
-    }
-  }
-  return true;
-}
-
-// ================================================
-// Funktionen für die Bestellvorgänge (WhatsApp/Email)
-// ================================================
-function showSavePopup() {
-  saveUserData();
-  const popup = document.getElementById("popupMessage");
-  if (popup) {
-    popup.classList.add("show");
-    setTimeout(() => {
-      popup.classList.remove("show");
-    }, 3000);
-  }
-}
-
-// // Zeigt eine Bestätigungs-Frage an, bevor man per WhatsApp fortfährt
-// function showPaymentConfirm(onConfirm) {
-//   const modal = document.createElement('div');
-//   modal.className = 'modal';
-//   modal.style.display = 'flex';
-
-//   const modalContent = document.createElement('div');
-//   modalContent.className = 'modal-content';
-//   modalContent.style.maxWidth = '450px';
-//   modalContent.style.textAlign = 'center';
-
-//   const title = document.createElement('h2');
-//   title.innerText = 'Hinweis';
-//   const paragraph = document.createElement('p');
-//   paragraph.innerText = 'Die Bezahlung erfolgt erst bei Erhalt der Bestellung. Sind Sie damit einverstanden?';
-//   paragraph.style.margin = '15px 0';
-//   paragraph.style.fontSize = '16px';
-
-//   const confirmBtn = document.createElement('button');
-//   confirmBtn.innerText = 'Ja, fortfahren';
-//   confirmBtn.style.margin = '10px';
-//   confirmBtn.style.backgroundColor = '#28a745';
-//   confirmBtn.style.color = '#fff';
-//   confirmBtn.style.border = 'none';
-//   confirmBtn.style.padding = '10px 20px';
-//   confirmBtn.style.borderRadius = '5px';
-//   confirmBtn.style.cursor = 'pointer';
-
-//   const cancelBtn = document.createElement('button');
-//   cancelBtn.innerText = 'Abbrechen';
-//   cancelBtn.style.margin = '10px';
-//   cancelBtn.style.backgroundColor = '#dc3545';
-//   cancelBtn.style.color = '#fff';
-//   cancelBtn.style.border = 'none';
-//   cancelBtn.style.padding = '10px 20px';
-//   cancelBtn.style.borderRadius = '5px';
-//   cancelBtn.style.cursor = 'pointer';
-
-//   modalContent.appendChild(title);
-//   modalContent.appendChild(paragraph);
-//   modalContent.appendChild(confirmBtn);
-//   modalContent.appendChild(cancelBtn);
-//   modal.appendChild(modalContent);
-
-//   document.body.appendChild(modal);
-
-//   confirmBtn.onclick = () => {
-//     document.body.removeChild(modal);
-//     if (onConfirm) onConfirm();
-//   };
-//   cancelBtn.onclick = () => {
-//     document.body.removeChild(modal);
-//   };
-// }
-
-// Original sendToWhatsApp-Funktion wird hier übersprungen,
-// weil wir sie durch showPaymentConfirm erweitert haben.
-async function sendToWhatsApp() { /* Code siehe Original... */ }
-const originalSendToWhatsApp = window.sendToWhatsApp;
-window.sendToWhatsApp = function() {
-  // 1. اعرض النافذة
-  showPaymentInfo();
-
-  // 2. عند ضغط "فهمت"، نغلق المودال ونتابع
-  const closeBtn = document.getElementById("closePaymentModalBtn");
-  closeBtn.onclick = () => {
-    closePaymentInfo(); 
-    originalSendToWhatsApp();
-  };
-};
-
-// ================================================
-// FUNKTION ZUR BERECHNUNG DES GESAMTPREISES
-// ================================================
-function calculateCartTotal() {
-  let total = 0;
-  const cartItemsElement = document.getElementById("cartItems");
-  cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
-    const itemId = cartItem.getAttribute("data-item-id");
-    const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
-    const quantity = quantitySelectEl ? parseInt(quantitySelectEl.value) : 1;
-    // Suche das echte Item aus 'items'
-    const realItem = items.find(x => x.id == itemId);
-    if (realItem && realItem.price) {
-      total += realItem.price * quantity;
-    }
-  });
-  return total;
-}
-
-// ================================================
-// Bestellvorgang an Firebase (pushOrderToFirebase)
-// ================================================
-function pushOrderToFirebase() {
-  const cartItemsElement = document.getElementById("cartItems");
-  if (!cartItemsElement || cartItemsElement.children.length === 0) {
-    alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
-    return;
-  }
-
-  const orderId = generateOrderNumber();
-  const orderedItems = [];
-
-  cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
-    const itemInfoEl = cartItem.querySelector(".item-info");
-    const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
-    const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Item";
-    const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
-    orderedItems.push({ name: itemText, quantity: quantity });
-  });
-
-  const deliveryOption = document.getElementById("deliveryOption").value;
-  const vorname = document.getElementById("vorname").value.trim();
-  const nachname = document.getElementById("nachname").value.trim();
-  const strasse = document.getElementById("strasse").value.trim();
-  const hausnummer = document.getElementById("hausnummer").value.trim();
-  const plz = document.getElementById("plz").value.trim();
-  const stadt = document.getElementById("stadt").value.trim();
-  const notes = document.getElementById("customerNotes").value.trim();
-  const pickupDate = document.getElementById("pickupDate").value;
-  const pickupTime = document.getElementById("pickupTime").value;
-  const deliveryDate = document.getElementById("deliveryDate").value;
-  const deliveryTime = document.getElementById("deliveryTime").value;
-
-  const orderData = {
-    orderId: orderId,
-    timestamp: Date.now(),
-    deliveryOption: deliveryOption,
-    items: orderedItems,
-    customer: {
-      vorname,
-      nachname,
-      strasse,
-      hausnummer,
-      plz,
-      stadt,
-      notes
-    },
-    schedule: {
-      pickupDate,
-      pickupTime,
-      deliveryDate,
-      deliveryTime
-    }
-  };
-
-  // Berechnung des Gesamtpreises (anhand items-Array)
-  const cartTotal = calculateCartTotal();
-
-  database.ref("orders").push(orderData)
-    .then(() => {
-      // Anstelle eines Alerts => Floating Popup mit Bestellnummer + Gesamtbetrag
-      showOrderSuccessMessage(orderId, cartTotal);
-      // Warenkorb leeren
-      clearCart();
-    })
-    .catch((error) => {
-      console.error("Error pushing order to Firebase:", error);
-      alert("Beim Senden der Bestellung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.");
-    });
-}
-
-// Zeigt ein schwebendes Popup mit Bestellnummer und Gesamtbetrag
-function showOrderSuccessMessage(orderId, totalPrice) {
-  // Popup erzeugen
-  const successPopup = document.createElement('div');
-  successPopup.className = 'popup';
-  successPopup.style.backgroundColor = '#4caf50'; // Grün als Hinweis für Erfolg
-  successPopup.innerHTML = `
-    <p style="margin: 0; padding: 0;">
-      ✅ Bestellung <strong>${orderId}</strong> wurde erfolgreich gesendet!<br>
-      Gesamtbetrag: <strong>${totalPrice.toFixed(2)} €</strong>
-    </p>
-  `;
-
-  // Popup ins Dokument einfügen
-  document.body.appendChild(successPopup);
-  // Klasse "show" hinzufügen, damit es sichtbar wird
-  successPopup.classList.add("show");
-
-  // Nach einigen Sekunden ausblenden & entfernen
-  setTimeout(() => {
-    successPopup.classList.remove("show");
-    document.body.removeChild(successPopup);
-  }, 5000);
-}
-
-// ================================================
-// EVENT LISTENERS (DOM laden usw.)
-// ================================================
-document.addEventListener("DOMContentLoaded", async () => {
-  await fetchItems();
-  loadUserData();
-  await loadWorkingHours();
-  loadCart(); 
-  updateCartButton(); // Sicherstellen, dass Button-Zustand stimmt
-
-  // ServiceOption aus Firebase laden
-  const snapshot = await firebase.database().ref("config/serviceOption").once("value");
-  const serviceOption = snapshot.val() || "beides";
-  const storedWorkingHours = JSON.parse(localStorage.getItem("workingHours"));
-  if (storedWorkingHours) {
-    updateWorkingHoursDisplay(storedWorkingHours, serviceOption);
-  }
-
-  // Modal für Öffnungszeiten anzeigen
-  const preLoginModal = document.getElementById("preLoginModal");
-  if (preLoginModal) {
-    preLoginModal.style.display = "flex";
-    const continueBtn = document.getElementById("continueBtn");
-    if (continueBtn) {
-      continueBtn.addEventListener("click", function () {
-        preLoginModal.style.display = "none";
-      });
-    }
-  }
-
-  const closePaymentModalBtn = document.getElementById("closePaymentModalBtn");
-  if (closePaymentModalBtn) {
-    closePaymentModalBtn.addEventListener("click", closePaymentInfo);
-  }
-
-  // Aktualisiert Zeit-Einschränkungen
-  updateTimeConstraints();
-
-  // Umschalten (Lieferung/Abholung)
-  const deliverySelect = document.getElementById("deliveryOption");
-  if (deliverySelect) {
-    deliverySelect.addEventListener("change", function () {
-      const selected = this.value;
-      if (selected === "pickup") {
-        document.getElementById("pickupScheduleField").style.display = "block";
-        document.getElementById("deliveryScheduleField").style.display = "none";
-        document.getElementById("deliveryFields").style.display = "none";
-      } else if (selected === "delivery") {
-        document.getElementById("deliveryScheduleField").style.display = "block";
-        document.getElementById("deliveryFields").style.display = "block";
-        document.getElementById("pickupScheduleField").style.display = "none";
-      }
-    });
-  }
-
-  // Sende-Button
-  const sendOrderBtn = document.getElementById("sendOrderBtn");
-  if (sendOrderBtn) {
-    sendOrderBtn.addEventListener("click", () => {
-      // استدعاء النافذة الجديدة:
-      showPaymentInfo();
-    });
-  }
-});
-
-// Zeigt / Versteckt den fliegenden Warenkorb
-document.getElementById("backToCartBtn").addEventListener("click", function () {
-  document.getElementById("floatingCartOverlay").style.display = "flex";
-});
-
-// Navigiert zurück zum Suchfeld
-function redirectToSearchField() {
-  const searchField = document.getElementById("itemNumber");
-  const overlay = document.getElementById("floatingCartOverlay");
-  if (overlay) {
-    overlay.style.display = "none";
-  }
-}
-
-// Wechsel zur Bestellübersicht
-function goToOrderDetails() {
-  const overlay = document.getElementById("floatingCartOverlay");
-  if (overlay) {
-    overlay.style.display = "none";
-  }
-  const orderDetails = document.getElementById("orderDetails");
-  if (orderDetails) {
-    orderDetails.style.display = "block";
-    orderDetails.scrollIntoView({ behavior: 'smooth' });
-    orderDetails.classList.add('highlight-section');
-    setTimeout(() => {
-      orderDetails.classList.remove('highlight-section');
-    }, 4000);
-  }
-}
-
-// Einstellung der ServiceOption (z. B. nur Lieferung/Abholung)
-firebase.database().ref("config/serviceOption").on("value", function (snapshot) {
-  const option = snapshot.val() || "beides";
-  applyUserServiceOption(option);
-});
-
-// Passt die Oberfläche an je nach Option
-function applyUserServiceOption(option) {
-  const deliveryOptionSelect = document.getElementById("deliveryOption");
-  if (option === "nurLieferung") {
-    deliveryOptionSelect.innerHTML = '<option value="delivery">Lieferung</option>';
-    document.getElementById("pickupScheduleField").style.display = "none";
-    document.getElementById("deliveryScheduleField").style.display = "block";
-    document.getElementById("deliveryFields").style.display = "block";
-    deliveryOptionSelect.style.display = "none";
-    const deliveryHint = document.querySelector("#deliveryFields p");
-    if (deliveryHint) {
-      deliveryHint.style.display = "none";
-    }
-  } else if (option === "nurAbholung") {
-    deliveryOptionSelect.innerHTML = '<option value="pickup">Selbstabholung</option>';
-    document.getElementById("deliveryScheduleField").style.display = "none";
-    document.getElementById("deliveryFields").style.display = "none";
-    document.getElementById("pickupScheduleField").style.display = "block";
-    deliveryOptionSelect.style.display = "none";
-  } else {
-    deliveryOptionSelect.innerHTML = '<option value="pickup">Selbstabholung</option><option value="delivery">Lieferung</option>';
-    deliveryOptionSelect.style.display = "block";
-    const deliveryNote = document.querySelector("#deliveryFields p");
-    if (deliveryNote) {
-      deliveryNote.style.display = "block";
-    }
-  }
-}
-
-/**
- * يعرض مودال يوضّح للعميل طريقة الدفع
- * حسب الخيار الذي اختاره (استلام/توصيل).
- */
-function showPaymentInfo() {
-  const paymentModal = document.getElementById("paymentInfoModal");
-  const paymentTextEl = document.getElementById("paymentInfoText");
-  const deliveryOption = document.getElementById("deliveryOption")?.value || "pickup";
-
-  // نص الرسالة
-  let message = "";
-  if (deliveryOption === "pickup") {
-    // في حال اختار الاستلام
-    message = "سيتم دفع المبلغ عند استلام الطلب.\n\n";
-    message += "في حال وجود أي إضافات أو تغييرات في الطلب، يُرجى إبلاغنا.";
-  } else {
-    // في حال اختار التوصيل
-    message = "سيتم دفع المبلغ عند تسليم الطلب.\n\n";
-    message += "في حال وجود أي ملاحظات إضافية، يُرجى ذكرها في خانة الملاحظات.";
-  }
-
-  // وضع النص في الفقرة
-  paymentTextEl.textContent = message;
-
-  // إظهار المودال
-  paymentModal.classList.add("show");
-}
-
-/**
- * إغلاق مودال معلومات الدفع
- */
-function closePaymentInfo() {
-  const paymentModal = document.getElementById("paymentInfoModal");
-  paymentModal.classList.remove("show");
-  // استدعِ الإرسال الفعلي:
-  pushOrderToFirebase();
-}
-
+    const stadt =
