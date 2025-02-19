@@ -677,7 +677,7 @@ function pushOrderToFirebase() {
   firebase.database().ref("orders").push(orderData)
     .then(() => {
       // رسالة نجاح
-      alert("تم إرسال الطلب بنجاح!");
+      alert("");
       // يمكنك مسح السلة بعد الإرسال:
       clearCart();
     })
