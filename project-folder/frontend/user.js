@@ -835,6 +835,13 @@ function updateFloatingCart(item, quantity = 1, showOverlay = true) {
 
   updateCartButton();
   saveCart();
+  
+  const sendOrderBtn = document.getElementById("sendOrderBtn");
+  if (sendOrderBtn) {
+    sendOrderBtn.addEventListener("click", () => {
+      pushOrderToFirebase(); 
+      // أو يمكنك أيضًا هنا منادات sendToWhatsApp أو sendToEmail
+    });
 }
 
 
