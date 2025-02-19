@@ -134,7 +134,8 @@ button:hover {
 /* =======================================
    Popup / الرسائل المنبثقة
 ========================================== */
-.popup {
+ /* تنسيقات الرسالة العائمة */
+ .popup {
   display: none;
   position: fixed;
   bottom: 60px;
@@ -149,10 +150,8 @@ button:hover {
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
   opacity: 0;
   transition: opacity 0.5s ease-in-out, bottom 0.5s ease-in-out;
-  z-index: 3000; /* قيمة z-index مرتفعة لتظهر فوق السلة */
-  width: 300px;
+  z-index: 3000;
 }
-
 .popup.show {
   display: block;
   opacity: 1;
