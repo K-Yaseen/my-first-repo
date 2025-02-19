@@ -624,17 +624,18 @@ function showSavePopup() {
 // Original sendToWhatsApp-Funktion wird hier übersprungen,
 // weil wir sie durch showPaymentConfirm erweitert haben.
 async function sendToWhatsApp() { /* Code siehe Original... */ }
-const _originalSendToWhatsApp = window.sendToWhatsApp;
-window.sendToWhatsApp = function () {
-  showPaymentConfirm(() => {
-    _originalSendToWhatsApp();
-  });
-};
+const originalSendToWhatsApp = window.sendToWhatsApp;
+window.sendToWhatsApp = function() {
+  // 1. اعرض النافذة
+  showPaymentInfo();
 
-// Ähnliches Prinzip für Email
-async function sendToEmail() {
-  // ... (unverändert, außer ClearCart am Ende)
-}
+  // 2. عند ضغط "فهمت"، نغلق المودال ونتابع
+  const closeBtn = document.getElementById("closePaymentModalBtn");
+  closeBtn.onclick = () => {
+    closePaymentInfo(); 
+    originalSendToWhatsApp();
+  };
+};
 
 // ================================================
 // FUNKTION ZUR BERECHNUNG DES GESAMTPREISES
