@@ -2,14 +2,15 @@
 
 // 1) تهيئة Firebase (استخدم نفس الإعدادات في admin.js/user.js)
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    databaseURL: "YOUR_DATABASE_URL",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
+  apiKey: "AIzaSyBeAkTPw9n...",
+  authDomain: "restaurant-system-f50cf.firebaseapp.com",
+  databaseURL: "https://restaurant-system-f50cf-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "restaurant-system-f50cf",
+  storageBucket: "restaurant-system-f50cf.firebasestorage.app",
+  messagingSenderId: "220436037433",
+  appId: "1:220436037433:web:9bfc0f85a8806a15ee72e8"
+};
+
   
   // التهيئة
   firebase.initializeApp(firebaseConfig);
