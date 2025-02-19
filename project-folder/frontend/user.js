@@ -783,12 +783,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
 
-  const emailBtn = document.getElementById("emailBtn");
-if (emailBtn) {
-  emailBtn.addEventListener("click", () => {
-    selectedOrderChannel = "email";
-    showPaymentInfo(); 
-  });
+  
 });
 
 // العودة لحقل البحث
