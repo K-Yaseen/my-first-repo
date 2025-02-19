@@ -853,37 +853,31 @@ function applyUserServiceOption(option) {
 function showPaymentInfo() {
   const paymentModal = document.getElementById("paymentInfoModal");
   const paymentTextEl = document.getElementById("paymentInfoText");
+  const paymentInfoTotalEl = document.getElementById("paymentInfoTotal");
+  const paymentOrderIdEl = document.getElementById("paymentInfoOrderId");
 
-  // هذه العناصر نحتاجها للإضافات
-  const paymentInfoTotalEl = document.getElementById("paymentInfoTotal"); 
-  const additionalNotesEl = document.getElementById("additionalNotes");
-
-  // حساب الإجمالي
+  // (كود حساب السعر الكلي وعرضه كما لديك سابقًا)
   const totalPrice = calculateCartTotal().toFixed(2);
-
-  const deliveryOption = document.getElementById("deliveryOption")?.value || "pickup";
-  let message = "";
-  if (deliveryOption === "pickup") {
-    message = "Sie zahlen den Gesamtbetrag bei Abholung.\n";
-  } else {
-    message = "Sie zahlen den Gesamtbetrag bei Lieferung.\n";
-  }
-
-  // وضع النص في الفقرة
-  paymentTextEl.textContent = message;
-  // وضع المجموع في العنصر الخاص به
   if (paymentInfoTotalEl) {
     paymentInfoTotalEl.textContent = "Gesamtbetrag: " + totalPrice + " €";
   }
 
-  // تفريغ خانة الملاحظات الإضافية
-  if (additionalNotesEl) {
-    additionalNotesEl.value = "";
+  // قراءة خيار التوصيل أو الاستلام لعرض رسالة مناسبة (كما لديك)
+  // ...
+  paymentTextEl.textContent = "Sie zahlen den Gesamtbetrag ...";
+  // ...
+
+  // 1. توليد رقم الطلب وحفظه في متغير عام
+  pendingOrderId = generateOrderNumber();
+
+  // 2. عرض رقم الطلب داخل المودال
+  if (paymentOrderIdEl) {
+    paymentOrderIdEl.textContent = `Bitte zeigen Sie diese Bestellnummer dem Mitarbeiter: ${pendingOrderId}`;
   }
 
-  // إظهار المودال
   paymentModal.classList.add("show");
 }
+
 
 /**
  * إغلاق مودال الدفع + دمج الملاحظات الإضافية مع الملاحظات الأصلية
