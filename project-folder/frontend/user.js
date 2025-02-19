@@ -5,7 +5,7 @@
 let currentItem = null;
 let pendingOrderId = null;  // رقم الطلب المؤقت
 let selectedOrderChannel = "";
-let phoneNumber = "";       // سيتم قراءته من Firebase
+let whatsappNumber = "";       // سيتم قراءته من Firebase
 
 const firebaseConfig = {
   apiKey: "AIzaSyBeAkTPw9nswsCy9NtWEgf6nG4al5Qx83c",
