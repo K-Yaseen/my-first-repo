@@ -634,11 +634,6 @@ function pushOrderToFirebase() {
       name: itemText,
       quantity: quantity
     });
-
-    .then(() => {
-      alert("تم إرسال الطلب بنجاح إلى قاعدة البيانات!");
-      clearCart();
-    })
     
   });
 
