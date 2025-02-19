@@ -11,8 +11,8 @@
 
 <body>
 
-   <!-- Button zum Anzeigen des Warenkorbs -->
-   <button id="backToCartBtn" class="back-to-cart-btn" style="display: none;">
+  <!-- Button zum Anzeigen des Warenkorbs -->
+  <button id="backToCartBtn" class="back-to-cart-btn" style="display: none;">
     <i class="fas fa-shopping-cart"></i> Einkaufswagen (<span class="item-count">0</span>)
   </button>
 
@@ -62,30 +62,32 @@
     </div>
     <div id="pickupScheduleField" style="display: none;">
       <label for="pickupDate">Gewünschtes Abholdatum:</label>
-      <input type="date" id="pickupDate" >
+      <input type="date" id="pickupDate">
       <label for="pickupTime">Gewünschte Abholzeit:</label>
-      <input type="time" id="pickupTime" >
+      <input type="time" id="pickupTime">
     </div>
     <div id="deliveryScheduleField" style="display: none;">
       <label for="deliveryDate">Gewünschtes Lieferdatum:</label>
-      <input type="date" id="deliveryDate" >
+      <input type="date" id="deliveryDate">
       <label for="deliveryTime">Gewünschte Lieferzeit:</label>
-      <input type="time" id="deliveryTime" >
+      <input type="time" id="deliveryTime">
     </div>
     <div id="deliveryFields" style="display: none;">
       <p style="font-size: 14px; color: #555; margin-bottom: 10px;">
         Hinweis: Bitte füllen Sie diese Felder nur aus, wenn Sie eine Lieferung wünschen.
       </p>
-      <input type="text" id="vorname" placeholder="Vorname" >
-      <input type="text" id="nachname" placeholder="Nachname" >
+      <input type="text" id="vorname" placeholder="Vorname">
+      <input type="text" id="nachname" placeholder="Nachname">
       <input type="text" id="strasse" placeholder="Straße">
-      <input type="text" id="hausnummer" placeholder="Hausnummer" >
-      <input type="text" id="plz" placeholder="PLZ" >
-      <input type="text" id="stadt" placeholder="Stadt" >
+      <input type="text" id="hausnummer" placeholder="Hausnummer">
+      <input type="text" id="plz" placeholder="PLZ">
+      <input type="text" id="stadt" placeholder="Stadt">
     </div>
     <button onclick="showSavePopup()">Daten speichern</button>
     <button id="whatsappBtn" onclick="sendToWhatsApp()">Bestellung per WhatsApp senden</button>
     <button id="emailBtn" onclick="sendToEmail()">Bestellung per E-Mail senden</button>
+    <!-- ضمن user.html -->
+    <button id="sendOrderBtn">إرسال الطلب إلى المطعم</button>
 
   </div>
 
@@ -99,7 +101,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <!-- Externes JavaScript -->
-  
+
 
   <!-- Schwebende Warenkorb Overlay / حاوية سلة المشتريات العائمة -->
   <div id="floatingCartOverlay" class="floating-cart-overlay" style="display: none;">
@@ -120,7 +122,7 @@
       <button id="finishCartBtn" onclick="goToOrderDetails()">
         Bestellung abschließen
       </button>
-      
+
     </div>
   </div>
   <script src="user.js"></script>
