@@ -606,16 +606,22 @@ function calculateCartTotal() {
 // ================================================
 // Bestellvorgang an Firebase (pushOrderToFirebase)
 // ================================================
-function pushOrderToFirebase() {
+/**
+ * يسمح بإرسال الطلب إلى Firebase مع إمكانية تلقي رقم الطلب من الخارج
+ * إن لم يُمرَّر رقم طلب، فسيتم توليده داخل الدالة.
+ */
+function pushOrderToFirebase(customOrderId) {
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
     alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
     return;
   }
 
-  const orderId = generateOrderNumber();
-  const orderedItems = [];
+  // إذا لدينا رقم طلب جاهز من نافذة الدفع مثلاً
+  // وإلا تولّده هذه الدالة
+  const orderId = customOrderId || generateOrderNumber();
 
+  const orderedItems = [];
   cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
     const itemInfoEl = cartItem.querySelector(".item-info");
     const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
@@ -662,9 +668,10 @@ function pushOrderToFirebase() {
   // Berechnung des Gesamtpreises (anhand items-Array)
   const cartTotal = calculateCartTotal();
 
-  // تمّ تعديل هذا الجزء لتمرير موعد التسليم/الاستلام إلى showOrderSuccessMessage
+  // Bestelldaten in Firebase speichern
   database.ref("orders").push(orderData)
     .then(() => {
+      // Erfolgsnachricht mit Nummer الطلب
       showOrderSuccessMessage(orderId, cartTotal, {
         deliveryOption,
         pickupDate,
