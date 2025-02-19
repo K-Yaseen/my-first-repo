@@ -51,18 +51,17 @@ function generateOrderNumber() {
 // Neue Funktion: Konfiguration (phoneNumber) laden
 async function fetchConfig() {
   try {
-    // Lies alle Daten unter "config" oder nur phoneNumber
     const snapshot = await database.ref("config").once("value");
     const configData = snapshot.val() || {};
-    // Hole phoneNumber, wenn vorhanden
-    phoneNumber = configData.phoneNumber || "";
+    // تعديل السطر من phoneNumber إلى whatsappNumber
+    phoneNumber = configData.whatsappNumber || "";
     console.log("Telefonnummer aus Firebase:", phoneNumber);
   } catch (error) {
     console.error("Fehler beim Laden der Konfigurationsdaten:", error);
-    // Du kannst optional phoneNumber mit einer Fallback-Nummer belegen
-    phoneNumber = ""; 
+    phoneNumber = "";
   }
 }
+
 
 // Funktion zum Abrufen aller Artikel (Items) aus Firebase
 async function fetchItems() {
