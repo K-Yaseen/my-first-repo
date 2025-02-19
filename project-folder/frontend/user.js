@@ -979,14 +979,12 @@ function sendToWhatsApp() {
     return;
   }
 
+  // فتح الواتساب
   const encodedMessage = encodeURIComponent(orderText);
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
   window.open(whatsappUrl, "_blank");
+
+  // الآن قم بتفريغ السلة وإعادة المستخدم لصفحة البحث
+  clearCart();
+  redirectToSearchField();
 }
-
-// بعد فتح رابط الواتساب:
-window.open(whatsappUrl, "_blank");
-
-// أضف الأسطر التالية مباشرة:
-clearCart();
-redirectToSearchField();
