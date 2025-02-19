@@ -916,7 +916,7 @@ function closePaymentInfo() {
   const paymentModal = document.getElementById("paymentInfoModal");
   paymentModal.classList.remove("show");
 
-  // دمج الملاحظات
+  // دمج الملاحظات الإضافية مع الملاحظات الأصلية (إذا وُجدت)
   const additionalNotesEl = document.getElementById("additionalNotes");
   const mainNotesEl = document.getElementById("customerNotes");
   if (additionalNotesEl && mainNotesEl) {
@@ -931,6 +931,14 @@ function closePaymentInfo() {
     }
   }
 
-  // ثم تنفيذ الطلب فعليًا
-  pushOrderToFirebase(pendingOrderId);
+  // تنفيذ الطلب بناءً على قناة الإرسال المختارة
+  if (selectedOrderChannel === "whatsapp") {
+    // إرسال الطلب عبر واتساب
+    originalSendToWhatsApp();  // تأكد من أن المتغير originalSendToWhatsApp محفوظ مسبقاً
+  } else if (selectedOrderChannel === "email") {
+    sendToEmail();
+  } else if (selectedOrderChannel === "restaurant") {
+    pushOrderToFirebase(pendingOrderId);
+  }
 }
+
