@@ -1,7 +1,9 @@
 // ================================================
 // I. Firebase Initialisierung
 // ================================================
+
 let currentItem = null;
+let pendingOrderId = null;  // رقم الطلب المؤقت
 
 const firebaseConfig = {
   apiKey: "AIzaSyBeAkTPw9nswsCy9NtWEgf6nG4al5Qx83c",
