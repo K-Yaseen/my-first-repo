@@ -884,8 +884,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         preLoginModal.style.display = "none";
       });
     }
-
-    
   }
 
   // تحديث قيود التوقيت
@@ -911,7 +909,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
+
+  // ============================
+  // إضافة مستمع لزر إرسال الطلب
+  // ============================
+  const sendOrderBtn = document.getElementById("sendOrderBtn");
+  if (sendOrderBtn) {
+    sendOrderBtn.addEventListener("click", () => {
+      // استدعِ هنا الدالة التي تحفظ الطلب في Firebase
+      // أو أية دوال أخرى تريد تنفيذها
+      pushOrderToFirebase();
+    });
+  }
 });
+
 
 
 function saveUserData() {
