@@ -17,10 +17,24 @@
   <!-- Toast für Benachrichtigungen -->
   <div id="toast" class="toast"></div>
 
-  <button type="button" class="btn btn-primary" onclick="window.open('adminOrders.html', '_blank')">
-    Bestellübersicht öffnen
-  </button>
-  
+  <!-- زر "Bestellübersicht öffnen" مع شارة لعدد الطلبات -->
+<button 
+type="button" 
+class="btn btn-primary position-relative" 
+onclick="window.open('adminOrders.html', '_blank')"
+>
+Bestellübersicht öffnen
+<!-- شارة (Badge) لعرض عدد الطلبات -->
+<span 
+  id="ordersCountBadge" 
+  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+  style="font-size: 0.9em;"
+>
+  0
+</span>
+</button>
+
+
   <!-- Service Optionen konfigurieren -->
   <div class="container-custom" id="serviceOptionContainer">
     <!-- ضمن admin.html في المكان المناسب (مثلا داخل .container-custom) -->
