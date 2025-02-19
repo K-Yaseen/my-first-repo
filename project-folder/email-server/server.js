@@ -46,7 +46,7 @@ app.post("/send-order", async (req, res) => {
     // عدّل from & to بما يناسبك
     const mailOptions = {
       from: '"Bestell-System" <postmaster@YOUR_DOMAIN>',
-      to: "you@example.com", // أو أي بريد تريد الإرسال إليه
+      to: "Yaseen", // أو أي بريد تريد الإرسال إليه
       subject: mailSubject,
       text: mailBody
     };
