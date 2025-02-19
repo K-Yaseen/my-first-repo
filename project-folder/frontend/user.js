@@ -879,7 +879,7 @@ function showPaymentInfo() {
 
   // 2. عرض رقم الطلب داخل المودال
   if (paymentOrderIdEl) {
-    paymentOrderIdEl.textContent = `Bitte zeigen Sie diese Bestellnummer *${pendingOrderId} dem Mitarbeiter`;
+    paymentOrderIdEl.textContent = `Bitte zeigen Sie diese Bestellnummer ${pendingOrderId} dem Mitarbeiter`;
   }
 
   paymentModal.classList.add("show");
