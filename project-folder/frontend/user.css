@@ -310,19 +310,10 @@ button:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   text-align: left;
   font-family: 'Arial', sans-serif;
-}
-.floating-cart {
-  background: #fff;
-  border: 2px solid #28a745;
-  border-radius: 12px;
-  padding: 20px;
-  width: auto;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  text-align: left;
-  font-family: 'Arial', sans-serif;
   max-height: 90vh;   /* الحد الأقصى للارتفاع بنسبة 90% من ارتفاع النافذة */
   overflow-y: auto;   /* تفعيل التمرير العمودي */
 }
+
 
 .floating-cart h3 {
   font-size: 22px;
