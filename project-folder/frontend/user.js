@@ -918,8 +918,7 @@ function showPaymentInfo() {
 function closePaymentInfo() {
   const paymentModal = document.getElementById("paymentInfoModal");
   paymentModal.classList.remove("show");
-
-  // هنا ننفّذ الطلب فعليًا بعد إغلاق المودال
+  // استدعِ الإرسال الفعلي:
   pushOrderToFirebase();
 }
 
