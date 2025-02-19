@@ -586,6 +586,8 @@ function showSavePopup() {
 //   };
 // };
 
+
+
 // ================================================
 // FUNKTION ZUR BERECHNUNG DES GESAMTPREISES
 // ================================================
