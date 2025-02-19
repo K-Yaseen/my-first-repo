@@ -876,3 +876,31 @@ function applyUserServiceOption(option) {
     }
   }
 }
+
+/**
+ * يعرض مودال يوضّح للعميل طريقة الدفع
+ * حسب الخيار الذي اختاره (استلام/توصيل).
+ */
+function showPaymentInfo() {
+  const paymentModal = document.getElementById("paymentInfoModal");
+  const paymentTextEl = document.getElementById("paymentInfoText");
+  const deliveryOption = document.getElementById("deliveryOption")?.value || "pickup";
+
+  // نص الرسالة
+  let message = "";
+  if (deliveryOption === "pickup") {
+    // في حال اختار الاستلام
+    message = "سيتم دفع المبلغ عند استلام الطلب.\n\n";
+    message += "في حال وجود أي إضافات أو تغييرات في الطلب، يُرجى إبلاغنا.";
+  } else {
+    // في حال اختار التوصيل
+    message = "سيتم دفع المبلغ عند تسليم الطلب.\n\n";
+    message += "في حال وجود أي ملاحظات إضافية، يُرجى ذكرها في خانة الملاحظات.";
+  }
+
+  // وضع النص في الفقرة
+  paymentTextEl.textContent = message;
+
+  // إظهار المودال
+  paymentModal.classList.add("show");
+}
