@@ -902,5 +902,5 @@ function closePaymentInfo() {
   }
 
   // ثم تنفيذ الطلب فعليًا
-  pushOrderToFirebase();
+  pushOrderToFirebase(pendingOrderId);
 }
