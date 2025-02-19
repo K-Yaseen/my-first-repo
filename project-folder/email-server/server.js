@@ -6,14 +6,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// === إعداد بيانات SMTP لـ Mailgun بدلاً من Gmail ===
+// === إعداد بيانات SMTP الخاصة بـ Mailgun ===
 const transporter = nodemailer.createTransport({
-  host: "smtp.mailgun.org",        // مضيف Mailgun
-  port: 587,                       // غالبًا 587 (TLS) أو 465 (SSL)
-  secure: false,                   // إذا استخدمت 465 قد تحتاج وضعه true
+  host: "smtp.mailgun.org",       
+  port: 587,                      
+  secure: false,                 
   auth: {
-    user: "postmaster@YOUR_DOMAIN",  // بريد SMTP مثلاً postmaster@yourdomain
-    pass: "YOUR_MAILGUN_SMTP_PASSWORD"  // كلمة مرور SMTP من Mailgun
+    user: "postmaster@sandboxa19e2bd5256d4cf88688a2d01d7bf94f.mailgun.org",
+    pass: "67f06203ab958dc2aa3913d0c7c37861-ac3d5f74-b6df9637"
   }
 });
 
@@ -43,10 +43,10 @@ app.post("/send-order", async (req, res) => {
       mailBody += `Lieferdatum: ${schedule.deliveryDate}\nLieferzeit: ${schedule.deliveryTime}\n`;
     }
 
-    // عدّل from & to بما يناسبك
+    // عدّل from & to بما يناسبك:
     const mailOptions = {
-      from: '"Bestell-System" <postmaster@YOUR_DOMAIN>',
-      to: "Yaseen.designservice@gmail.com", // أو أي بريد تريد الإرسال إليه
+      from: '"Bestell-System" <postmaster@sandboxa19e2bd5256d4cf88688a2d01d7bf94f.mailgun.org>',
+      to: "Yaseen.designservice@gmail.com", // البريد الذي سيستقبل الطلب
       subject: mailSubject,
       text: mailBody
     };
