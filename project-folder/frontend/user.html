@@ -115,18 +115,22 @@
     </div>
   </div>
 
-  <!-- مودال تنبيه الدفع -->
+  <!-- Zahlungs-Info Modal -->
   <div id="paymentInfoModal">
     <div class="modal-content">
       <div class="payment-emoji">💳</div>
-      <h2>معلومات الدفع</h2>
-      <p id="paymentInfoText" style="white-space: pre-line;">
-        <!-- هنا سيوضع النص ديناميكياً من ملف user.js -->
-      </p>
-      <button id="closePaymentModalBtn">فهمت</button>
+      <h2>Zahlungsinformationen</h2>
+      <!-- فقرة النص الأساسي (Abholung/Lieferung) -->
+      <p id="paymentInfoMessage" style="white-space: pre-line;"></p>
+      <!-- فقرة السعر الإجمالي -->
+      <p id="paymentInfoTotal"></p>
+      <!-- حقل ملاحظات إضافية -->
+      <label for="additionalNotes" style="display:block; margin-bottom:5px;">Zusätzliche Anmerkungen (falls etwas vergessen wurde):</label>
+      <textarea id="additionalNotes" rows="3"></textarea>
+
+      <button id="closePaymentModalBtn">Verstanden</button>
     </div>
   </div>
-
 
   <!-- Unser Skript mit allen Funktionen -->
   <script src="user.js"></script>
