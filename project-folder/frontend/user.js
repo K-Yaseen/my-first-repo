@@ -782,6 +782,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  const closePaymentModalBtn = document.getElementById("closePaymentModalBtn");
+  if (closePaymentModalBtn) {
+    closePaymentModalBtn.addEventListener("click", closePaymentInfo);
+  }
+
   // Aktualisiert Zeit-Einschränkungen
   updateTimeConstraints();
 
