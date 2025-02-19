@@ -571,39 +571,87 @@ function showSavePopup() {
   }
 }
 
-function sendToEmail() {
-  alert("Die Bestellung wird per E-Mail gesendet.");
-  pushOrderToFirebase(pendingOrderId);
-
-  clearCart();
-  redirectToSearchField();
-}
-
-function sendToRestaurant() {
-  alert("Die Bestellung wird an das Restaurant gesendet.");
-  pushOrderToFirebase(pendingOrderId);
-
-  clearCart();
-  redirectToSearchField();
-}
-
-// ================================================
-// FUNKTION ZUR BERECHNUNG DES GESAMTPREISES
-// ================================================
-function calculateCartTotal() {
-  let total = 0;
+fasync function sendToEmail() {
+  // إذا كانت السلة فارغة...
   const cartItemsElement = document.getElementById("cartItems");
+  if (!cartItemsElement || cartItemsElement.children.length === 0) {
+    alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
+    return;
+  }
+
+  // جهّز بيانات الطلب كما تفعل عادةً:
+  const orderId = pendingOrderId || generateOrderNumber();
+  const items = [];
   cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
-    const itemId = cartItem.getAttribute("data-item-id");
+    const itemInfoEl = cartItem.querySelector(".item-info");
     const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
-    const quantity = quantitySelectEl ? parseInt(quantitySelectEl.value) : 1;
-    const realItem = items.find(x => x.id == itemId);
-    if (realItem && realItem.price) {
-      total += realItem.price * quantity;
-    }
+    const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Produkt";
+    const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
+    items.push({ name: itemText, quantity });
   });
-  return total;
+
+  const totalPrice = calculateCartTotal().toFixed(2);
+
+  const vorname = document.getElementById("vorname").value.trim();
+  const nachname = document.getElementById("nachname").value.trim();
+  const strasse = document.getElementById("strasse").value.trim();
+  const hausnummer = document.getElementById("hausnummer").value.trim();
+  const plz = document.getElementById("plz").value.trim();
+  const stadt = document.getElementById("stadt").value.trim();
+  const notes = document.getElementById("customerNotes").value.trim();
+
+  const pickupDate = document.getElementById("pickupDate").value;
+  const pickupTime = document.getElementById("pickupTime").value;
+  const deliveryDate = document.getElementById("deliveryDate").value;
+  const deliveryTime = document.getElementById("deliveryTime").value;
+
+  // أرسل الطلب إلى خادمك:
+  try {
+    const response = await fetch("http://localhost:3000/send-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        orderId,
+        items,
+        customer: {
+          vorname,
+          nachname,
+          strasse,
+          hausnummer,
+          plz,
+          stadt,
+          notes
+        },
+        schedule: {
+          pickupDate,
+          pickupTime,
+          deliveryDate,
+          deliveryTime
+        },
+        totalPrice
+      })
+    });
+    
+    const data = await response.json();
+    if (response.ok && data.success) {
+      // نجح الإرسال عبر nodemailer
+      alert("Die Bestellung wurde erfolgreich per E-Mail gesendet!");
+      
+      // إذا رغبت أيضًا بحفظ الطلب في فايربيس:
+      pushOrderToFirebase(orderId);
+
+      // تفريغ السلة والعودة للبحث
+      clearCart();
+      redirectToSearchField();
+    } else {
+      alert("Fehler beim Senden der E-Mail: " + data.message);
+    }
+  } catch (error) {
+    console.error("E-Mail send error:", error);
+    alert("Ein Fehler ist aufgetreten beim Senden der E-Mail.");
+  }
 }
+
 
 // ================================================
 // Bestellvorgang an Firebase (pushOrderToFirebase)
