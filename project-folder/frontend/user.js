@@ -885,12 +885,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
 
-    const sendOrderBtn = document.getElementById("sendOrderBtn");
-    if (sendOrderBtn) {
-      sendOrderBtn.addEventListener("click", () => {
-        pushOrderToFirebase(); 
-        // أو يمكنك أيضًا هنا منادات sendToWhatsApp أو sendToEmail
-      });
+    
   }
 
   // تحديث قيود التوقيت
