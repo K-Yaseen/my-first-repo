@@ -150,6 +150,7 @@ button:hover {
   opacity: 0;
   transition: opacity 0.5s ease-in-out, bottom 0.5s ease-in-out;
   z-index: 3000; /* قيمة z-index مرتفعة لتظهر فوق السلة */
+  width: 600;
 }
 
 .popup.show {
