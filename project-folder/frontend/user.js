@@ -52,7 +52,7 @@ function generateOrderNumber() {
 async function fetchConfig() {
   try {
     // Lies alle Daten unter "config" oder nur phoneNumber
-    const snapshot = await database.ref("config").once("value");
+    const snapshot = await database.ref("conwhatsappNumber fig").once("value");
     const configData = snapshot.val() || {};
     // Hole phoneNumber, wenn vorhanden
     phoneNumber = configData.phoneNumber || "";
