@@ -571,27 +571,62 @@ function showSavePopup() {
   }
 }
 
-async function sendToEmail() {
-  // إذا كانت السلة فارغة...
+function sendToEmail() {
+  alert("Die Bestellung wird per E-Mail gesendet.");
+  pushOrderToFirebase(pendingOrderId);
+
+  clearCart();
+  redirectToSearchField();
+}
+
+function sendToRestaurant() {
+  alert("Die Bestellung wird an das Restaurant gesendet.");
+  pushOrderToFirebase(pendingOrderId);
+
+  clearCart();
+  redirectToSearchField();
+}
+
+// ================================================
+// FUNKTION ZUR BERECHNUNG DES GESAMTPREISES
+// ================================================
+function calculateCartTotal() {
+  let total = 0;
+  const cartItemsElement = document.getElementById("cartItems");
+  cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
+    const itemId = cartItem.getAttribute("data-item-id");
+    const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
+    const quantity = quantitySelectEl ? parseInt(quantitySelectEl.value) : 1;
+    const realItem = items.find(x => x.id == itemId);
+    if (realItem && realItem.price) {
+      total += realItem.price * quantity;
+    }
+  });
+  return total;
+}
+
+// ================================================
+// Bestellvorgang an Firebase (pushOrderToFirebase)
+// ================================================
+function pushOrderToFirebase(customOrderId) {
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
     alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
     return;
   }
 
-  // جهّز بيانات الطلب كما تفعل عادةً:
-  const orderId = pendingOrderId || generateOrderNumber();
-  const items = [];
+  const orderId = customOrderId || generateOrderNumber();
+
+  const orderedItems = [];
   cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
     const itemInfoEl = cartItem.querySelector(".item-info");
     const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
     const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Produkt";
     const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
-    items.push({ name: itemText, quantity });
+    orderedItems.push({ name: itemText, quantity: quantity });
   });
 
-  const totalPrice = calculateCartTotal().toFixed(2);
-
+  const deliveryOption = document.getElementById("deliveryOption").value;
   const vorname = document.getElementById("vorname").value.trim();
   const nachname = document.getElementById("nachname").value.trim();
   const strasse = document.getElementById("strasse").value.trim();
@@ -599,59 +634,50 @@ async function sendToEmail() {
   const plz = document.getElementById("plz").value.trim();
   const stadt = document.getElementById("stadt").value.trim();
   const notes = document.getElementById("customerNotes").value.trim();
-
   const pickupDate = document.getElementById("pickupDate").value;
   const pickupTime = document.getElementById("pickupTime").value;
   const deliveryDate = document.getElementById("deliveryDate").value;
   const deliveryTime = document.getElementById("deliveryTime").value;
 
-  // أرسل الطلب إلى خادمك:
-  try {
-    const response = await fetch("http://localhost:3000/send-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        orderId,
-        items,
-        customer: {
-          vorname,
-          nachname,
-          strasse,
-          hausnummer,
-          plz,
-          stadt,
-          notes
-        },
-        schedule: {
-          pickupDate,
-          pickupTime,
-          deliveryDate,
-          deliveryTime
-        },
-        totalPrice
-      })
-    });
-    
-    const data = await response.json();
-    if (response.ok && data.success) {
-      // نجح الإرسال عبر nodemailer
-      alert("Die Bestellung wurde erfolgreich per E-Mail gesendet!");
-      
-      // إذا رغبت أيضًا بحفظ الطلب في فايربيس:
-      pushOrderToFirebase(orderId);
-
-      // تفريغ السلة والعودة للبحث
-      clearCart();
-      redirectToSearchField();
-    } else {
-      alert("Fehler beim Senden der E-Mail: " + data.message);
+  const orderData = {
+    orderId: orderId,
+    timestamp: Date.now(),
+    deliveryOption: deliveryOption,
+    items: orderedItems,
+    customer: {
+      vorname,
+      nachname,
+      strasse,
+      hausnummer,
+      plz,
+      stadt,
+      notes
+    },
+    schedule: {
+      pickupDate,
+      pickupTime,
+      deliveryDate,
+      deliveryTime
     }
-  } catch (error) {
-    console.error("E-Mail send error:", error);
-    alert("Ein Fehler ist aufgetreten beim Senden der E-Mail.");
-  }
-}
+  };
 
+  const cartTotal = calculateCartTotal();
+  database.ref("orders").push(orderData)
+    .then(() => {
+      showOrderSuccessMessage(orderId, cartTotal, {
+        deliveryOption,
+        pickupDate,
+        pickupTime,
+        deliveryDate,
+        deliveryTime
+      });
+      clearCart();
+    })
+    .catch((error) => {
+      console.error("Error pushing order to Firebase:", error);
+      alert("Beim Senden der Bestellung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.");
+    });
+}
 
 function showOrderSuccessMessage(orderId, totalPrice, scheduleData) {
   let scheduleText = "";
