@@ -31,6 +31,7 @@ function saveWhatsAppNumber() {
     showToast("Bitte geben Sie eine gültige WhatsApp Nummer ein.", "#f44336");
     return;
   }
+  // حفظ الرقم تحت config/whatsappNumber
   database.ref("config/whatsappNumber").set(number, (error) => {
     if (error) {
       showToast("Fehler beim Speichern der WhatsApp Nummer.", "#f44336");
@@ -90,7 +91,9 @@ function fetchItems() {
                 <div class="item-info">
                   <span class="item-id fw-bold">${item.id}</span>
                   <span class="item-name">${item.name}</span>
-                  <span class="item-price">${item.price ? item.price + " €" : "N/A"}</span>
+                  <span class="item-price">${
+                    item.price ? item.price + " €" : "N/A"
+                  }</span>
                 </div>
                 <div class="item-controls d-flex align-items-center gap-2">
                   <label class="toggle-switch">
@@ -101,10 +104,14 @@ function fetchItems() {
                     />
                     <span class="slider"></span>
                   </label>
-                  <button class="icon-button" onclick="editItem(${item.id})">
+                  <button class="icon-button" onclick="editItem(${
+                    item.id
+                  })">
                     <i class="fa-solid fa-pen-to-square"></i>
                   </button>
-                  <button class="icon-button delete" onclick="deleteItem(${item.id})">
+                  <button class="icon-button delete" onclick="deleteItem(${
+                    item.id
+                  })">
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
                 </div>
@@ -121,7 +128,9 @@ function fetchItems() {
         <div class="accordion-item">
           <h2 class="accordion-header" id="${headerId}">
             <button
-              class="accordion-button ${accordionIndex > 1 ? "collapsed" : ""}"
+              class="accordion-button ${
+                accordionIndex > 1 ? "collapsed" : ""
+              }"
               type="button"
               data-bs-toggle="collapse"
               data-bs-target="#${collapseId}"
@@ -133,7 +142,9 @@ function fetchItems() {
           </h2>
           <div
             id="${collapseId}"
-            class="accordion-collapse collapse ${accordionIndex === 1 ? "show" : ""}"
+            class="accordion-collapse collapse ${
+              accordionIndex === 1 ? "show" : ""
+            }"
             aria-labelledby="${headerId}"
             data-bs-parent="#itemAccordion"
           >
@@ -165,46 +176,49 @@ function updateItem() {
     .getElementById("edit-item-ingredients")
     .value.trim();
 
-  database.ref("items").once("value").then((snapshot) => {
-    let items = snapshot.val() || [];
-    if (!Array.isArray(items)) {
-      items = Object.values(items);
-    }
-
-    const existingIndex = items.findIndex((item) => item.id === itemId);
-    if (existingIndex === -1) {
-      showToast("Artikel-ID nicht gefunden. Kein Update möglich.", "#f44336");
-      return;
-    }
-
-    // تحديث الحقول المدخلة فقط
-    if (newName) {
-      items[existingIndex].name = newName;
-    }
-    if (newPrice !== null && !isNaN(newPrice)) {
-      items[existingIndex].price = newPrice;
-    }
-    if (newIngredients) {
-      items[existingIndex].ingredients = newIngredients;
-    }
-
-    // مصدر التعديل
-    items[existingIndex].lastUpdateSource = "adminPanel";
-
-    // حفظ التعديلات
-    database.ref("items").set(items, (error) => {
-      if (error) {
-        showToast("Fehler beim Aktualisieren des Artikels.", "#f44336");
-      } else {
-        showToast("Artikel erfolgreich aktualisiert!", "#4caf50");
-        // Felder zurücksetzen
-        document.getElementById("edit-item-id").value = "";
-        document.getElementById("edit-item-name").value = "";
-        document.getElementById("edit-item-price").value = "";
-        document.getElementById("edit-item-ingredients").value = "";
+  database
+    .ref("items")
+    .once("value")
+    .then((snapshot) => {
+      let items = snapshot.val() || [];
+      if (!Array.isArray(items)) {
+        items = Object.values(items);
       }
+
+      const existingIndex = items.findIndex((item) => item.id === itemId);
+      if (existingIndex === -1) {
+        showToast("Artikel-ID nicht gefunden. Kein Update möglich.", "#f44336");
+        return;
+      }
+
+      // تحديث الحقول المدخلة فقط
+      if (newName) {
+        items[existingIndex].name = newName;
+      }
+      if (newPrice !== null && !isNaN(newPrice)) {
+        items[existingIndex].price = newPrice;
+      }
+      if (newIngredients) {
+        items[existingIndex].ingredients = newIngredients;
+      }
+
+      // مصدر التعديل
+      items[existingIndex].lastUpdateSource = "adminPanel";
+
+      // حفظ التعديلات
+      database.ref("items").set(items, (error) => {
+        if (error) {
+          showToast("Fehler beim Aktualisieren des Artikels.", "#f44336");
+        } else {
+          showToast("Artikel erfolgreich aktualisiert!", "#4caf50");
+          // Felder zurücksetzen
+          document.getElementById("edit-item-id").value = "";
+          document.getElementById("edit-item-name").value = "";
+          document.getElementById("edit-item-price").value = "";
+          document.getElementById("edit-item-ingredients").value = "";
+        }
+      });
     });
-  });
 }
 
 /* ---------- حذف صنف (deleteItem) ---------- */
@@ -214,45 +228,52 @@ function deleteItem(id) {
     return; // إيقاف عملية الحذف إذا تم إلغاء التأكيد
   }
 
-  database.ref("items").once("value").then((snapshot) => {
-    let items = snapshot.val() || [];
-    if (!Array.isArray(items)) {
-      items = Object.values(items);
-    }
-    const updatedItems = items.filter((item) => item.id !== id);
-
-    database.ref("items").set(updatedItems, (error) => {
-      if (error) {
-        showToast("Fehler beim Löschen des Artikels.", "#f44336");
-      } else {
-        showToast("Artikel erfolgreich gelöscht!", "#4caf50");
+  database
+    .ref("items")
+    .once("value")
+    .then((snapshot) => {
+      let items = snapshot.val() || [];
+      if (!Array.isArray(items)) {
+        items = Object.values(items);
       }
+      const updatedItems = items.filter((item) => item.id !== id);
+
+      database.ref("items").set(updatedItems, (error) => {
+        if (error) {
+          showToast("Fehler beim Löschen des Artikels.", "#f44336");
+        } else {
+          showToast("Artikel erfolgreich gelöscht!", "#4caf50");
+        }
+      });
     });
-  });
 }
-
-
 
 /* ---------- تبديل توفر الصنف (toggleAvailability) ---------- */
 function toggleAvailability(id) {
-  database.ref("items").once("value").then((snapshot) => {
-    let items = snapshot.val() || [];
-    if (!Array.isArray(items)) {
-      items = Object.values(items);
-    }
-    const index = items.findIndex((item) => item.id === id);
-    if (index !== -1) {
-      items[index].available = !items[index].available;
-      items[index].lastUpdateSource = "adminPanel";
+  database
+    .ref("items")
+    .once("value")
+    .then((snapshot) => {
+      let items = snapshot.val() || [];
+      if (!Array.isArray(items)) {
+        items = Object.values(items);
+      }
+      const index = items.findIndex((item) => item.id === id);
+      if (index !== -1) {
+        items[index].available = !items[index].available;
+        items[index].lastUpdateSource = "adminPanel";
 
-      database.ref("items").set(items);
-      showToast(
-        `Gericht ${items[index].name} ist jetzt ${items[index].available ? "Verfügbar" : "Nicht verfügbar"
-        }`,
-        items[index].available ? "#4caf50" : "#f44336"
-      );
-    }
-  });
+        database.ref("items").set(items);
+        showToast(
+          `Gericht ${
+            items[index].name
+          } ist jetzt ${
+            items[index].available ? "Verfügbar" : "Nicht verfügbar"
+          }`,
+          items[index].available ? "#4caf50" : "#f44336"
+        );
+      }
+    });
 }
 
 /* ---------- تحميل أوقات الدوام (loadWorkingHours) ---------- */
@@ -262,14 +283,13 @@ function loadWorkingHours() {
     if (data) {
       localStorage.setItem("workingHours", JSON.stringify(data));
       // الدالتان المسؤولتان عن تعبئة الحقول
-      fillPickupHoursForm(data);    // ← أضف هذا السطر
-      fillDeliveryHoursForm(data);  // ← أضف هذا السطر
+      fillPickupHoursForm(data);
+      fillDeliveryHoursForm(data);
 
       updateWorkingHoursDisplay(data);
     }
   });
 }
-
 
 /* تعبئة حقول الاستلام */
 function fillPickupHoursForm(workingHours) {
@@ -340,18 +360,14 @@ function saveWorkingHours() {
 }
 
 function updateDeliveryNote() {
-  // الحصول على خيار الخدمة المخزن في localStorage
   var serviceOption = localStorage.getItem("serviceOption");
-  // تحديد عنصر الفقرة داخل قسم الحقول الخاصة بالتوصيل
   var deliveryNote = document.querySelector("#deliveryFields p");
-
   if (deliveryNote) {
     if (serviceOption === "nurLieferung") {
       deliveryNote.style.display = "none";
     } else if (serviceOption === "beides") {
       deliveryNote.style.display = "block";
     } else {
-      // في حالة عدم تحديد خيار أو اختيار "Nur Abholung" مثلاً
       deliveryNote.style.display = "none";
     }
   }
@@ -366,8 +382,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // تحديث ظهور الملاحظة الخاصة بالتوصيل
   updateDeliveryNote();
 });
-
-
 
 // دالة لتحديث إعدادات الخدمة في قاعدة البيانات
 function updateServiceOption(option) {
@@ -388,52 +402,34 @@ function applyServiceOption(option) {
   const saveBtn = document.getElementById("saveWorkingHoursButton"); // زر حفظ الأوقات
 
   if (option === "nurLieferung") {
-    // خدمة التوصيل فقط
     pickupContainer.style.display = "none";
     deliveryContainer.style.display = "block";
     saveBtn.textContent = "Lieferzeiten speichern";
   } else if (option === "nurAbholung") {
-    // خدمة الاستلام فقط
     deliveryContainer.style.display = "none";
     pickupContainer.style.display = "block";
     saveBtn.textContent = "Abholzeiten speichern";
   } else {
-    // كلتا الخدمتين
     pickupContainer.style.display = "block";
     deliveryContainer.style.display = "block";
     saveBtn.textContent = "Abhol- und Lieferzeiten speichern";
   }
 }
 
-
-
-// تخزين خيار الخدمة في localStorage عند اختيار زر الخدمة
 document.getElementById("btnNurLieferung").addEventListener("click", function () {
   localStorage.setItem("serviceOption", "nurLieferung");
   applyServiceOption("nurLieferung");
+  updateServiceOption("nurLieferung");
 });
 document.getElementById("btnBeides").addEventListener("click", function () {
   localStorage.setItem("serviceOption", "beides");
   applyServiceOption("beides");
+  updateServiceOption("beides");
 });
 document.getElementById("btnNurAbholung").addEventListener("click", function () {
   localStorage.setItem("serviceOption", "nurAbholung");
   applyServiceOption("nurAbholung");
-});
-
-
-
-// إضافة مستمعي الأحداث للأزرار الجديدة
-document.getElementById("btnNurLieferung").addEventListener("click", function () {
-  updateServiceOption("nurLieferung");
-});
-
-document.getElementById("btnNurAbholung").addEventListener("click", function () {
   updateServiceOption("nurAbholung");
-});
-
-document.getElementById("btnBeides").addEventListener("click", function () {
-  updateServiceOption("beides");
 });
 
 // استرجاع وتطبيق إعداد الخدمة عند تحميل الصفحة
@@ -443,23 +439,18 @@ firebase.database().ref("config/serviceOption").on("value", function (snapshot) 
 });
 
 function listenToOrdersCount() {
-  // نفترض لديك Firebase مهيأ (كما في admin.js).
-  firebase.database().ref('orders').on('value', function(snapshot) {
+  firebase.database().ref("orders").on("value", function(snapshot) {
     const data = snapshot.val() || {};
     const count = Object.keys(data).length; 
-    // حدّث الشارة
     const badge = document.getElementById('ordersCountBadge');
     if (badge) {
-      badge.textContent = count;
+      if (count === 0) {
+        badge.style.display = "none";
+      } else {
+        badge.style.display = "inline-block";
+        badge.textContent = count;
+      }
     }
-
-    if (count === 0) {
-      badge.style.display = "none";
-    } else {
-      badge.style.display = "inline-block";
-      badge.textContent = count;
-    }
-    
   });
 }
 
