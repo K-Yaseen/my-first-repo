@@ -586,6 +586,18 @@ function showSavePopup() {
 //   };
 // };
 
+function sendToEmail() {
+  // هنا تضع كود إرسال الطلب عبر البريد الإلكتروني
+  alert("Die Bestellung wird per E-Mail gesendet.");
+  // يمكنك استدعاء pushOrderToFirebase هنا أيضاً إذا أردت حفظ الطلب في Firebase
+  pushOrderToFirebase(pendingOrderId);
+}
+
+function sendToRestaurant() {
+  // هنا تضع كود إرسال الطلب عبر صفحة المطعم
+  alert("Die Bestellung wird an das Restaurant gesendet.");
+  pushOrderToFirebase(pendingOrderId);
+}
 
 
 // ================================================
