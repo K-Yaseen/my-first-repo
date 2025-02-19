@@ -6,12 +6,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// إعداد حساب Gmail (مثال) - يجب تغيير البيانات لبريدك الفعلي
+// === إعداد بيانات SMTP لـ Mailgun بدلاً من Gmail ===
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.mailgun.org",        // مضيف Mailgun
+  port: 587,                       // غالبًا 587 (TLS) أو 465 (SSL)
+  secure: false,                   // إذا استخدمت 465 قد تحتاج وضعه true
   auth: {
-    user: "khaled.deutschland2016@gmail.com", // بريد جيميل
-    pass: ""          // كلمة مرور جيميل
+    user: "postmaster@YOUR_DOMAIN",  // بريد SMTP مثلاً postmaster@yourdomain
+    pass: "YOUR_MAILGUN_SMTP_PASSWORD"  // كلمة مرور SMTP من Mailgun
   }
 });
 
@@ -41,9 +43,10 @@ app.post("/send-order", async (req, res) => {
       mailBody += `Lieferdatum: ${schedule.deliveryDate}\nLieferzeit: ${schedule.deliveryTime}\n`;
     }
 
+    // عدّل from & to بما يناسبك
     const mailOptions = {
-      from: '"Bestell-System" <khaled.deutschland2016@gmail.com>',
-      to: "yaseen.designservice@gmail.com",
+      from: '"Bestell-System" <postmaster@YOUR_DOMAIN>',
+      to: "you@example.com", // أو أي بريد تريد الإرسال إليه
       subject: mailSubject,
       text: mailBody
     };
