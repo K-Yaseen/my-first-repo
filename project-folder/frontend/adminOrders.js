@@ -1,6 +1,6 @@
 // adminOrders.js
 
-// 1) تهيئة Firebase (استخدم نفس الإعدادات في admin.js/user.js)
+// 1) Firebase-Konfiguration (identisch zu admin.js / user.js)
 const firebaseConfig = {
   apiKey: "AIzaSyBeAkTPw9n...",
   authDomain: "restaurant-system-f50cf.firebaseapp.com",
@@ -11,95 +11,94 @@ const firebaseConfig = {
   appId: "1:220436037433:web:9bfc0f85a8806a15ee72e8"
 };
 
-  
-  // التهيئة
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-  
-  // 2) دالة لعرض الطلب في واجهة الـ HTML
-  function renderOrder(orderId, orderData) {
-    const ordersContainer = document.getElementById("ordersContainer");
-    if (!ordersContainer) return;
-  
-    // ننشئ بطاقة (Bootstrap Card) أو أي تنسيق آخر
-    const card = document.createElement("div");
-    card.className = "card mb-3 shadow-sm";
-    
-    // محتوى الكارد: رأس البطاقة + جسم البطاقة
-    card.innerHTML = `
-      <div class="card-header">
-        <h5 class="mb-0">Bestellung #${orderData.orderId || orderId}</h5>
-      </div>
-      <div class="card-body">
-        <p><strong>Datum:</strong> ${new Date(orderData.timestamp).toLocaleString()}.</p>
-        <p><strong>Kunde:</strong> ${orderData.customer?.vorname || ""} ${orderData.customer?.nachname || ""}</p>
-        <p><strong>Option:</strong> ${orderData.deliveryOption}</p>
-        <h6>Artikel:</h6>
-        <ul>
-          ${orderData.items
-            .map(item => `<li>${item.name} (x${item.quantity})</li>`)
-            .join("")}
-        </ul>
-        ${
-          orderData.customer?.notes
-            ? `<p><strong>Hinweise:</strong> ${orderData.customer.notes}</p>`
-            : ""
-        }
-      </div>
-    `;
-  
-    // إن أردت إضافة زرين للإجراءات (مثل تغيير حالة الطلب أو حذفه):
-    // <button class="btn btn-success">Bestellung abgeschlossen</button>
-  
-    // إلحاق البطاقة في الحاوية
-    ordersContainer.appendChild(card);
-  }
-  
-  // 3) مستمع لجلب الطلبات من عقدة orders في الوقت الفعلي
-  function listenToOrders() {
-    database.ref("orders").on("child_added", (snapshot) => {
-      const orderData = snapshot.val();
-      const orderKey = snapshot.key; // الـ push key
-  
-      if (orderData) {
-        renderOrder(orderKey, orderData);
+// Initialisierung
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+// 2) Funktion zum Rendern einer einzelnen Bestellung
+function renderOrder(orderId, orderData) {
+  const ordersContainer = document.getElementById("ordersContainer");
+  if (!ordersContainer) return;
+
+  // Karte (Card) erstellen
+  const card = document.createElement("div");
+  card.className = "card mb-3 shadow-sm";
+
+  // Zunächst machen wir sie unsichtbar, damit wir einen Fade-In Effekt haben
+  card.style.opacity = "0";
+  card.style.transition = "opacity 0.6s ease";
+
+  // Inhalt der Karte
+  card.innerHTML = `
+    <div class="card-header">
+      <h5 class="mb-0">Bestellung #${orderData.orderId || orderId}</h5>
+    </div>
+    <div class="card-body">
+      <p><strong>Datum:</strong> ${new Date(orderData.timestamp).toLocaleString()}.</p>
+      <p><strong>Kunde:</strong> ${orderData.customer?.vorname || ""} ${orderData.customer?.nachname || ""}</p>
+      <p><strong>Option:</strong> ${orderData.deliveryOption}</p>
+      <h6>Artikel:</h6>
+      <ul>
+        ${orderData.items
+          .map(item => `<li>${item.name} (x${item.quantity})</li>`)
+          .join("")}
+      </ul>
+      ${
+        orderData.customer?.notes
+          ? `<p><strong>Hinweise:</strong> ${orderData.customer.notes}</p>`
+          : ""
       }
-    });
-  
-    // في حال أردت متابعة تحديث الطلب (تغيير حالته مثلاً)
-    database.ref("orders").on("child_changed", (snapshot) => {
-      const updatedData = snapshot.val();
-      const orderKey = snapshot.key;
-  
-      // تحديث عرض الطلب في واجهة المستخدم (مثال: مسح العنصر القديم وإنشاء عنصر جديد)
-      const ordersContainer = document.getElementById("ordersContainer");
-      if (!ordersContainer) return;
-  
-      // ابحث عن البطاقة القديمة بناءً على orderId (لو حفظته)
-      // أو استخدم الـ key كـ data-attribute
-      // هنا سنكتفي بمسح الكل وإعادة البناء، أو تجد طريقة أخرى تحدد بها الطلب المحدد:
-      ordersContainer.innerHTML = ""; // إعادة تعيين
-      reloadAllOrders(); // نجلب كل الطلبات من جديد
-    });
-  }
-  
-  // 4) في حالة تحديث أو حذف الطلب، يمكن إعادة جلبهم جميعًا
-  function reloadAllOrders() {
+    </div>
+  `;
+
+  // Karte im Container anhängen
+  ordersContainer.appendChild(card);
+
+  // Ein kleines Timeout, damit das Element im DOM ist, bevor wir die Opacity anpassen
+  setTimeout(() => {
+    card.style.opacity = "1";
+  }, 50);
+}
+
+// 3) Echtzeit-Abfrage der Bestellungsknoten
+function listenToOrders() {
+  // Neue Bestellungen (child_added)
+  database.ref("orders").on("child_added", (snapshot) => {
+    const orderData = snapshot.val();
+    const orderKey = snapshot.key;
+
+    if (orderData) {
+      renderOrder(orderKey, orderData);
+    }
+  });
+
+  // Änderungen an existierenden Bestellungen (child_changed)
+  database.ref("orders").on("child_changed", (snapshot) => {
+    // Bestellung hat sich verändert → wir laden alles neu
     const ordersContainer = document.getElementById("ordersContainer");
     if (!ordersContainer) return;
-    ordersContainer.innerHTML = ""; // تفريغ المحتوى
-  
-    database.ref("orders").once("value", (snapshot) => {
-      const ordersData = snapshot.val();
-      if (!ordersData) return;
-      Object.keys(ordersData).forEach((key) => {
-        renderOrder(key, ordersData[key]);
-      });
-    });
-  }
-  
-  // 5) تشغيل المستمع عند تحميل الصفحة
-  document.addEventListener("DOMContentLoaded", () => {
-    listenToOrders();
+
+    ordersContainer.innerHTML = "";
+    reloadAllOrders();
   });
-  
+}
+
+// 4) Im Falle einer Aktualisierung / Löschung: Alle Bestellungen neu laden
+function reloadAllOrders() {
+  const ordersContainer = document.getElementById("ordersContainer");
+  if (!ordersContainer) return;
+  ordersContainer.innerHTML = "";
+
+  database.ref("orders").once("value", (snapshot) => {
+    const ordersData = snapshot.val();
+    if (!ordersData) return;
+    Object.keys(ordersData).forEach((key) => {
+      renderOrder(key, ordersData[key]);
+    });
+  });
+}
+
+// 5) Beim Laden der Seite die Listener aktivieren
+document.addEventListener("DOMContentLoaded", () => {
+  listenToOrders();
+});
