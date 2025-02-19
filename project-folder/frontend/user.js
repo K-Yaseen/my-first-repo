@@ -781,6 +781,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("backToCartBtn").addEventListener("click", function () {
     document.getElementById("floatingCartOverlay").style.display = "flex";
   });
+
+
+  
 });
 
 // العودة لحقل البحث
