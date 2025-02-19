@@ -31,7 +31,7 @@ const firebaseConfig = {
         <h5 class="mb-0">Bestellung #${orderData.orderId || orderId}</h5>
       </div>
       <div class="card-body">
-        <p><strong>Datum:</strong> ${new Date(orderData.timestamp).toLocaleString()}</p>
+        <p><strong>Datum:</strong> ${new Date(orderData.timestamp).toLocaleString()}.</p>
         <p><strong>Kunde:</strong> ${orderData.customer?.vorname || ""} ${orderData.customer?.nachname || ""}</p>
         <p><strong>Option:</strong> ${orderData.deliveryOption}</p>
         <h6>Artikel:</h6>
