@@ -582,6 +582,9 @@ function sendToEmail() {
 function sendToRestaurant() {
   alert("Die Bestellung wird an das Restaurant gesendet.");
   pushOrderToFirebase(pendingOrderId);
+
+  clearCart();
+  redirectToSearchField();
 }
 
 // ================================================
