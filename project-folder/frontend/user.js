@@ -122,8 +122,10 @@ function loadUserData() {
   }
 }
 
+/**
+ * حفظ بيانات المستخدم في LocalStorage + تخزين الرمز البريدي والمنطقة في Firebase
+ */
 function saveUserData() {
-  // قراءة القيم من الحقول
   const deliveryOption = document.getElementById("deliveryOption").value;
   const vorname = document.getElementById("vorname").value.trim();
   const nachname = document.getElementById("nachname").value.trim();
@@ -165,8 +167,7 @@ function saveUserData() {
   // حفظ البيانات في LocalStorage
   localStorage.setItem("userData", JSON.stringify(userData));
 
-  // تخزين الرمز البريدي واسم المدينة في Firebase
-  // (إذا كان كلا الحقلين معبأين)
+  // تخزين الرمز البريدي واسم المدينة في Firebase (إذا كان كلاهما معبأ)
   if (plz && stadt) {
     firebase.database().ref("postalCodes/" + plz).set(stadt)
       .then(() => {
@@ -608,6 +609,9 @@ function calculateCartTotal() {
 // Senden der Bestellung per E-Mail (إرسال الطلب بالبريد)
 // ===========================================================
 async function sendToEmail() {
+  // نحفظ بيانات المستخدم أولاً
+  saveUserData();
+
   // 1) Warenkorb prüfen
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
@@ -692,6 +696,9 @@ async function sendToEmail() {
 // Bestellung an Firebase senden (دفع البيانات إلى Firebase)
 // ===========================================================
 function pushOrderToFirebase(customOrderId) {
+  // حفظ بيانات المستخدم أولاً
+  saveUserData();
+
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
     alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
@@ -801,6 +808,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadCart();
   updateCartButton();
 
+  // قراءة config/serviceOption
   const snapshot = await firebase.database().ref("config/serviceOption").once("value");
   const serviceOption = snapshot.val() || "beides";
   const storedWorkingHours = JSON.parse(localStorage.getItem("workingHours"));
@@ -894,21 +902,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // إضافة مستمع للرمز البريدي (plz)
-  // (عند تغيير حقل الرمز البريدي، نحاول جلب اسم المدينة من Firebase)
   document.getElementById("plz").addEventListener("change", async function() {
     const postalCode = this.value.trim();
     if (!postalCode) return;
     try {
       // قراءة العقدة postalCodes/<postalCode>
-      const snapshot = await firebase.database().ref("postalCodes/" + postalCode).once("value");
-      const cityName = snapshot.val();
+      const snapshotPostal = await firebase.database().ref("postalCodes/" + postalCode).once("value");
+      const cityName = snapshotPostal.val();
 
       if (cityName) {
-        // إذا وجدنا اسم المدينة لهذا الرمز البريدي نملأ حقل stadt تلقائياً
         document.getElementById("stadt").value = cityName;
-      } else {
-        // لا يوجد اسم مدينة مخزّن لهذا الرمز البريدي
-        // يمكن إبقاءه فارغاً أو إظهار رسالة
       }
     } catch (error) {
       console.error("Error fetching city name:", error);
@@ -947,9 +950,13 @@ firebase.database().ref("config/serviceOption").on("value", function (snapshot) 
   applyUserServiceOption(option);
 });
 
+/**
+ * تنفيذ إعداد خيار الخدمة (Abholung/ Lieferung/ beides)
+ */
 function applyUserServiceOption(option) {
   const deliveryOptionSelect = document.getElementById("deliveryOption");
   if (!deliveryOptionSelect) return;
+
   if (option === "nurLieferung") {
     deliveryOptionSelect.innerHTML = '<option value="delivery">Lieferung</option>';
     document.getElementById("pickupScheduleField").style.display = "none";
@@ -1009,6 +1016,7 @@ function closePaymentInfo() {
   const paymentModal = document.getElementById("paymentInfoModal");
   paymentModal.classList.remove("show");
 
+  // إذا هناك ملاحظات إضافية في حقل إضافي، يتم دمجها مع الحقل الرئيسي
   const additionalNotesEl = document.getElementById("additionalNotes");
   const mainNotesEl = document.getElementById("customerNotes");
   if (additionalNotesEl && mainNotesEl) {
@@ -1023,6 +1031,7 @@ function closePaymentInfo() {
     }
   }
 
+  // بناء على القناة المختارة، نرسل الطلب
   if (selectedOrderChannel === "whatsapp") {
     sendToWhatsApp();
   } else if (selectedOrderChannel === "email") {
@@ -1034,6 +1043,9 @@ function closePaymentInfo() {
 
 // إرسال الطلب عبر واتساب (مع التحقق من الشروط)
 function sendToWhatsApp() {
+  // حفظ بيانات المستخدم أيضًا
+  saveUserData();
+
   if (!validateDeliveryFields()) return;
   if (!validateSchedule()) return;
 
@@ -1107,11 +1119,11 @@ function sendToWhatsApp() {
   redirectToSearchField();
 }
 
-// إظهار رسالة منبثقة تؤكد الحفظ
+// إظهار رسالة منبثقة تؤكد الحفظ يدوياً (زر حفظ البيانات)
 function showSavePopup() {
   saveUserData(); // لحفظ البيانات في LocalStorage + Firebase
   const popup = document.getElementById("popupMessage");
-  userDataStore.customerEmail = customerEmail; // إن احتجت تخزين بريد المستخدم في الذاكرة المؤقتة
+  userDataStore.customerEmail = document.getElementById("customerEmail").value; 
   if (popup) {
     popup.classList.add("show");
     setTimeout(() => {
@@ -1120,18 +1132,19 @@ function showSavePopup() {
   }
 }
 
-// أمثلة على البيانات التي تريد تخزينها
+// أمثلة على البيانات التي تريد تخزينها مبدئياً
 const bulkPostalData = {
   "12345": "Berlin Mitte",
   "23456": "Hamburg Altona",
   "34567": "München Zentrum"
 };
 
-// حقن بيانات postalCodes دفعة واحدة
-firebase.database().ref("postalCodes").set(bulkPostalData)
-  .then(() => {
-    console.log("postalCodes node created with bulk data.");
-  })
-  .catch((error) => {
-    console.error("Error creating postalCodes node:", error);
-  });
+// حقن بيانات postalCodes دفعة واحدة (مرّة واحدة فقط أثناء التطوير)
+// إذا لم تعد بحاجة لكتابة هذه القيم في كل مرة، علّق هذا المقطع أو احذفه.
+// firebase.database().ref("postalCodes").set(bulkPostalData)
+//   .then(() => {
+//     console.log("postalCodes node created with bulk data.");
+//   })
+//   .catch((error) => {
+//     console.error("Error creating postalCodes node:", error);
+//   });
