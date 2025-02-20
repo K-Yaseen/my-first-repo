@@ -136,7 +136,7 @@ button:hover {
 ========================================== */
  /* تنسيقات الرسالة العائمة */
  .popup {
-  display: none;
+  display: none;          /* الوضع الافتراضي مخفي */
   position: fixed;
   bottom: 60px;
   left: 50%;
@@ -153,10 +153,11 @@ button:hover {
   z-index: 3000;
 }
 .popup.show {
-  display: block;
+  display: block;         /* عند إضافة الصنف show */
   opacity: 1;
   bottom: 80px;
 }
+
 
 /* =======================================
    Delivery & Schedule Fields / حقول التوصيل والجدولة
