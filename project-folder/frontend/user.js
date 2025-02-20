@@ -51,17 +51,26 @@ function generateOrderNumber() {
 }
 
 // Neue Funktion: Konfiguration (whatsappNumber) laden
+// في user.js ضمن fetchConfig()
 async function fetchConfig() {
   try {
     const snapshot = await database.ref("config").once("value");
     const configData = snapshot.val() || {};
+
     phoneNumber = configData.whatsappNumber || "";
+    // القراءة الجديدة:
+    window.restaurantEmail = configData.restaurantEmail || "example@restaurant.de";
+
     console.log("Telefonnummer aus Firebase:", phoneNumber);
+    console.log("Restaurant Email aus Firebase:", window.restaurantEmail);
   } catch (error) {
     console.error("Fehler beim Laden der Konfigurationsdaten:", error);
     phoneNumber = "";
+    // افتراضي لو لم يوجد
+    window.restaurantEmail = "example@restaurant.de";
   }
 }
+
 
 // Funktion zum Abrufen aller Artikel (Items) aus Firebase
 async function fetchItems() {
