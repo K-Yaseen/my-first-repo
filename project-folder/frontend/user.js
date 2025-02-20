@@ -98,8 +98,6 @@ function loadUserData() {
     document.getElementById("customerEmail").value = storedData.customerEmail || "";
     ...
   }
-
-
   const storedData = safeJSONParse(localStorage.getItem("userData"));
   if (storedData) {
     if (storedData.deliveryOption) {
