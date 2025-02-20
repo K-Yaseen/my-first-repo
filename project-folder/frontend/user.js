@@ -571,7 +571,7 @@ function calculateCartTotal() {
   let total = 0;
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement) return 0;
-  
+
   cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
     const itemId = cartItem.getAttribute("data-item-id");
     const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
@@ -614,7 +614,7 @@ async function sendToEmail() {
   const plz = document.getElementById("plz").value.trim();
   const stadt = document.getElementById("stadt").value.trim();
   const notes = document.getElementById("customerNotes").value.trim();
-  
+
   let dateText = "";
   let timeText = "";
 
@@ -638,19 +638,19 @@ async function sendToEmail() {
 
   // 5) يمكن استخدام رقم الطلب المولّد مسبقًا أو توليد واحد جديد
   const orderId = pendingOrderId || generateOrderNumber();
-  
+
   // 6) إعداد محتوى الرسالة (عنوان الرسالة + محتوى الرسالة)
   // يمكنك تعديل النص وتنسيقه كما تحب
   const subject = `Bestellung Nr. ${orderId}`;
   let body = `Hallo,\n\n` +
-             `ich möchte gerne folgende Bestellung aufgeben:\n\n` +
-             `Bestellnummer: ${orderId}\n` +
-             `Warenkorb:\n${warenkorbText}\n\n` +
-             `Name: ${vorname} ${nachname}\n`;
+    `ich möchte gerne folgende Bestellung aufgeben:\n\n` +
+    `Bestellnummer: ${orderId}\n` +
+    `Warenkorb:\n${warenkorbText}\n\n` +
+    `Name: ${vorname} ${nachname}\n`;
 
   if (deliveryOption === "delivery") {
     body += `Lieferung an:\n${strasse} ${hausnummer}, ${plz} ${stadt}\n` +
-            `Lieferdatum: ${dateText}\nLieferzeit: ${timeText}\n\n`;
+      `Lieferdatum: ${dateText}\nLieferzeit: ${timeText}\n\n`;
   } else {
     body += `Selbstabholung\nAbholdatum: ${dateText}\nAbholzeit: ${timeText}\n\n`;
   }
@@ -807,6 +807,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
   }
+
+  // قم بإضافة هذه الأجزاء ضمن الـ DOMContentLoaded
+  const itemNumberInput = document.getElementById("itemNumber");
+  const lastStoredNumber = localStorage.getItem("lastSearchedNumber");
+  if (lastStoredNumber) {
+    itemNumberInput.value = lastStoredNumber;
+  }
+
+  itemNumberInput.addEventListener("change", function () {
+    localStorage.setItem("lastSearchedNumber", this.value);
+  });
+
 
   const closePaymentModalBtn = document.getElementById("closePaymentModalBtn");
   if (closePaymentModalBtn) {
