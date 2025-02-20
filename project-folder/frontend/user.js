@@ -577,9 +577,7 @@ function calculateCartTotal() {
   return total;
 }
 
-// ================================================
-// دالة sendToEmail تستدعي الخادم لإرسال الإيميل
-// ================================================
+
 async function sendToEmail() {
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
