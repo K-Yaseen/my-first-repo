@@ -578,25 +578,26 @@ function calculateCartTotal() {
 }
 
 
+// في ملف user.js ابحث عن الدالة sendToEmail واستبدل محتواها بالكامل:
 async function sendToEmail() {
+  // 1) التحقق من وجود عناصر في السلة
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
     alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
     return;
   }
 
-  const orderId = pendingOrderId || generateOrderNumber();
-  const itemsData = [];
-  cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
-    const itemInfoEl = cartItem.querySelector(".item-info");
-    const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
-    const itemText = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Produkt";
-    const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
-    itemsData.push({ name: itemText, quantity });
-  });
+  // 2) قراءة بريد العميل من الحقل الجديد
+  const customerEmailInput = document.getElementById("customerEmail");
+  const userEmail = customerEmailInput ? customerEmailInput.value.trim() : "";
 
-  const totalPrice = calculateCartTotal().toFixed(2);
+  if (!userEmail) {
+    alert("Bitte geben Sie Ihre E-Mail-Adresse ein.");
+    return;
+  }
 
+  // 3) قراءة بيانات الطلب كما في السابق
+  const deliveryOption = document.getElementById("deliveryOption").value;
   const vorname = document.getElementById("vorname").value.trim();
   const nachname = document.getElementById("nachname").value.trim();
   const strasse = document.getElementById("strasse").value.trim();
@@ -604,52 +605,67 @@ async function sendToEmail() {
   const plz = document.getElementById("plz").value.trim();
   const stadt = document.getElementById("stadt").value.trim();
   const notes = document.getElementById("customerNotes").value.trim();
+  
+  let dateText = "";
+  let timeText = "";
 
-  const pickupDate = document.getElementById("pickupDate").value;
-  const pickupTime = document.getElementById("pickupTime").value;
-  const deliveryDate = document.getElementById("deliveryDate").value;
-  const deliveryTime = document.getElementById("deliveryTime").value;
-
-  try {
-    const response = await fetch("http://localhost:3000/send-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        orderId,
-        items: itemsData,
-        customer: {
-          vorname,
-          nachname,
-          strasse,
-          hausnummer,
-          plz,
-          stadt,
-          notes
-        },
-        schedule: {
-          pickupDate,
-          pickupTime,
-          deliveryDate,
-          deliveryTime
-        },
-        totalPrice
-      })
-    });
-
-    const data = await response.json();
-    if (response.ok && data.success) {
-      alert("Die Bestellung wurde erfolgreich per E-Mail gesendet!");
-      pushOrderToFirebase(orderId);
-      clearCart();
-      redirectToSearchField();
-    } else {
-      alert("Fehler beim Senden der E-Mail: " + data.message);
-    }
-  } catch (error) {
-    console.error("E-Mail send error:", error);
-    alert("Ein Fehler ist aufgetreten beim Senden der E-Mail.");
+  if (deliveryOption === "delivery") {
+    dateText = document.getElementById("deliveryDate").value;
+    timeText = document.getElementById("deliveryTime").value;
+  } else {
+    dateText = document.getElementById("pickupDate").value;
+    timeText = document.getElementById("pickupTime").value;
   }
+
+  // 4) بناء نص العناصر في السلة
+  let warenkorbText = "";
+  cartItemsElement.querySelectorAll(".cart-item").forEach((cartItem) => {
+    const itemInfoEl = cartItem.querySelector(".item-info");
+    const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
+    const itemName = itemInfoEl ? itemInfoEl.textContent.trim() : "Unbekanntes Produkt";
+    const quantity = quantitySelectEl ? quantitySelectEl.value : "1";
+    warenkorbText += `${itemName} (Menge: ${quantity})\n`;
+  });
+
+  // 5) يمكن استخدام رقم الطلب المولّد مسبقًا أو توليد واحد جديد
+  const orderId = pendingOrderId || generateOrderNumber();
+  
+  // 6) إعداد محتوى الرسالة (عنوان الرسالة + محتوى الرسالة)
+  // يمكنك تعديل النص وتنسيقه كما تحب
+  const subject = `Bestellung Nr. ${orderId}`;
+  let body = `Hallo,\n\n` +
+             `ich möchte gerne folgende Bestellung aufgeben:\n\n` +
+             `Bestellnummer: ${orderId}\n` +
+             `Warenkorb:\n${warenkorbText}\n\n` +
+             `Name: ${vorname} ${nachname}\n`;
+
+  if (deliveryOption === "delivery") {
+    body += `Lieferung an:\n${strasse} ${hausnummer}, ${plz} ${stadt}\n` +
+            `Lieferdatum: ${dateText}\nLieferzeit: ${timeText}\n\n`;
+  } else {
+    body += `Selbstabholung\nAbholdatum: ${dateText}\nAbholzeit: ${timeText}\n\n`;
+  }
+
+  if (notes) {
+    body += `Zusätzliche Hinweise:\n${notes}\n\n`;
+  }
+
+  // 7) إعداد رابط mailto لفتح برنامج البريد
+  // يفترض أن البريد الذي سيرسل إليه هو بريد المطعم
+  // example@restaurant.de يمكنك تغييره إلى بريدك الخاص
+  const restaurantEmail = "example@restaurant.de";
+
+  // تشفير (تكويد) النص لتفادي مشاكل المسافات والرموز
+  const mailtoLink = `mailto:${restaurantEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  // 8) فتح رابط mailto في نافذة/تبويب جديد (يمكن استخدام _self لفتح ضمن نفس النافذة)
+  window.open(mailtoLink, "_blank");
+
+  // 9) يمكنك بعد ذلك تفريغ السلة إن أردت
+  clearCart();
+  redirectToSearchField();
 }
+
 
 // ================================================
 // Bestellvorgang an Firebase (pushOrderToFirebase)
