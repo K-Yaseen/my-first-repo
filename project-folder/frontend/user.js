@@ -1054,3 +1054,15 @@ function sendToWhatsApp() {
   clearCart();
   redirectToSearchField();
 }
+
+function showSavePopup() {
+  saveUserData(); // لحفظ البيانات في LocalStorage
+
+  const popup = document.getElementById("popupMessage");
+  if (popup) {
+    popup.classList.add("show");    // تظهر الرسالة
+    setTimeout(() => {
+      popup.classList.remove("show"); // تختفي بعد 3 ثوانٍ
+    }, 3000);
+  }
+}
