@@ -457,3 +457,18 @@ function listenToOrdersCount() {
 document.addEventListener('DOMContentLoaded', function() {
   listenToOrdersCount();
 });
+
+function saveRestaurantEmail() {
+  const email = document.getElementById("restaurantEmail").value.trim();
+  if (!email) {
+    showToast("Bitte geben Sie eine gültige E-Mail ein.", "#f44336");
+    return;
+  }
+  database.ref("config/restaurantEmail").set(email, (error) => {
+    if (error) {
+      showToast("Fehler beim Speichern der E-Mail.", "#f44336");
+    } else {
+      showToast("E-Mail erfolgreich gespeichert!", "#4caf50");
+    }
+  });
+}
