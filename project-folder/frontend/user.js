@@ -1,7 +1,7 @@
 // user.js
-// ================================================
-// I. Firebase Initialisierung
-// ================================================
+// ===========================================================
+// I. Firebase Initialisierung  (تهيئة Firebase)
+// ===========================================================
 
 let currentItem = null;
 let pendingOrderId = null;  // رقم الطلب المؤقت
@@ -25,9 +25,9 @@ const database = firebase.database();
 let items = [];
 const userDataStore = {};
 
-// ================================================
-// Hilfsfunktionen
-// ================================================
+// ===========================================================
+// Hilfsfunktionen  (دوال مساعدة)
+// ===========================================================
 function safeJSONParse(data) {
   try {
     return JSON.parse(data);
@@ -51,14 +51,13 @@ function generateOrderNumber() {
 }
 
 // Neue Funktion: Konfiguration (whatsappNumber) laden
-// في user.js ضمن fetchConfig()
+// دالة لجلب الإعدادات من Firebase (مثل رقم الواتساب وبريد المطعم)
 async function fetchConfig() {
   try {
     const snapshot = await database.ref("config").once("value");
     const configData = snapshot.val() || {};
 
     phoneNumber = configData.whatsappNumber || "";
-    // القراءة الجديدة:
     window.restaurantEmail = configData.restaurantEmail || "example@restaurant.de";
 
     console.log("Telefonnummer aus Firebase:", phoneNumber);
@@ -66,13 +65,12 @@ async function fetchConfig() {
   } catch (error) {
     console.error("Fehler beim Laden der Konfigurationsdaten:", error);
     phoneNumber = "";
-    // افتراضي لو لم يوجد
     window.restaurantEmail = "example@restaurant.de";
   }
 }
 
-
 // Funktion zum Abrufen aller Artikel (Items) aus Firebase
+// (جلب قائمة الأصناف من قاعدة البيانات)
 async function fetchItems() {
   try {
     const snapshot = await database.ref("items").once("value");
@@ -84,23 +82,19 @@ async function fetchItems() {
   }
 }
 
-// ================================================
-// Anzeige des Status & Laden/Speichern von Daten
-// ================================================
+// ===========================================================
+// Anzeige des Status & Laden/Speichern von Daten  (عرض الحالة وحفظ/تحميل البيانات)
+// ===========================================================
 function showFloatingMessage(message, color = "red") {
   alert(message);
 }
 
 function loadUserData() {
-  // قراءة بيانات المستخدم مرة واحدة
+  // قراءة بيانات المستخدم من الـ localStorage
   const storedData = safeJSONParse(localStorage.getItem("userData"));
-  
-  // إذا كانت البيانات موجودة
   if (storedData) {
-    // تعبئة حقل البريد الإلكتروني (إن وجد)
     document.getElementById("customerEmail").value = storedData.customerEmail || "";
 
-    // التحقق من خيار التوصيل أو الاستلام
     if (storedData.deliveryOption) {
       document.getElementById("deliveryOption").value = storedData.deliveryOption;
 
@@ -116,7 +110,6 @@ function loadUserData() {
       }
     }
 
-    // تعبئة باقي الحقول
     document.getElementById("vorname").value = storedData.vorname || "";
     document.getElementById("nachname").value = storedData.nachname || "";
     document.getElementById("strasse").value = storedData.strasse || "";
@@ -125,13 +118,12 @@ function loadUserData() {
     document.getElementById("stadt").value = storedData.stadt || "";
     document.getElementById("customerNotes").value = storedData.notes || "";
 
-    // إظهار تفاصيل الطلب
     document.getElementById("orderDetails").style.display = "block";
   }
 }
 
-
 function saveUserData() {
+  // قراءة القيم من الحقول
   const deliveryOption = document.getElementById("deliveryOption").value;
   const vorname = document.getElementById("vorname").value.trim();
   const nachname = document.getElementById("nachname").value.trim();
@@ -154,6 +146,7 @@ function saveUserData() {
     deliveryTime = document.getElementById("deliveryTime").value;
   }
 
+  // تخزين في كائن قبل حفظه محليًا
   const userData = {
     deliveryOption,
     vorname,
@@ -169,12 +162,25 @@ function saveUserData() {
     deliveryTime
   };
 
+  // حفظ البيانات في LocalStorage
   localStorage.setItem("userData", JSON.stringify(userData));
+
+  // تخزين الرمز البريدي واسم المدينة في Firebase
+  // (إذا كان كلا الحقلين معبأين)
+  if (plz && stadt) {
+    firebase.database().ref("postalCodes/" + plz).set(stadt)
+      .then(() => {
+        console.log("Postal code and city saved to Firebase");
+      })
+      .catch((error) => {
+        console.error("Error saving postal code:", error);
+      });
+  }
 }
 
-// ================================================
-// Funktionen zur Warenkorb-Verwaltung
-// ================================================
+// ===========================================================
+// Funktionen zur Warenkorb-Verwaltung  (إدارة سلة المشتريات)
+// ===========================================================
 function loadCart() {
   const cartData = localStorage.getItem("cart");
   if (!cartData) return;
@@ -235,9 +241,9 @@ function updateCartButton() {
   }
 }
 
-// ================================================
-// Funktionen für die Anzeige / Bearbeitung der Items
-// ================================================
+// ===========================================================
+// Funktionen für die Anzeige / Bearbeitung der Items  (عرض الأصناف)
+// ===========================================================
 function checkItem() {
   const itemNumberInput = document.getElementById("itemNumber");
   const itemNumber = itemNumberInput ? itemNumberInput.value.trim() : "";
@@ -392,9 +398,9 @@ function hideFloatingCart() {
   if (overlay) overlay.style.display = "none";
 }
 
-// ================================================
-// Funktionen zu Öffnungszeiten & Terminprüfung
-// ================================================
+// ===========================================================
+// Funktionen zu Öffnungszeiten & Terminprüfung  (التحقق من الأوقات)
+// ===========================================================
 function updateTimeConstraints() {
   const now = new Date();
   const year = now.getFullYear();
@@ -577,9 +583,9 @@ function validateDeliveryFields() {
   return true;
 }
 
-// ================================================
-// الدالة الناقصة لحساب المجموع الكلي
-// ================================================
+// ===========================================================
+// Funktion zur Berechnung des Warenkorb-Gesamts (حساب المجموع الكلي)
+// ===========================================================
 function calculateCartTotal() {
   let total = 0;
   const cartItemsElement = document.getElementById("cartItems");
@@ -590,7 +596,6 @@ function calculateCartTotal() {
     const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
     const quantity = quantitySelectEl ? parseInt(quantitySelectEl.value) : 1;
 
-    // إذا أردت حساب السعر من items:
     const realItem = items.find(x => x.id == itemId);
     if (realItem && realItem.price) {
       total += realItem.price * quantity;
@@ -599,17 +604,18 @@ function calculateCartTotal() {
   return total;
 }
 
-
-// في ملف user.js ابحث عن الدالة sendToEmail واستبدل محتواها بالكامل:
+// ===========================================================
+// Senden der Bestellung per E-Mail (إرسال الطلب بالبريد)
+// ===========================================================
 async function sendToEmail() {
-  // 1) التحقق من وجود عناصر في السلة
+  // 1) Warenkorb prüfen
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
     alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
     return;
   }
 
-  // 2) قراءة بريد العميل من الحقل الجديد
+  // 2) E-Mail des Kunden
   const customerEmailInput = document.getElementById("customerEmail");
   const userEmail = customerEmailInput ? customerEmailInput.value.trim() : "";
 
@@ -618,7 +624,7 @@ async function sendToEmail() {
     return;
   }
 
-  // 3) قراءة بيانات الطلب كما في السابق
+  // 3) Daten sammeln
   const deliveryOption = document.getElementById("deliveryOption").value;
   const vorname = document.getElementById("vorname").value.trim();
   const nachname = document.getElementById("nachname").value.trim();
@@ -639,7 +645,7 @@ async function sendToEmail() {
     timeText = document.getElementById("pickupTime").value;
   }
 
-  // 4) بناء نص العناصر في السلة
+  // 4) Warenkorb-Text erstellen
   let warenkorbText = "";
   cartItemsElement.querySelectorAll(".cart-item").forEach((cartItem) => {
     const itemInfoEl = cartItem.querySelector(".item-info");
@@ -649,11 +655,10 @@ async function sendToEmail() {
     warenkorbText += `${itemName} (Menge: ${quantity})\n`;
   });
 
-  // 5) يمكن استخدام رقم الطلب المولّد مسبقًا أو توليد واحد جديد
+  // 5) Order-ID
   const orderId = pendingOrderId || generateOrderNumber();
 
-  // 6) إعداد محتوى الرسالة (عنوان الرسالة + محتوى الرسالة)
-  // يمكنك تعديل النص وتنسيقه كما تحب
+  // 6) E-Mail-Inhalt vorbereiten
   const subject = `Bestellung Nr. ${orderId}`;
   let body = `Hallo,\n\n` +
     `ich möchte gerne folgende Bestellung aufgeben:\n\n` +
@@ -663,7 +668,7 @@ async function sendToEmail() {
 
   if (deliveryOption === "delivery") {
     body += `Lieferung an:\n${strasse} ${hausnummer}, ${plz} ${stadt}\n` +
-      `Lieferdatum: ${dateText}\nLieferzeit: ${timeText}\n\n`;
+            `Lieferdatum: ${dateText}\nLieferzeit: ${timeText}\n\n`;
   } else {
     body += `Selbstabholung\nAbholdatum: ${dateText}\nAbholzeit: ${timeText}\n\n`;
   }
@@ -672,26 +677,20 @@ async function sendToEmail() {
     body += `Zusätzliche Hinweise:\n${notes}\n\n`;
   }
 
-  // 7) إعداد رابط mailto لفتح برنامج البريد
-  // يفترض أن البريد الذي سيرسل إليه هو بريد المطعم
-  // example@restaurant.de يمكنك تغييره إلى بريدك الخاص
   const restaurantEmail = window.restaurantEmail || "example@restaurant.de";
-
-  // تشفير (تكويد) النص لتفادي مشاكل المسافات والرموز
   const mailtoLink = `mailto:${restaurantEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-  // 8) فتح رابط mailto في نافذة/تبويب جديد (يمكن استخدام _self لفتح ضمن نفس النافذة)
+  // 7) Mailto-Link öffnen
   window.open(mailtoLink, "_blank");
 
-  // 9) يمكنك بعد ذلك تفريغ السلة إن أردت
+  // 8) Senden erledigt: Warenkorb leeren und zum Suchfeld zurück
   clearCart();
   redirectToSearchField();
 }
 
-
-// ================================================
-// Bestellvorgang an Firebase (pushOrderToFirebase)
-// ================================================
+// ===========================================================
+// Bestellung an Firebase senden (دفع البيانات إلى Firebase)
+// ===========================================================
 function pushOrderToFirebase(customOrderId) {
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
@@ -791,9 +790,9 @@ function showOrderSuccessMessage(orderId, totalPrice, scheduleData) {
   }, 5000);
 }
 
-// ================================================
-// EVENT LISTENERS (DOM laden usw.)
-// ================================================
+// ===========================================================
+// EVENT LISTENERS (DOM geladen usw.)  (أحداث DOMContentLoaded وغيرها)
+// ===========================================================
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchConfig();
   await fetchItems();
@@ -821,18 +820,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // قم بإضافة هذه الأجزاء ضمن الـ DOMContentLoaded
+  // Letzte Gerichtsnummer aus dem LocalStorage wiederherstellen
   const itemNumberInput = document.getElementById("itemNumber");
   const lastStoredNumber = localStorage.getItem("lastSearchedNumber");
   if (lastStoredNumber) {
     itemNumberInput.value = lastStoredNumber;
   }
 
-  itemNumberInput.addEventListener("change", function () {
-    localStorage.setItem("lastSearchedNumber", this.value);
-  });
+  if (itemNumberInput) {
+    itemNumberInput.addEventListener("change", function () {
+      localStorage.setItem("lastSearchedNumber", this.value);
+    });
+  }
 
-
+  // زر إغلاق نافذة الدفع
   const closePaymentModalBtn = document.getElementById("closePaymentModalBtn");
   if (closePaymentModalBtn) {
     closePaymentModalBtn.addEventListener("click", closePaymentInfo);
@@ -840,6 +841,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   updateTimeConstraints();
 
+  // Umschalten zwischen Abholung/Lieferung
   const deliverySelect = document.getElementById("deliveryOption");
   if (deliverySelect) {
     deliverySelect.addEventListener("change", function () {
@@ -856,7 +858,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Beispiel: "Bestellung an das Restaurant senden"
+  // "Bestellung an das Restaurant senden"-Button
   const sendOrderBtn = document.getElementById("sendOrderBtn");
   if (sendOrderBtn) {
     sendOrderBtn.addEventListener("click", () => {
@@ -890,6 +892,28 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("floatingCartOverlay").style.display = "flex";
     });
   }
+
+  // إضافة مستمع للرمز البريدي (plz)
+  // (عند تغيير حقل الرمز البريدي، نحاول جلب اسم المدينة من Firebase)
+  document.getElementById("plz").addEventListener("change", async function() {
+    const postalCode = this.value.trim();
+    if (!postalCode) return;
+    try {
+      // قراءة العقدة postalCodes/<postalCode>
+      const snapshot = await firebase.database().ref("postalCodes/" + postalCode).once("value");
+      const cityName = snapshot.val();
+
+      if (cityName) {
+        // إذا وجدنا اسم المدينة لهذا الرمز البريدي نملأ حقل stadt تلقائياً
+        document.getElementById("stadt").value = cityName;
+      } else {
+        // لا يوجد اسم مدينة مخزّن لهذا الرمز البريدي
+        // يمكن إبقاءه فارغاً أو إظهار رسالة
+      }
+    } catch (error) {
+      console.error("Error fetching city name:", error);
+    }
+  });
 });
 
 // العودة لحقل البحث
@@ -917,7 +941,7 @@ function goToOrderDetails() {
   }
 }
 
-// تطبيق إعدادات الخدمة (Abholung/Lieferung/beides)
+// تطبيق إعدادات Abholung/Lieferung/beides
 firebase.database().ref("config/serviceOption").on("value", function (snapshot) {
   const option = snapshot.val() || "beides";
   applyUserServiceOption(option);
@@ -952,9 +976,7 @@ function applyUserServiceOption(option) {
   }
 }
 
-/**
- * يظهر مودال الدفع + توليد رقم الطلب مؤقت
- */
+// Anzeigen des Zahlungs-Modals (نافذة الدفع)
 function showPaymentInfo() {
   const paymentModal = document.getElementById("paymentInfoModal");
   const paymentTextEl = document.getElementById("paymentInfoText");
@@ -982,9 +1004,7 @@ function showPaymentInfo() {
   paymentModal.classList.add("show");
 }
 
-/**
- * إغلاق نافذة الدفع + تنفيذ القناة المختارة
- */
+// إغلاق نافذة الدفع + تنفيذ القناة المختارة
 function closePaymentInfo() {
   const paymentModal = document.getElementById("paymentInfoModal");
   paymentModal.classList.remove("show");
@@ -1012,9 +1032,7 @@ function closePaymentInfo() {
   }
 }
 
-/**
- * إرسال الطلب عبر واتساب
- */
+// إرسال الطلب عبر واتساب (مع التحقق من الشروط)
 function sendToWhatsApp() {
   if (!validateDeliveryFields()) return;
   if (!validateSchedule()) return;
@@ -1089,15 +1107,15 @@ function sendToWhatsApp() {
   redirectToSearchField();
 }
 
+// إظهار رسالة منبثقة تؤكد الحفظ
 function showSavePopup() {
-  saveUserData(); // لحفظ البيانات في LocalStorage
-
+  saveUserData(); // لحفظ البيانات في LocalStorage + Firebase
   const popup = document.getElementById("popupMessage");
-  userData.customerEmail = customerEmail;
+  userDataStore.customerEmail = customerEmail; // إن احتجت تخزين بريد المستخدم في الذاكرة المؤقتة
   if (popup) {
-    popup.classList.add("show");    // تظهر الرسالة
+    popup.classList.add("show");
     setTimeout(() => {
-      popup.classList.remove("show"); // تختفي بعد 3 ثوانٍ
+      popup.classList.remove("show");
     }, 3000);
   }
 }
