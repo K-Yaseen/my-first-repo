@@ -94,6 +94,14 @@ function showFloatingMessage(message, color = "red") {
 function loadUserData() {
   const storedData = safeJSONParse(localStorage.getItem("userData"));
   if (storedData) {
+    ...
+    document.getElementById("customerEmail").value = storedData.customerEmail || "";
+    ...
+  }
+}
+
+  const storedData = safeJSONParse(localStorage.getItem("userData"));
+  if (storedData) {
     if (storedData.deliveryOption) {
       document.getElementById("deliveryOption").value = storedData.deliveryOption;
       if (storedData.deliveryOption === "delivery") {
