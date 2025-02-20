@@ -92,16 +92,18 @@ function showFloatingMessage(message, color = "red") {
 }
 
 function loadUserData() {
+  // قراءة بيانات المستخدم مرة واحدة
   const storedData = safeJSONParse(localStorage.getItem("userData"));
+  
+  // إذا كانت البيانات موجودة
   if (storedData) {
-    ...
+    // تعبئة حقل البريد الإلكتروني (إن وجد)
     document.getElementById("customerEmail").value = storedData.customerEmail || "";
-    ...
-  }
-  const storedData = safeJSONParse(localStorage.getItem("userData"));
-  if (storedData) {
+
+    // التحقق من خيار التوصيل أو الاستلام
     if (storedData.deliveryOption) {
       document.getElementById("deliveryOption").value = storedData.deliveryOption;
+
       if (storedData.deliveryOption === "delivery") {
         document.getElementById("deliveryFields").style.display = "block";
         document.getElementById("deliveryScheduleField").style.display = "block";
@@ -113,6 +115,8 @@ function loadUserData() {
         document.getElementById("pickupTime").value = storedData.pickupTime || "";
       }
     }
+
+    // تعبئة باقي الحقول
     document.getElementById("vorname").value = storedData.vorname || "";
     document.getElementById("nachname").value = storedData.nachname || "";
     document.getElementById("strasse").value = storedData.strasse || "";
@@ -120,9 +124,12 @@ function loadUserData() {
     document.getElementById("plz").value = storedData.plz || "";
     document.getElementById("stadt").value = storedData.stadt || "";
     document.getElementById("customerNotes").value = storedData.notes || "";
+
+    // إظهار تفاصيل الطلب
     document.getElementById("orderDetails").style.display = "block";
   }
 }
+
 
 function saveUserData() {
   const deliveryOption = document.getElementById("deliveryOption").value;
