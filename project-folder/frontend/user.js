@@ -1119,3 +1119,19 @@ function showSavePopup() {
     }, 3000);
   }
 }
+
+// أمثلة على البيانات التي تريد تخزينها
+const bulkPostalData = {
+  "12345": "Berlin Mitte",
+  "23456": "Hamburg Altona",
+  "34567": "München Zentrum"
+};
+
+// حقن بيانات postalCodes دفعة واحدة
+firebase.database().ref("postalCodes").set(bulkPostalData)
+  .then(() => {
+    console.log("postalCodes node created with bulk data.");
+  })
+  .catch((error) => {
+    console.error("Error creating postalCodes node:", error);
+  });
