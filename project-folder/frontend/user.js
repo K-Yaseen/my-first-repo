@@ -662,7 +662,7 @@ async function sendToEmail() {
   // 7) إعداد رابط mailto لفتح برنامج البريد
   // يفترض أن البريد الذي سيرسل إليه هو بريد المطعم
   // example@restaurant.de يمكنك تغييره إلى بريدك الخاص
-  const restaurantEmail = "example@restaurant.de";
+  const restaurantEmail = window.restaurantEmail || "example@restaurant.de";
 
   // تشفير (تكويد) النص لتفادي مشاكل المسافات والرموز
   const mailtoLink = `mailto:${restaurantEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
