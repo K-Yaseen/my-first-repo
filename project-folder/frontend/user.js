@@ -4,9 +4,9 @@
 // ===========================================================
 
 let currentItem = null;
-let pendingOrderId = null;  // رقم الطلب المؤقت
+let pendingOrderId = null;  // Nummer für die temporäre Bestellung
 let selectedOrderChannel = "";
-let phoneNumber = ""; // سيتم قراءته من Firebase (whatsappNumber)
+let phoneNumber = ""; // wird aus Firebase (config.whatsappNumber) gelesen
 
 // Firebase-Konfiguration
 const firebaseConfig = {
@@ -21,12 +21,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Globale Variablen für Artikel & Nutzerdaten
-let items = [];
-const userDataStore = {};
+// Globale Variablen
+let items = [];                // Array/Katalog von Gerichten aus Firebase
+const userDataStore = {};      // Platz für evtl. Zwischenspeicherung
+let localZipsMap = {};         // Objekt zum Speichern (zipCode -> Array von placeNamen)
 
 // ===========================================================
-// Hilfsfunktionen  (دوال مساعدة)
+// Hilfsfunktionen (دوال مساعدة)
 // ===========================================================
 function safeJSONParse(data) {
   try {
@@ -50,8 +51,9 @@ function generateOrderNumber() {
   return orderId;
 }
 
-// Neue Funktion: Konfiguration (whatsappNumber) laden
-// دالة لجلب الإعدادات من Firebase (مثل رقم الواتساب وبريد المطعم)
+// ===========================================================
+// Firebase-Konfiguration laden (z.B. Whatsapp-Nummer, E-Mail, etc.)
+// ===========================================================
 async function fetchConfig() {
   try {
     const snapshot = await database.ref("config").once("value");
@@ -69,8 +71,9 @@ async function fetchConfig() {
   }
 }
 
-// Funktion zum Abrufen aller Artikel (Items) aus Firebase
-// (جلب قائمة الأصناف من قاعدة البيانات)
+// ===========================================================
+// Items aus Firebase abrufen  (جلب قائمة الأصناف من قاعدة البيانات)
+// ===========================================================
 async function fetchItems() {
   try {
     const snapshot = await database.ref("items").once("value");
@@ -83,47 +86,79 @@ async function fetchItems() {
 }
 
 // ===========================================================
-// Anzeige des Status & Laden/Speichern von Daten  (عرض الحالة وحفظ/تحميل البيانات)
+// Lokale Zip-Daten laden (من الملف zipcodes.de.json)
 // ===========================================================
-function showFloatingMessage(message, color = "red") {
-  alert(message);
-}
+async function loadLocalZips() {
+  try {
+    // Lies das JSON-File (im selben Ordner oder Pfad anpassen)
+    const response = await fetch("zipcodes.de.json");
+    const data = await response.json();
+    // data ist ein Array von Objekten wie:
+    // { "country_code": "DE", "zipcode": "01945", "place": "Tettau", ... }
 
-function loadUserData() {
-  // قراءة بيانات المستخدم من الـ localStorage
-  const storedData = safeJSONParse(localStorage.getItem("userData"));
-  if (storedData) {
-    document.getElementById("customerEmail").value = storedData.customerEmail || "";
+    // Wir wollen: localZipsMap[zipcode] = [place1, place2, ...]
+    // Falls ein PLZ mehrmals auftaucht, sammeln wir die place-Werte in einer Array
+    const tempMap = {};
 
-    if (storedData.deliveryOption) {
-      document.getElementById("deliveryOption").value = storedData.deliveryOption;
-
-      if (storedData.deliveryOption === "delivery") {
-        document.getElementById("deliveryFields").style.display = "block";
-        document.getElementById("deliveryScheduleField").style.display = "block";
-        document.getElementById("deliveryDate").value = storedData.deliveryDate || "";
-        document.getElementById("deliveryTime").value = storedData.deliveryTime || "";
-      } else if (storedData.deliveryOption === "pickup") {
-        document.getElementById("pickupScheduleField").style.display = "block";
-        document.getElementById("pickupDate").value = storedData.pickupDate || "";
-        document.getElementById("pickupTime").value = storedData.pickupTime || "";
+    data.forEach(entry => {
+      const z = entry.zipcode;
+      const placeName = entry.place;
+      if (!tempMap[z]) {
+        tempMap[z] = [];
       }
-    }
+      // Duplikate vermeiden
+      if (!tempMap[z].includes(placeName)) {
+        tempMap[z].push(placeName);
+      }
+    });
 
-    document.getElementById("vorname").value = storedData.vorname || "";
-    document.getElementById("nachname").value = storedData.nachname || "";
-    document.getElementById("strasse").value = storedData.strasse || "";
-    document.getElementById("hausnummer").value = storedData.hausnummer || "";
-    document.getElementById("plz").value = storedData.plz || "";
-    document.getElementById("stadt").value = storedData.stadt || "";
-    document.getElementById("customerNotes").value = storedData.notes || "";
-
-    document.getElementById("orderDetails").style.display = "block";
+    localZipsMap = tempMap;
+    console.log("Lokale Zip-Daten geladen:", Object.keys(localZipsMap).length, "PLZ-Einträge");
+  } catch (err) {
+    console.error("Fehler beim Laden von zipcodes.de.json:", err);
   }
 }
 
+// ===========================================================
+// Anzeige von Nachrichten / Laden & Speichern von Daten
+// ===========================================================
+function showFloatingMessage(message, color = "red") {
+  alert(message); // einfache Meldung
+}
+
+// Daten aus localStorage laden (wenn vorhanden)
+function loadUserData() {
+  const storedData = safeJSONParse(localStorage.getItem("userData"));
+  if (!storedData) return;
+
+  // Felder befüllen
+  document.getElementById("customerEmail").value = storedData.customerEmail || "";
+  if (storedData.deliveryOption) {
+    document.getElementById("deliveryOption").value = storedData.deliveryOption;
+    if (storedData.deliveryOption === "delivery") {
+      document.getElementById("deliveryFields").style.display = "block";
+      document.getElementById("deliveryScheduleField").style.display = "block";
+      document.getElementById("deliveryDate").value = storedData.deliveryDate || "";
+      document.getElementById("deliveryTime").value = storedData.deliveryTime || "";
+    } else if (storedData.deliveryOption === "pickup") {
+      document.getElementById("pickupScheduleField").style.display = "block";
+      document.getElementById("pickupDate").value = storedData.pickupDate || "";
+      document.getElementById("pickupTime").value = storedData.pickupTime || "";
+    }
+  }
+  document.getElementById("vorname").value = storedData.vorname || "";
+  document.getElementById("nachname").value = storedData.nachname || "";
+  document.getElementById("strasse").value = storedData.strasse || "";
+  document.getElementById("hausnummer").value = storedData.hausnummer || "";
+  document.getElementById("plz").value = storedData.plz || "";
+  document.getElementById("stadt").value = storedData.stadt || "";
+  document.getElementById("customerNotes").value = storedData.notes || "";
+
+  document.getElementById("orderDetails").style.display = "block";
+}
+
 /**
- * حفظ بيانات المستخدم في LocalStorage + تخزين الرمز البريدي والمنطقة في Firebase
+ * Speichert Nutzerdaten + speichert (PLZ → Stadt) in Firebase
  */
 function saveUserData() {
   const deliveryOption = document.getElementById("deliveryOption").value;
@@ -148,26 +183,18 @@ function saveUserData() {
     deliveryTime = document.getElementById("deliveryTime").value;
   }
 
-  // تخزين في كائن قبل حفظه محليًا
+  // In localStorage ablegen
   const userData = {
-    deliveryOption,
-    vorname,
-    nachname,
-    strasse,
-    hausnummer,
-    plz,
-    stadt,
+    deliveryOption, vorname, nachname,
+    strasse, hausnummer,
+    plz, stadt,
     notes,
-    pickupDate,
-    pickupTime,
-    deliveryDate,
-    deliveryTime
+    pickupDate, pickupTime,
+    deliveryDate, deliveryTime
   };
-
-  // حفظ البيانات في LocalStorage
   localStorage.setItem("userData", JSON.stringify(userData));
 
-  // تخزين الرمز البريدي واسم المدينة في Firebase (إذا كان كلاهما معبأ)
+  // PLZ/Stadt in Firebase speichern, falls beides vorhanden
   if (plz && stadt) {
     firebase.database().ref("postalCodes/" + plz).set(stadt)
       .then(() => {
@@ -180,7 +207,7 @@ function saveUserData() {
 }
 
 // ===========================================================
-// Funktionen zur Warenkorb-Verwaltung  (إدارة سلة المشتريات)
+// Warenkorb-Funktionen
 // ===========================================================
 function loadCart() {
   const cartData = localStorage.getItem("cart");
@@ -236,14 +263,12 @@ function updateCartButton() {
     backToCartBtn.querySelector(".item-count").textContent = totalQuantity;
   } else {
     backToCartBtn.style.display = "none";
-    if (overlay) {
-      overlay.style.display = "none";
-    }
+    if (overlay) overlay.style.display = "none";
   }
 }
 
 // ===========================================================
-// Funktionen für die Anzeige / Bearbeitung der Items  (عرض الأصناف)
+// Items prüfen / anzeigen
 // ===========================================================
 function checkItem() {
   const itemNumberInput = document.getElementById("itemNumber");
@@ -312,7 +337,7 @@ function addToCart() {
       addToCartBtn.style.display = "none";
     }
   } else {
-    alert("Es gibt keinen bestimmten Artikel zum Hinzufügen zum Warenkorb.");
+    alert("Kein Artikel zum Hinzufügen vorhanden.");
   }
 }
 
@@ -400,7 +425,7 @@ function hideFloatingCart() {
 }
 
 // ===========================================================
-// Funktionen zu Öffnungszeiten & Terminprüfung  (التحقق من الأوقات)
+// Öffnungszeiten + Terminprüfung
 // ===========================================================
 function updateTimeConstraints() {
   const now = new Date();
@@ -503,6 +528,7 @@ function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
     console.warn(`Der Laden ist am ${selectedDay} geschlossen.`);
     return false;
   }
+
   let start, end;
   if (type === "delivery") {
     start = todayHours.deliveryStart;
@@ -515,6 +541,7 @@ function isSelectedTimeWithinWorkingHours(selectedDateTime, type) {
     console.warn(`Keine ${type}-Zeiten für ${selectedDay} definiert.`);
     return false;
   }
+
   const [startHours, startMinutes] = start.split(":").map(Number);
   const [endHours, endMinutes] = end.split(":").map(Number);
   const startTime = new Date(selectedDateTime);
@@ -538,7 +565,7 @@ function validateSchedule() {
     const selectedDelivery = new Date(`${deliveryDate}T${deliveryTime}`);
     const minDelivery = new Date(now.getTime() + 2 * 60 * 60 * 1000);
     if (selectedDelivery < minDelivery) {
-      showFloatingMessage("Für die Lieferung muss die Bestellung mindestens 2 Stunden im Voraus erfolgen.", "red");
+      showFloatingMessage("Für die Lieferung mindestens 2 Stunden Vorlauf!", "red");
       return false;
     }
     if (!isSelectedTimeWithinWorkingHours(selectedDelivery, "delivery")) {
@@ -555,7 +582,7 @@ function validateSchedule() {
     const selectedPickup = new Date(`${pickupDate}T${pickupTime}`);
     const minPickup = new Date(now.getTime() + 1 * 60 * 60 * 1000);
     if (selectedPickup < minPickup) {
-      showFloatingMessage("Für die Selbstabholung muss die Bestellung mindestens 1 Stunde im Voraus erfolgen.", "red");
+      showFloatingMessage("Für die Selbstabholung mindestens 1 Stunde Vorlauf!", "red");
       return false;
     }
     if (!isSelectedTimeWithinWorkingHours(selectedPickup, "pickup")) {
@@ -577,7 +604,7 @@ function validateDeliveryFields() {
     const stadt = document.getElementById("stadt").value.trim();
 
     if (!vorname || !nachname || !strasse || !hausnummer || !plz || !stadt) {
-      showFloatingMessage("Bitte füllen Sie alle erforderlichen Felder für die Lieferung aus.", "red");
+      showFloatingMessage("Bitte alle Felder für die Lieferung ausfüllen.", "red");
       return false;
     }
   }
@@ -585,7 +612,7 @@ function validateDeliveryFields() {
 }
 
 // ===========================================================
-// Funktion zur Berechnung des Warenkorb-Gesamts (حساب المجموع الكلي)
+// Warenkorb-Gesamt berechnen
 // ===========================================================
 function calculateCartTotal() {
   let total = 0;
@@ -606,29 +633,27 @@ function calculateCartTotal() {
 }
 
 // ===========================================================
-// Senden der Bestellung per E-Mail (إرسال الطلب بالبريد)
+// Bestellungen via E-Mail
 // ===========================================================
 async function sendToEmail() {
-  // نحفظ بيانات المستخدم أولاً
-  saveUserData();
+  saveUserData(); // direkt speichern
 
-  // 1) Warenkorb prüfen
+  // Warenkorb prüfen
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
-    alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
+    alert("Der Warenkorb ist leer. Keine Bestellung möglich.");
     return;
   }
 
-  // 2) E-Mail des Kunden
+  // E-Mail des Kunden
   const customerEmailInput = document.getElementById("customerEmail");
   const userEmail = customerEmailInput ? customerEmailInput.value.trim() : "";
-
   if (!userEmail) {
-    alert("Bitte geben Sie Ihre E-Mail-Adresse ein.");
+    alert("Bitte E-Mail-Adresse eingeben.");
     return;
   }
 
-  // 3) Daten sammeln
+  // Daten sammeln
   const deliveryOption = document.getElementById("deliveryOption").value;
   const vorname = document.getElementById("vorname").value.trim();
   const nachname = document.getElementById("nachname").value.trim();
@@ -640,7 +665,6 @@ async function sendToEmail() {
 
   let dateText = "";
   let timeText = "";
-
   if (deliveryOption === "delivery") {
     dateText = document.getElementById("deliveryDate").value;
     timeText = document.getElementById("deliveryTime").value;
@@ -649,7 +673,7 @@ async function sendToEmail() {
     timeText = document.getElementById("pickupTime").value;
   }
 
-  // 4) Warenkorb-Text erstellen
+  // Warenkorb-Text
   let warenkorbText = "";
   cartItemsElement.querySelectorAll(".cart-item").forEach((cartItem) => {
     const itemInfoEl = cartItem.querySelector(".item-info");
@@ -659,16 +683,12 @@ async function sendToEmail() {
     warenkorbText += `${itemName} (Menge: ${quantity})\n`;
   });
 
-  // 5) Order-ID
   const orderId = pendingOrderId || generateOrderNumber();
-
-  // 6) E-Mail-Inhalt vorbereiten
   const subject = `Bestellung Nr. ${orderId}`;
-  let body = `Hallo,\n\n` +
-    `ich möchte gerne folgende Bestellung aufgeben:\n\n` +
-    `Bestellnummer: ${orderId}\n` +
-    `Warenkorb:\n${warenkorbText}\n\n` +
-    `Name: ${vorname} ${nachname}\n`;
+  let body = `Hallo,\n\nich möchte gerne folgende Bestellung aufgeben:\n\n` +
+             `Bestellnummer: ${orderId}\n` +
+             `Warenkorb:\n${warenkorbText}\n\n` +
+             `Name: ${vorname} ${nachname}\n`;
 
   if (deliveryOption === "delivery") {
     body += `Lieferung an:\n${strasse} ${hausnummer}, ${plz} ${stadt}\n` +
@@ -683,31 +703,26 @@ async function sendToEmail() {
 
   const restaurantEmail = window.restaurantEmail || "example@restaurant.de";
   const mailtoLink = `mailto:${restaurantEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-  // 7) Mailto-Link öffnen
   window.open(mailtoLink, "_blank");
 
-  // 8) Senden erledigt: Warenkorb leeren und zum Suchfeld zurück
   clearCart();
   redirectToSearchField();
 }
 
 // ===========================================================
-// Bestellung an Firebase senden (دفع البيانات إلى Firebase)
+// Bestellung an Firebase senden
 // ===========================================================
 function pushOrderToFirebase(customOrderId) {
-  // حفظ بيانات المستخدم أولاً
-  saveUserData();
+  saveUserData(); // direkt speichern
 
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
-    alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
+    alert("Der Warenkorb ist leer. Keine Bestellung möglich.");
     return;
   }
 
   const orderId = customOrderId || generateOrderNumber();
   const orderedItems = [];
-
   cartItemsElement.querySelectorAll(".cart-item").forEach(cartItem => {
     const itemInfoEl = cartItem.querySelector(".item-info");
     const quantitySelectEl = cartItem.querySelector(".quantity-dropdown");
@@ -730,24 +745,19 @@ function pushOrderToFirebase(customOrderId) {
   const deliveryTime = document.getElementById("deliveryTime").value;
 
   const orderData = {
-    orderId: orderId,
+    orderId,
     timestamp: Date.now(),
     deliveryOption,
     items: orderedItems,
     customer: {
-      vorname,
-      nachname,
-      strasse,
-      hausnummer,
-      plz,
-      stadt,
+      vorname, nachname,
+      strasse, hausnummer,
+      plz, stadt,
       notes
     },
     schedule: {
-      pickupDate,
-      pickupTime,
-      deliveryDate,
-      deliveryTime
+      pickupDate, pickupTime,
+      deliveryDate, deliveryTime
     }
   };
 
@@ -765,7 +775,7 @@ function pushOrderToFirebase(customOrderId) {
     })
     .catch((error) => {
       console.error("Error pushing order to Firebase:", error);
-      alert("Beim Senden der Bestellung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.");
+      alert("Fehler beim Senden der Bestellung. Bitte erneut versuchen.");
     });
 }
 
@@ -787,10 +797,8 @@ function showOrderSuccessMessage(orderId, totalPrice, scheduleData) {
       ${scheduleText}
     </p>
   `;
-
   document.body.appendChild(successPopup);
   successPopup.classList.add("show");
-
   setTimeout(() => {
     successPopup.classList.remove("show");
     document.body.removeChild(successPopup);
@@ -798,17 +806,20 @@ function showOrderSuccessMessage(orderId, totalPrice, scheduleData) {
 }
 
 // ===========================================================
-// EVENT LISTENERS (DOM geladen usw.)  (أحداث DOMContentLoaded وغيرها)
+// DOMContentLoaded
 // ===========================================================
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchConfig();
   await fetchItems();
+  // Lokale Zip-Liste laden
+  await loadLocalZips();
+
   loadUserData();
   await loadWorkingHours();
   loadCart();
   updateCartButton();
 
-  // قراءة config/serviceOption
+  // config/serviceOption abrufen
   const snapshot = await firebase.database().ref("config/serviceOption").once("value");
   const serviceOption = snapshot.val() || "beides";
   const storedWorkingHours = JSON.parse(localStorage.getItem("workingHours"));
@@ -816,7 +827,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     updateWorkingHoursDisplay(storedWorkingHours, serviceOption);
   }
 
-  // Öffnungszeiten-Modal
+  // Öffnungszeiten-Modal (wenn vorhanden)
   const preLoginModal = document.getElementById("preLoginModal");
   if (preLoginModal) {
     preLoginModal.style.display = "flex";
@@ -828,20 +839,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Letzte Gerichtsnummer aus dem LocalStorage wiederherstellen
+  // Letzte Gerichtsnummer aus localStorage
   const itemNumberInput = document.getElementById("itemNumber");
   const lastStoredNumber = localStorage.getItem("lastSearchedNumber");
-  if (lastStoredNumber) {
+  if (lastStoredNumber && itemNumberInput) {
     itemNumberInput.value = lastStoredNumber;
   }
-
   if (itemNumberInput) {
     itemNumberInput.addEventListener("change", function () {
       localStorage.setItem("lastSearchedNumber", this.value);
     });
   }
 
-  // زر إغلاق نافذة الدفع
+  // Schließen-Button im Payment-Modal
   const closePaymentModalBtn = document.getElementById("closePaymentModalBtn");
   if (closePaymentModalBtn) {
     closePaymentModalBtn.addEventListener("click", closePaymentInfo);
@@ -849,7 +859,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   updateTimeConstraints();
 
-  // Umschalten zwischen Abholung/Lieferung
+  // Umschalten zwischen "pickup" und "delivery"
   const deliverySelect = document.getElementById("deliveryOption");
   if (deliverySelect) {
     deliverySelect.addEventListener("change", function () {
@@ -866,7 +876,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // "Bestellung an das Restaurant senden"-Button
+  // Buttons für Bestellkanäle
   const sendOrderBtn = document.getElementById("sendOrderBtn");
   if (sendOrderBtn) {
     sendOrderBtn.addEventListener("click", () => {
@@ -875,7 +885,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // WhatsApp Button
   const whatsappBtn = document.getElementById("whatsappBtn");
   if (whatsappBtn) {
     whatsappBtn.addEventListener("click", () => {
@@ -884,7 +893,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // E-Mail Button
   const emailBtn = document.getElementById("emailBtn");
   if (emailBtn) {
     emailBtn.addEventListener("click", () => {
@@ -901,17 +909,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // إضافة مستمع للرمز البريدي (plz)
+  // EventListener für PLZ
   document.getElementById("plz").addEventListener("change", async function() {
     const postalCode = this.value.trim();
     if (!postalCode) return;
-    try {
-      // قراءة العقدة postalCodes/<postalCode>
-      const snapshotPostal = await firebase.database().ref("postalCodes/" + postalCode).once("value");
-      const cityName = snapshotPostal.val();
 
-      if (cityName) {
-        document.getElementById("stadt").value = cityName;
+    try {
+      // 1) Zuerst in Firebase checken
+      const snapshotPostal = await firebase.database().ref("postalCodes/" + postalCode).once("value");
+      const cityData = snapshotPostal.val();
+
+      // Wenn wir in DB etwas finden
+      if (cityData) {
+        if (Array.isArray(cityData)) {
+          // Falls in DB als Array gespeichert
+          document.getElementById("stadt").value = cityData[0] || "";
+        } else {
+          // Falls es nur ein String ist
+          document.getElementById("stadt").value = cityData;
+        }
+      } else {
+        // 2) Nicht in DB gefunden -> schaue in localZipsMap
+        // localZipsMap[postalCode] z.B. = ["Ortrand", "Großkmehlen", ...]
+        const localArr = localZipsMap[postalCode];
+        if (localArr && localArr.length > 0) {
+          // Falls wir Einträge haben, nehmen wir den ersten
+          document.getElementById("stadt").value = localArr[0];
+        } else {
+          // Keine Daten lokal
+          console.log("Keine Daten lokal oder in Firebase für:", postalCode);
+        }
       }
     } catch (error) {
       console.error("Error fetching city name:", error);
@@ -919,7 +946,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-// العودة لحقل البحث
+// ===========================================================
+// Zusätzliche Hilfsfunktionen
+// ===========================================================
 function redirectToSearchField() {
   const overlay = document.getElementById("floatingCartOverlay");
   if (overlay) {
@@ -927,7 +956,6 @@ function redirectToSearchField() {
   }
 }
 
-// تفعيل تفاصيل الطلب
 function goToOrderDetails() {
   const overlay = document.getElementById("floatingCartOverlay");
   if (overlay) {
@@ -944,15 +972,12 @@ function goToOrderDetails() {
   }
 }
 
-// تطبيق إعدادات Abholung/Lieferung/beides
+// ServiceOption (Abholung / Lieferung / beides) aus Firebase
 firebase.database().ref("config/serviceOption").on("value", function (snapshot) {
   const option = snapshot.val() || "beides";
   applyUserServiceOption(option);
 });
 
-/**
- * تنفيذ إعداد خيار الخدمة (Abholung/ Lieferung/ beides)
- */
 function applyUserServiceOption(option) {
   const deliveryOptionSelect = document.getElementById("deliveryOption");
   if (!deliveryOptionSelect) return;
@@ -983,7 +1008,7 @@ function applyUserServiceOption(option) {
   }
 }
 
-// Anzeigen des Zahlungs-Modals (نافذة الدفع)
+// Anzeigen des Zahlungs-Modals
 function showPaymentInfo() {
   const paymentModal = document.getElementById("paymentInfoModal");
   const paymentTextEl = document.getElementById("paymentInfoText");
@@ -1011,12 +1036,11 @@ function showPaymentInfo() {
   paymentModal.classList.add("show");
 }
 
-// إغلاق نافذة الدفع + تنفيذ القناة المختارة
+// Schließen des Zahlungs-Modals + Aufruf des gewählten Kanals
 function closePaymentInfo() {
   const paymentModal = document.getElementById("paymentInfoModal");
   paymentModal.classList.remove("show");
 
-  // إذا هناك ملاحظات إضافية في حقل إضافي، يتم دمجها مع الحقل الرئيسي
   const additionalNotesEl = document.getElementById("additionalNotes");
   const mainNotesEl = document.getElementById("customerNotes");
   if (additionalNotesEl && mainNotesEl) {
@@ -1031,7 +1055,6 @@ function closePaymentInfo() {
     }
   }
 
-  // بناء على القناة المختارة، نرسل الطلب
   if (selectedOrderChannel === "whatsapp") {
     sendToWhatsApp();
   } else if (selectedOrderChannel === "email") {
@@ -1041,17 +1064,16 @@ function closePaymentInfo() {
   }
 }
 
-// إرسال الطلب عبر واتساب (مع التحقق من الشروط)
+// Senden via WhatsApp
 function sendToWhatsApp() {
-  // حفظ بيانات المستخدم أيضًا
-  saveUserData();
+  saveUserData(); // Speichern
 
   if (!validateDeliveryFields()) return;
   if (!validateSchedule()) return;
 
   const cartItemsElement = document.getElementById("cartItems");
   if (!cartItemsElement || cartItemsElement.children.length === 0) {
-    alert("Der Warenkorb ist leer. Eine Bestellung ohne Artikel ist nicht möglich.");
+    alert("Warenkorb ist leer, keine Bestellung möglich.");
     return;
   }
 
@@ -1066,7 +1088,6 @@ function sendToWhatsApp() {
 
   let dateText = "";
   let timeText = "";
-
   if (deliveryOption === "delivery") {
     dateText = document.getElementById("deliveryDate").value;
     timeText = document.getElementById("deliveryTime").value;
@@ -1086,11 +1107,9 @@ function sendToWhatsApp() {
 
   const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(strasse + " " + hausnummer + ", " + plz + " " + stadt)}`;
   let orderText = "Hallo, ich möchte gerne bestellen:\n\n";
-
   if (pendingOrderId) {
     orderText += `Bestellnummer: ${pendingOrderId}\n\n`;
   }
-
   orderText += `Warenkorb-Inhalt:\n${warenkorbText}\n`;
   orderText += `Name: ${vorname} ${nachname}\n\n`;
 
@@ -1107,7 +1126,7 @@ function sendToWhatsApp() {
   }
 
   if (!phoneNumber) {
-    alert("Es wurde keine WhatsApp-Nummer konfiguriert.");
+    alert("Keine WhatsApp-Nummer konfiguriert.");
     return;
   }
 
@@ -1119,11 +1138,11 @@ function sendToWhatsApp() {
   redirectToSearchField();
 }
 
-// إظهار رسالة منبثقة تؤكد الحفظ يدوياً (زر حفظ البيانات)
+// Manuelles Popup beim Speichern
 function showSavePopup() {
-  saveUserData(); // لحفظ البيانات في LocalStorage + Firebase
+  saveUserData();
   const popup = document.getElementById("popupMessage");
-  userDataStore.customerEmail = document.getElementById("customerEmail").value; 
+  userDataStore.customerEmail = document.getElementById("customerEmail").value;
   if (popup) {
     popup.classList.add("show");
     setTimeout(() => {
@@ -1132,19 +1151,11 @@ function showSavePopup() {
   }
 }
 
-// أمثلة على البيانات التي تريد تخزينها مبدئياً
-const bulkPostalData = {
-  "12345": "Berlin Mitte",
-  "23456": "Hamburg Altona",
-  "34567": "München Zentrum"
-};
-
-// حقن بيانات postalCodes دفعة واحدة (مرّة واحدة فقط أثناء التطوير)
-// إذا لم تعد بحاجة لكتابة هذه القيم في كل مرة، علّق هذا المقطع أو احذفه.
-// firebase.database().ref("postalCodes").set(bulkPostalData)
-//   .then(() => {
-//     console.log("postalCodes node created with bulk data.");
-//   })
-//   .catch((error) => {
-//     console.error("Error creating postalCodes node:", error);
-//   });
+/**
+ * INFO:
+ * - Das Script lädt nun `zipcodes.de.json` in `localZipsMap`.
+ * - Beim Eintippen einer PLZ wird zunächst in Firebase geschaut.
+ * - Falls nicht gefunden, wird aus `localZipsMap` geguckt.
+ * - Wenn dort ebenfalls keine Einträge sind, bleibt das Feld leer.
+ * - Beim Speichern oder Bestellen werden neue (plz -> stadt) Paare in Firebase gespeichert.
+ */
