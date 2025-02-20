@@ -1080,6 +1080,7 @@ function showSavePopup() {
   saveUserData(); // لحفظ البيانات في LocalStorage
 
   const popup = document.getElementById("popupMessage");
+  userData.customerEmail = customerEmail;
   if (popup) {
     popup.classList.add("show");    // تظهر الرسالة
     setTimeout(() => {
